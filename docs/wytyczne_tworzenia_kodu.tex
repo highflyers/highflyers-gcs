@@ -1,0 +1,246 @@
+\documentclass[titlepage]{article}
+\usepackage{hyperref}
+\usepackage[polish]{babel}
+\usepackage{polski}
+\usepackage[latin2]{inputenc}
+\usepackage{listings}
+\usepackage{color}
+\title{Wytyczne tworzenia kodu w projekcie GCS}
+\author{Marcin Kolny\\
+\texttt{marcin.kolny@gmail.com}}
+\date{\today}
+\begin{document}
+\definecolor{cppred}{rgb}{0.6,0,0} % strings
+\definecolor{cppgreen}{rgb}{0.25,0.5,0.35} % comments
+\definecolor{cpppurple}{rgb}{0.5,0,0.35} % keywords
+\definecolor{cppblue}{rgb}{0.25,0.35,0.75} % doxygen
+\definecolor{lightgrey}{rgb}{0.9,0.9,0.9}
+\lstset{language=C++,
+basicstyle=\ttfamily,
+keywordstyle=\color{cpppurple}\bfseries,
+stringstyle=\color{cppred},
+commentstyle=\color{cppgreen},
+morecomment=[s][\color{cppblue}]{/**}{*/},
+numbers=left,
+backgroundcolor=\color{lightgrey},
+numberstyle=\tiny\color{black},
+stepnumber=1,
+numbersep=10pt,
+tabsize=4,
+showspaces=false,
+showstringspaces=false}
+\pagestyle{plain}
+\maketitle
+
+\tableofcontents
+\cleardoublepage
+\section{Wybór nazw}
+Wszystkie nazwy powinny byæ pisane w jêzyku angielskim. Ponadto, nale¿y stosowaæ siê do ni¿ej wymienionych regu³.
+\subsection{Zmienne}
+Nazwy zmiennych pisane z ma³ej litery. W przypadku nazw wielocz³onowych, ka¿dy nastêpny cz³on wyrazu pisany wielk± liter± (notacja \textit{camelCase}).
+\paragraph{}
+\textbf{Przyk³ad}
+\begin{lstlisting}
+  int variable;
+  float longNamedVariable;
+\end{lstlisting}
+\subsection{Funkcje}
+Nazwy funkcji pisane z wielkiej litery. W przypadku nazw wielocz³onowych, ka¿dy nastêpny cz³on wyrazu pisany jest wielk± liter± (notacja \textit{PascalCase}).
+\paragraph{}
+\textbf{Przyk³ad}
+\begin{lstlisting}
+  bool Compare( double x, double y );
+  void SayHello( string name );
+\end{lstlisting}
+\paragraph{}
+\textbf{Funkcje obs³ugi zdarzeñ} \\
+W przypadku nazewnictwa funkcji obs³uguj±cych zdarzenia, stosujemy zapis: \textit{OnSenderEvent}. Zatem dla zdarzenia klikniêcia na przycisk o nazwie \textit{btn} funkcja bêdzie mia³a nastêpuj±c± nazwê:
+\begin{lstlisting}
+OnBtnClick(...)
+\end{lstlisting}
+\paragraph{}
+Wyj±tkiem w tej sytuacji jest nazewnictwo funkcji tworzonych przez IDE (np. Visual Studio). Wa¿ne jest jednak, aby w ca³ym projekcie nazewnictwo to by³o jednolite.
+\subsection{Klasy i struktury}
+Nazwy klas i struktur pisane z wielkiej litery. W przypadku nazw wielocz³onowych, ka¿dy nastêpny cz³on pisany wielk± liter± (notacja \textit{PascalCase}).
+\paragraph{}
+\textbf{Przyk³ad}
+\begin{lstlisting}
+class Collector
+{
+  ...
+};
+
+struct SomeStruct
+{
+  ...
+};
+\end{lstlisting}
+\subsection{Przestrzenie nazw}
+Nazwy przestrzeni nazw pisane z wielkiej litery. W przypadku nazw wielocz³onowych, ka¿dy nastêpny cz³on pisany wielk± liter± (notacja \textit{PascalCase}).
+\paragraph{}
+\textbf{Przyklad}
+\begin{lstlisting}
+namespace CustomFunctions
+{
+  ...
+}
+\end{lstlisting}
+\paragraph{}
+\textbf{Dodatkowe uwagi} \\
+Ca³y kod tworzony na potrzeby ko³a naukowego powinien znajdowaæ siê w przestrzeni nazw \textit{HighFlyers}. Wskazane jest równie¿ zagnie¿d¿anie przestrzeni nazw tak, by opisywa³y one sekcjê autorska. Nie jest to jednak konieczne.
+\begin{lstlisting}
+namespace HighFlyers
+{
+  namespace GCS
+  {
+    // GCS code...
+  }
+
+  // common code...
+}
+\end{lstlisting}
+\subsection{Definicje}
+Definicje pisane w ca³o¶ci wielkimi literami. W przypadku nazw wielocz³onowych, ka¿dy nastêpny wyraz oddzielony znakiem pod³ogi \textbf{\_}.
+\paragraph{}
+\textbf{Przyk³ad}
+\begin{lstlisting}
+#define PI 3.14
+#define EULERS_NUMBER 2.718
+\end{lstlisting}
+
+\section{Zapis kodu}
+\subsection{Wciêcia}
+Wciêcia w kodzie powinny byæ wstawiane w ka¿dym zagnie¿d¿eniu fizycznego bloku w taki sposób, aby obszar bloku by³ wyra¼nie widoczny.
+\paragraph{}
+\textbf{Przyk³ad}
+\begin{lstlisting}
+class Example
+{
+  int v1;
+
+  void Method( int arg )
+  {
+    vector<int> v1 = {1, 4, 7};
+    
+    v1 = 0;
+
+    for ( auto i : v1 )
+      v1 += i;
+  }
+};
+\end{lstlisting}
+
+\subsection{Oddzielanie bloków kodu}
+Blokiem w tym podpunkcie nazywany jest nie tylko zagnie¿d¿ony w ramach jednego zagnie¿d¿enia, ale równie¿ logicznie pod wzglêdem przeznaczenia fragment kodu programu. Ka¿dy blok powinien byæ oddzielony jedna pusta linia.
+\paragraph{}
+\textbf{Przyk³ad}
+\begin{lstlisting}
+int x, y; // declaration's block
+
+y = 3; // initialization's block
+
+for ( x = 2; x < 12; ++x ) // loop's block
+{
+  y += x;
+  cout << x << endl;
+}
+
+{ // and some \"physical\" block
+  int x = 12;
+}
+\end{lstlisting}
+\paragraph{}
+\textbf{Sytuacja wyj±tkowa}
+W przypadku bloków \textit{try/catch/finally} nie stosujemy przerwy w postaci pustej linii pomiedzy blokami.
+\begin{lstlisting}
+try
+{
+  if ( y == 0 )
+    throw new Exception("Something is wrong...");
+}
+catch ( Exception )
+{
+  y = 0.000001;
+}
+finally
+{
+  w = a / y;
+}
+\end{lstlisting}
+\paragraph{}
+\textbf{Dodatkowe uwagi}
+Komentarze nie s± traktowane jako puste linie w kodzie ¼ród³owym. Poni¿szy fragment kodu ilustruje niepoprawne oraz poprawne przypadki u¿ycia komentarzy.
+\begin{lstlisting}
+int y = -10;
+// Error! there is no empty line between
+// declaration's block and loop's block
+while ( y < 0 )
+  y++;
+
+
+/*******************************/
+
+
+int y = -10;
+
+// OK! Empty line between two blocks
+while ( y < 0 )
+  y++;
+\end{lstlisting}
+\subsection{Nawiasy klamrowe}
+Nawiasy klamrowe otwierane i zamykane w osobnych liniach. Ponadto, w linii z nawiasem klamrowym nie wystêpuje ju¿ nic innego (ew. znaki tabulacji).
+
+\paragraph{}
+\textbf{Przyk³ad}
+\begin{lstlisting}
+for ( int x = 0; x < 10; x++ )
+{
+  z += 5;
+  y += 10;
+}
+\end{lstlisting}
+Kiedy nawiasy klamrowe nie s± potrzebne, nie trzeba(ale mo¿na) ich wstawiaæ.
+
+\subsection{Dodatkowe spacje w kodzie}
+Ka¿dy operator powinien byæ oddzielony od litera³u jedna spacja. Ponadto w przypadku pêtli/warunków/instrukcji switch pomiêdzy s³owem kluczowym a nawiasem otwieraj±cym umieszczana jest jedna spacja. Pomiêdzy znakiem pocz±tku/koñca komentarza a tre¶ci± komentarza wystêpuje jedna spacja.
+\paragraph{}
+\textbf{Przyk³ad}
+\begin{lstlisting}
+int h = w + 5;
+
+if (x == 12)
+{
+  return true;
+}
+
+while (z < 10)
+{
+  // comment
+}
+
+switch (a)
+{
+  case 1:
+    /* second comment */
+  break;
+}
+\end{lstlisting}
+W przypadku operatora inkrementacji / dekrementacji, operator nie jest oddzielony spacja od litera³u.
+\section{Komentarze}
+Komentarze s± przydatnym elementem kodu, maj±cym na celu wyja¶nienie danego fragmentu programu. Nie nale¿y jednak ich nadu¿ywaæ. Poni¿ej wymienione zosta³y przypadki, w których nale¿y stosowaæ komentarze. 
+Wszystkie komentarze pisane s± w formacie Doxygen: \href{http://doxygen.org/}{dokumentacja Doxygen}.
+Obowi±zkowo komentarze powinny wyst±piæ dla nastêpuj±cych elementów:
+\begin{itemize}
+\item funkcje,
+\item klasy,
+\item struktury,
+\item pola klas i struktur,
+\item warto¶ci globalne,
+\item ma³o oczywiste, zawile fragmenty programu (niekoniecznie w formacie doxygen).
+\end{itemize}
+
+\subsection{Jêzyk komentarzy}
+Komentarze pisane w jêzyku angielskim.
+\section{Uwagi i propozycje zmian}
+Wszelkie uwagi oraz propozycje zmian nale¿y zg³aszaæ autorowi dokumentu na adres e-mail \href{mailto:marcin.kolny@gmail.com}{marcin.kolny@gmail.com}
+\end{document}
