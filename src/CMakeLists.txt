@@ -1,0 +1,6 @@
+cmake_minimum_required (VERSION 2.6)
+project (GCS)
+find_package(GTest REQUIRED)
+include_directories(${GTEST_INCLUDE_DIRS})
+add_executable(GCS main.cpp)
+target_link_libraries(GCS ${GTEST_BOTH_LIBRARIES})
