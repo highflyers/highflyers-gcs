@@ -6,7 +6,7 @@ before_script:
   - GCS_SRC_DIR=$(pwd)
   - sudo apt-get update
   - sudo apt-get install libgtest-dev
-  - cd usr/src/gtest
+  - cd /usr/src/gtest
   - sudo cmake .
   - sudo make
   - sudo mv libg* /usr/lib/
