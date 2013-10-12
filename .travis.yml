@@ -1,17 +1,17 @@
 language: cpp
 
- compiler: gcc
+compiler: gcc
 
- before_script:
-   - mkdir src/build
-   - cd src/build
-   - cmake ..
+before_script:
+  - mkdir src/build
+  - cd src/build
+  - cmake ..
 
- script: make
+script: make
 
- notifications:
-   email:
-     - marcin.kolny@gmail.com
-     - pawel.matyszok@gmail.com
-   on_success: change
-   on_failure: always
+notifications:
+  email:
+    - marcin.kolny@gmail.com
+    - pawel.matyszok@gmail.com
+  on_success: change
+  on_failure: always
