@@ -15,7 +15,9 @@ before_script:
   - cd build
   - cmake ..
 
-script: make
+script: make && cd test && ./test
+
+
 
 notifications:
   email:
