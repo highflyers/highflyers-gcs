@@ -1,0 +1,25 @@
+language: cpp
+
+compiler: gcc
+
+before_script:
+  - GCS_SRC_DIR=$(pwd)
+  - sudo apt-get update
+  - sudo apt-get install libgtest-dev
+  - cd /usr/src/gtest
+  - sudo cmake .
+  - sudo make
+  - sudo mv libg* /usr/lib/
+  - cd $GCS_SRC_DIR
+  - mkdir src/build
+  - cd src/build
+  - cmake ..
+
+script: make
+
+notifications:
+  email:
+    - marcin.kolny@gmail.com
+    - pawel.matyszok@gmail.com
+  on_success: change
+  on_failure: always
