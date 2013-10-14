@@ -11,8 +11,8 @@ before_script:
   - sudo make
   - sudo mv libg* /usr/lib/
   - cd $GCS_SRC_DIR
-  - mkdir src/build
-  - cd src/build
+  - mkdir build
+  - cd build
   - cmake ..
 
 script: make
