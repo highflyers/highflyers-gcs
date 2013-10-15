@@ -15,7 +15,7 @@ before_script:
   - cd build
   - cmake ..
 
-script: make && cd test && ./test
+script: make && cd test && ./Test
 
 
 
