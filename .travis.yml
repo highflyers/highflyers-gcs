@@ -21,7 +21,6 @@ script: make && cd test && ./Test
 
 notifications:
   email:
-    - marcin.kolny@gmail.com
-    - pawel.matyszok@gmail.com
+    - highflyers-gcs@googlegroups.com
   on_success: change
   on_failure: always
