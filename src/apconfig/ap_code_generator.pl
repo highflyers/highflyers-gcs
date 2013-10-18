@@ -137,10 +137,23 @@ while (my $line = <$input>)
 print $output "class $main_class_name\n";
 print $output "{\n";
 print $output "private:\n";
+
 foreach (@defined_structs) 
 {
 	print $output "\t$_ ".get_member_name($_).";\n";
 }
+
+print $output "\npublic:\n";
+
+foreach (@defined_structs) 
+{
+	my $member_name = get_member_name($_);
+	print $output "\t$_ get_$member_name() const\n";
+	print $output "\t{ return $member_name; }\n";
+	print $output "\tvoid set_$member_name(const $_& $member_name)\n";
+	print $output "\t{ this->$member_name = $member_name; }\n\n";
+}
+
 print $output "};\n";
 
 print $output "\n#endif\n";
