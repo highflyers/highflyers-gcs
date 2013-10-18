@@ -24,6 +24,22 @@ sub parser_error($$)
 	exit;
 }
 
+sub get_class_name($)
+{
+	my $class_name = trim(shift);
+	$class_name =~ s/(^|\s+)(.)/\u$2/g;
+	return $class_name;
+}
+
+sub get_member_name($)
+{
+	my $member_name = trim(shift);	
+	$member_name =~ s/([a-z])([A-Z])/$1_$2/g;
+	$member_name = lc($member_name);
+	$member_name =~ s/\s+/_/g;
+	return $member_name;
+}
+
 sub generate_struct
 {
 	my ($n, %defs) = @_;
@@ -41,18 +57,17 @@ sub generate_struct
 }
 
 $arg_cnt = $#ARGV + 1;
+
 if ($arg_cnt != 2)
 {
-	print "\nUsage: ap_code_generator.pl <description file> <output header file>\n";
+	print "\nUsage: ap_code_generator.pl <description file> <plugin class name>\n";
 	exit;
 }
 
 open my $input, "<", $ARGV[0] or die $!;
 
-$output_filename = trim($ARGV[1]);
-if ($output_filename !~ m/\.h$/) {
-	$output_filename .= ".h";
-}
+$main_class_name = get_class_name($ARGV[1]);
+$output_filename = $main_class_name.".h";
 
 open $output, ">", $output_filename or die $!;
 
@@ -66,6 +81,7 @@ my $struct_begin = 0;
 my $has_name = 0;
 my %definitions = ();
 my $name;
+my @defined_structs = ();
 
 while (my $line = <$input>)
 {
@@ -92,6 +108,7 @@ while (my $line = <$input>)
 		$struct_begin = 0;
 		$has_name = 0;
 		print $output generate_struct($name, %definitions);
+		push @defined_structs, $name;
 		%definitions = ();
 	}
 	elsif ($line =~ m/name\s*:\s*(.+)\s*$/)
@@ -100,8 +117,7 @@ while (my $line = <$input>)
 		{
 			parser_error($., "redefinition of `name` previously defined on line ".$has_name);
 		}
-		$name = trim($1);
-		$name =~ s/(^|\s+)(.)/\u$2/g;
+		$name = get_class_name($1);
 		$has_name = $.;
 	}
 	elsif ($line =~ m/(.+):(.+):(.+)$/)
@@ -109,13 +125,22 @@ while (my $line = <$input>)
 		my $var_name = $1;
 		my $type = $2;
 		my $editor = $3;
-		$var_name = lc(trim($var_name));
-		$var_name =~ s/\s+/_/g;
+		$var_name = get_member_name($var_name);
+		
 		$definitions{$var_name} = {
 			type => trim($type),
 			editor => trim($editor)
 		};
 	}
 }
+
+print $output "class $main_class_name\n";
+print $output "{\n";
+print $output "private:\n";
+foreach (@defined_structs) 
+{
+	print $output "\t$_ ".get_member_name($_).";\n";
+}
+print $output "};\n";
 
 print $output "\n#endif\n";
