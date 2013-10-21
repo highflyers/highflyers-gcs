@@ -9,6 +9,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QComboBox>
 
 PIDConfigurator::PIDConfigurator(QWidget* parent)
 : QWidget(parent)
@@ -23,6 +24,11 @@ PIDConfigurator::PIDConfigurator(QWidget* parent)
 		sub_lay->addWidget(edits[name]);
 		main_layout->addItem(sub_lay);
 	}
+
+	QComboBox* pid_combo = new QComboBox();
+
+	pid_combo->addItem("pid_items");
+	main_layout->addWidget(pid_combo);
 
 	setLayout(main_layout);
 }

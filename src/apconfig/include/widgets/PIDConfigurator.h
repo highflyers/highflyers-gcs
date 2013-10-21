@@ -9,14 +9,15 @@
 #define PIDCONFIGURATOR_H_
 
 #include <map>
-#include <array>
 #include <QLineEdit>
 
 class PIDConfigurator : QWidget
 {
 private:
-	static std::array<const char*, 3> pid_names;
+	constexpr static const char* pid_names[] = {"P", "I", "D"};
 	std::map<const char*, QLineEdit*> edits;
+
+	QStringList pid_items = {"AcroRoll", "AcroPitch", "AcroYaw", "StableRoll", "StablePitch", "Alt", "Vel"};
 public:
 	PIDConfigurator(QWidget* parent = 0);
 };
