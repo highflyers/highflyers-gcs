@@ -99,6 +99,16 @@ Definicje pisane w całości wielkimi literami. W przypadku nazw wieloczłonowyc
 #define PI 3.14
 #define EULERS_NUMBER 2.718
 \end{lstlisting}
+\subsection{Argumenty szablonowe}
+Argumenty szablonowe piszemy wielkimi literami. W przypadku nazw wieloczłonowych, każdy następny wyraz oddzielony znakiem podłogi \textbf{\_}.
+\paragraph{}
+\textbf{Przykład}
+\begin{lstlisting}
+template<typename ARG, typename SECOND_ARG>
+class SampleClass
+{};
+
+\end{lstlisting}
 
 \section{Zapis kodu}
 \subsection{Wcięcia}
@@ -120,6 +130,21 @@ class Example
 		v1 += i;
 	}
 };
+\end{lstlisting}
+\paragraph{}
+\textbf{Sytuacja wyjątkowa}
+Przy wielu zagnieżdżonych przestrzeniach, kod źródłowy może nie być czytelny. Dla tego w przypadku przestrzeni nazw, nie ma obowiązku tworzenia dodatkowych wcięć.
+\begin{lstlisting}
+namespace HighFlyers
+{
+namespace GCS
+{
+class TestClass
+{
+...
+};
+}
+}
 \end{lstlisting}
 
 \subsection{Oddzielanie bloków kodu}
