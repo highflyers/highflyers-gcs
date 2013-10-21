@@ -20,7 +20,6 @@ before_script:
 
 script: 
   - qmake -qt=qt5 -v
-  - qmake -qt=qt5
   - make
   - make && cd test && ./Test
 
