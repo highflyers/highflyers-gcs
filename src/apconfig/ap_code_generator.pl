@@ -68,14 +68,19 @@ open my $input, "<", $ARGV[0] or die $!;
 
 $main_class_name = get_class_name($ARGV[1]);
 $output_filename = $main_class_name.".h";
+$cpp_output_filename = $main_class_name.".cpp";
 
 open $output, ">", $output_filename or die $!;
+open $output_cpp, ">", $cpp_output_filename or die $!;
 
 $ifdef_str = uc($output_filename);
 $ifdef_str =~ s/[^a-zA-Z\d]+/_/g;
 
 print $output "#ifndef ".$ifdef_str."\n";
 print $output "#define ".$ifdef_str."\n\n";
+
+print $output_cpp "// auto-generated file! Don't modify it!\n\n";
+print $output_cpp "#include \"$output_filename\"\n\n";
 
 my $struct_begin = 0;
 my $has_name = 0;
@@ -148,10 +153,12 @@ print $output "\npublic:\n";
 foreach (@defined_structs) 
 {
 	my $member_name = get_member_name($_);
-	print $output "\t$_ get_$member_name() const\n";
-	print $output "\t{ return $member_name; }\n";
-	print $output "\tvoid set_$member_name(const $_& $member_name)\n";
-	print $output "\t{ this->$member_name = $member_name; }\n\n";
+	print $output "\t$_ get_$member_name() const;\n";
+	print $output "\tvoid set_$member_name(const $_& $member_name);\n";
+	print $output_cpp "$_ $main_class_name\::get_$member_name() const\n";
+	print $output_cpp "{\n\treturn $member_name;\n}\n\n";
+	print $output_cpp "void $main_class_name\::set_$member_name(const $_& $member_name)\n";
+	print $output_cpp "{\n\tthis->$member_name = $member_name;\n}\n\n";	
 }
 
 print $output "};\n";
