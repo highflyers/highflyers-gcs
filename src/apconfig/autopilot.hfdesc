@@ -1,0 +1,7 @@
+{
+	name : PID
+	control : PIDConfigurator
+	P : double
+	I : double
+	D : double
+}

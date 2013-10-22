@@ -1,0 +1,4 @@
+#generated files by ap_code_generator.pl script
+ApConfig.cpp
+ApConfig.h
+ApConfigBuilder.cpp
