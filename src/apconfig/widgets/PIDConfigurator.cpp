@@ -5,7 +5,7 @@
  *      Author: Marcin Kolny
  */
 
-#include "widgets/PIDConfigurator.h"
+#include "apconfig/widgets/PIDConfigurator.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
