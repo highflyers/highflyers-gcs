@@ -20,6 +20,16 @@ private:
 	QStringList pid_items = {"AcroRoll", "AcroPitch", "AcroYaw", "StableRoll", "StablePitch", "Alt", "Vel"};
 public:
 	PIDConfigurator(QWidget* parent = 0);
+
+	template<typename T>
+	void set(const char* label, const T& value)
+	{}
+
+	template<typename T>
+	T get(const char* label)
+	{
+		return T();
+	}
 };
 
 #endif /* PIDCONFIGURATOR_H_ */
