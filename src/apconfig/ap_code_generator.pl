@@ -56,6 +56,32 @@ sub generate_struct
 	return $collector;
 }
 
+sub generate_accessor
+{
+	my ($n, $class_name, $control, %defs) = @_;
+	my $widget = get_member_name($control);
+	my $member_name = get_member_name($n);
+	
+	#getter
+	$collector = "$n $class_name\::get_$member_name() const\n{\n";
+	$collector .= "\t$n tmp;\n\n";
+	foreach $var_name (sort keys %defs)
+	{
+		$collector .= "\ttmp.$var_name = $widget->get<$defs{$var_name}{type}>(\"$var_name\");\n";
+	}
+
+	$collector .= "\n\treturn tmp;\n};\n\n";
+	
+	$collector .= "void $class_name\::set_$member_name(const $n& $member_name)\n{\n";
+	foreach $var_name (sort keys %defs)
+	{
+		$collector .= "\t$widget->set<$defs{$var_name}{type}>(\"$var_name\", $member_name.$var_name);\n";
+	}
+	$collector .= "}\n\n";
+	
+	return $collector;
+}
+
 $arg_cnt = $#ARGV + 1;
 
 if ($arg_cnt != 2)
@@ -120,6 +146,7 @@ while (my $line = <$input>)
 		$has_name = 0;
 		$has_control = 0;
 		print $output generate_struct($name, %definitions);
+		print $output_cpp generate_accessor($name, $main_class_name, $control, %definitions);
 		$defined_structs{$name} = $control;
 		%definitions = ();
 	}
@@ -162,7 +189,6 @@ print $output "private:\n";
 
 foreach $var_name (sort keys %defined_structs) 
 {
-	print $output "\t$var_name ".get_member_name($var_name).";\n";
 	print $output "\t$defined_structs{$var_name}* ".get_member_name($defined_structs{$var_name}).";\n";
 }
 
@@ -195,10 +221,6 @@ foreach $var_name (sort keys %defined_structs)
 	my $member_name = get_member_name($var_name);
 	print $output "\t$var_name get_$member_name() const;\n";
 	print $output "\tvoid set_$member_name(const $var_name& $member_name);\n";
-	print $output_cpp "$var_name $main_class_name\::get_$member_name() const\n";
-	print $output_cpp "{\n\treturn $member_name;\n}\n\n";
-	print $output_cpp "void $main_class_name\::set_$member_name(const $var_name& $member_name)\n";
-	print $output_cpp "{\n\tthis->$member_name = $member_name;\n}\n\n";	
 }
 
 print $output "};\n";
