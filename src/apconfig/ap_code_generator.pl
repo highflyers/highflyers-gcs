@@ -92,6 +92,8 @@ if ($arg_cnt != 3)
 
 $path =  $ARGV[2]."/";
 
+my $autogenerate_string = "// auto-generated file! Don't modify it!\n\n";
+
 open my $input, "<", $path.$ARGV[0] or die $!;
 
 $main_class_name = get_class_name($ARGV[1]);
@@ -103,6 +105,7 @@ open $output_cpp, ">", $path.$cpp_output_filename or die $!;
 
 open $output_builder, ">", $path.$main_class_name."Builder.cpp" or die $!;
 
+print $output_builder $autogenerate_string;
 print $output_builder "#include \"$output_filename\"\n\n";
 print $output_builder "#ifdef _WIN32\n";
 print $output_builder "#define EXPORT_DEF __declspec( dllexport )\n";
@@ -115,10 +118,11 @@ print $output_builder "\treturn new $main_class_name();\n}\n";
 $ifdef_str = uc($output_filename);
 $ifdef_str =~ s/[^a-zA-Z\d]+/_/g;
 
+print $output $autogenerate_string;
 print $output "#ifndef ".$ifdef_str."\n";
 print $output "#define ".$ifdef_str."\n\n";
 
-print $output_cpp "// auto-generated file! Don't modify it!\n\n";
+print $output_cpp $autogenerate_string;
 print $output_cpp "#include \"$output_filename\"\n\n";
 
 my $struct_begin = 0;
@@ -195,7 +199,17 @@ while (my $line = <$input>)
 	}
 }
 
-print $output "class $main_class_name\n";
+foreach $var_name (sort keys %defined_structs) 
+{
+	$filename = "apconfig/widgets/$defined_structs{$var_name}.h";
+
+	if (-e $path."include/".$filename)
+	{
+		print $output "#include \"$filename\"\n";
+	}
+}
+
+print $output "\nclass $main_class_name\n";
 print $output "{\n";
 print $output "private:\n";
 
@@ -239,3 +253,4 @@ foreach $var_name (sort keys %defined_structs)
 print $output "};\n";
 
 print $output "\n#endif\n";
+

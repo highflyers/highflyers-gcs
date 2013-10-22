@@ -3,6 +3,8 @@ execute_process(
 )
 
 add_library(apconfig SHARED
+	ApConfig.cpp
+	ApConfigBuilder.cpp
 	widgets/PIDConfigurator.cpp)
 	
 qt5_use_modules(apconfig Widgets)
