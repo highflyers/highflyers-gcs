@@ -84,9 +84,11 @@ print $output_cpp "#include \"$output_filename\"\n\n";
 
 my $struct_begin = 0;
 my $has_name = 0;
+my $has_conrol = 0;
 my %definitions = ();
 my $name;
-my @defined_structs = ();
+my $control;
+my %defined_structs = ();
 
 while (my $line = <$input>)
 {
@@ -110,10 +112,15 @@ while (my $line = <$input>)
 		{
 			parser_error($., "`name` undefined");
 		}
+		if ($has_control == 0)
+		{
+			parser_error($., "`control` undefined");
+		}
 		$struct_begin = 0;
 		$has_name = 0;
+		$has_control = 0;
 		print $output generate_struct($name, %definitions);
-		push @defined_structs, $name;
+		$defined_structs{$name} = $control;
 		%definitions = ();
 	}
 	elsif ($line =~ m/name\s*:\s*(.+)\s*$/)
@@ -125,7 +132,16 @@ while (my $line = <$input>)
 		$name = get_class_name($1);
 		$has_name = $.;
 	}
-	elsif ($line =~ m/(.+):(.+):(.+)$/)
+	elsif ($line =~ m/control\s*:\s*(.+)\s*$/)
+	{
+		if ($has_control!= 0)
+		{
+			parser_error($., "redefinition of `control` previously defined on line ".$has_control);
+		}
+		$control = get_class_name($1);
+		$has_control = $.;
+	}
+	elsif ($line =~ m/(.+):(.+)$/)
 	{
 		my $var_name = $1;
 		my $type = $2;
@@ -143,21 +159,30 @@ print $output "class $main_class_name\n";
 print $output "{\n";
 print $output "private:\n";
 
-foreach (@defined_structs) 
+
+foreach $var_name (sort keys %defined_structs) 
 {
-	print $output "\t$_ ".get_member_name($_).";\n";
+	print $output "\t$var_name ".get_member_name($var_name).";\n";
+	print $output "\t$defined_structs{$var_name}* ".get_member_name($defined_structs{$var_name}).";\n";
 }
 
 print $output "\npublic:\n";
 
-foreach (@defined_structs) 
+#constructor generator
+
+foreach $var_name (sort keys %defined_structs)
 {
-	my $member_name = get_member_name($_);
-	print $output "\t$_ get_$member_name() const;\n";
-	print $output "\tvoid set_$member_name(const $_& $member_name);\n";
-	print $output_cpp "$_ $main_class_name\::get_$member_name() const\n";
+	
+}
+
+foreach $var_name (sort keys %defined_structs)
+{
+	my $member_name = get_member_name($var_name);
+	print $output "\t$var_name get_$member_name() const;\n";
+	print $output "\tvoid set_$member_name(const $var_name& $member_name);\n";
+	print $output_cpp "$var_name $main_class_name\::get_$member_name() const\n";
 	print $output_cpp "{\n\treturn $member_name;\n}\n\n";
-	print $output_cpp "void $main_class_name\::set_$member_name(const $_& $member_name)\n";
+	print $output_cpp "void $main_class_name\::set_$member_name(const $var_name& $member_name)\n";
 	print $output_cpp "{\n\tthis->$member_name = $member_name;\n}\n\n";	
 }
 
