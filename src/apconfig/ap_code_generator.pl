@@ -169,11 +169,26 @@ foreach $var_name (sort keys %defined_structs)
 print $output "\npublic:\n";
 
 #constructor generator
+print $output "\t$main_class_name();\n";
+print $output_cpp "$main_class_name\::$main_class_name()\n{";
 
 foreach $var_name (sort keys %defined_structs)
 {
-	
+	my $member_name = get_member_name($defined_structs{$var_name});
+	print $output_cpp "\n\t$member_name = new $defined_structs{$var_name}();";
 }
+print $output_cpp "\n}\n\n";
+
+#destructor generator
+print $output "\tvirtual ~$main_class_name();\n";
+print $output_cpp "$main_class_name\::~$main_class_name()\n{";
+
+foreach $var_name (sort keys %defined_structs)
+{
+	my $member_name = get_member_name($defined_structs{$var_name});
+	print $output_cpp "\n\tdelete $member_name;";
+}
+print $output_cpp "\n}\n\n";
 
 foreach $var_name (sort keys %defined_structs)
 {
