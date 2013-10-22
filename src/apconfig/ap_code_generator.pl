@@ -84,22 +84,24 @@ sub generate_accessor
 
 $arg_cnt = $#ARGV + 1;
 
-if ($arg_cnt != 2)
+if ($arg_cnt != 3)
 {
-	print "\nUsage: ap_code_generator.pl <description file> <plugin class name>\n";
+	print "\nUsage: ap_code_generator.pl <description file> <plugin class name> <working path>\n";
 	exit;
 }
 
-open my $input, "<", $ARGV[0] or die $!;
+$path =  $ARGV[2]."/";
+
+open my $input, "<", $path.$ARGV[0] or die $!;
 
 $main_class_name = get_class_name($ARGV[1]);
 $output_filename = $main_class_name.".h";
 $cpp_output_filename = $main_class_name.".cpp";
 
-open $output, ">", $output_filename or die $!;
-open $output_cpp, ">", $cpp_output_filename or die $!;
+open $output, ">", $path.$output_filename or die $!;
+open $output_cpp, ">", $path.$cpp_output_filename or die $!;
 
-open $output_builder, ">", $main_class_name."Builder.cpp" or die $!;
+open $output_builder, ">", $path.$main_class_name."Builder.cpp" or die $!;
 
 print $output_builder "#include \"$output_filename\"\n\n";
 print $output_builder "#ifdef _WIN32\n";
