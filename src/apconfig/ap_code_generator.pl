@@ -99,6 +99,17 @@ $cpp_output_filename = $main_class_name.".cpp";
 open $output, ">", $output_filename or die $!;
 open $output_cpp, ">", $cpp_output_filename or die $!;
 
+open $output_builder, ">", $main_class_name."Builder.cpp" or die $!;
+
+print $output_builder "#include \"$output_filename\"\n\n";
+print $output_builder "#ifdef _WIN32\n";
+print $output_builder "#define EXPORT_DEF __declspec( dllexport )\n";
+print $output_builder "#else\n";
+print $output_builder "#define EXPORT_DEF\n";
+print $output_builder "#endif\n\n";
+print $output_builder "EXPORT_DEF $main_class_name* ".get_member_name($main_class_name)."_builder()\n{\n";
+print $output_builder "\treturn new $main_class_name();\n}\n";
+
 $ifdef_str = uc($output_filename);
 $ifdef_str =~ s/[^a-zA-Z\d]+/_/g;
 
