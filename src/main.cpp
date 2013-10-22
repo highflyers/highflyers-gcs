@@ -1,9 +1,11 @@
-#include <iostream>
+#include "gui/MainWindow.h"
+#include <QApplication>
 
-using namespace std;
-
-int main()
+int main(int argc, char** argv)
 {
-	cout << "My super sweet Ground Control Station." << endl;
-	return 0;
+	QApplication a(argc, argv);
+	MainWindow w;
+	w.show();
+
+	return a.exec();
 }

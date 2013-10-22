@@ -6,6 +6,9 @@ set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}")
 include_directories(${GCS_SOURCE_DIR}/src/core/include)
 include_directories(${GCS_SOURCE_DIR}/src/apconfig/include)
 
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_AUTOMOC ON)
+
 find_package(Qt5Widgets REQUIRED)
 ADD_DEFINITIONS(-DQT_NO_KEYWORDS)
 
