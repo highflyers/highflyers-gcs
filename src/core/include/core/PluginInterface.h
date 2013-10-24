@@ -17,7 +17,8 @@ enum class PluginType
 class IPluginInterface
 {
 public:
-	PluginType get_type() = 0;
+	virtual ~IPluginInterface() {}
+	virtual PluginType get_type() = 0;
 };
 
 #endif /* PLUGININTERFACE_H_ */

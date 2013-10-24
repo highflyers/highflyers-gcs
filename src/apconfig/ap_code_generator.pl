@@ -121,6 +121,7 @@ $ifdef_str =~ s/[^a-zA-Z\d]+/_/g;
 print $output $autogenerate_string;
 print $output "#ifndef ".$ifdef_str."\n";
 print $output "#define ".$ifdef_str."\n\n";
+print $output "#include \"core/PluginInterface.h\"\n\n";
 
 print $output_cpp $autogenerate_string;
 print $output_cpp "#include \"$output_filename\"\n\n";
@@ -209,7 +210,7 @@ foreach $var_name (sort keys %defined_structs)
 	}
 }
 
-print $output "\nclass $main_class_name\n";
+print $output "\nclass $main_class_name : public IPluginInterface\n";
 print $output "{\n";
 print $output "private:\n";
 
@@ -220,7 +221,7 @@ foreach $var_name (sort keys %defined_structs)
 }
 
 print $output "\npublic:\n";
-
+print $output "\tPluginType get_type() { return PluginType::APCONFIG; }\n";
 #constructor generator
 print $output "\t$main_class_name();\n";
 print $output_cpp "$main_class_name\::$main_class_name()\n{";
