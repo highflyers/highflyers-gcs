@@ -10,6 +10,7 @@
 
 enum class PluginType
 {
+	UNKNOW,
 	APCONFIG,
 	TELEMETRY,
 };
@@ -18,7 +19,7 @@ class IPluginInterface
 {
 public:
 	virtual ~IPluginInterface() {}
-	virtual PluginType get_type() = 0;
+	static PluginType get_type() { return PluginType::UNKNOW; }
 };
 
 #endif /* PLUGININTERFACE_H_ */

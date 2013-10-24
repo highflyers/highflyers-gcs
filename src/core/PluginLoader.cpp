@@ -50,7 +50,7 @@ void _PluginLoader::open_plugin(const std::string& filename)
 #elif defined _WIN32
 			reinterpret_cast<void*>(LoadLibrary(filename.c_str()));
 #else
-	nullptr; static_assert(false, "Unsupported OS.");
+			nullptr; static_assert(false, "Unsupported OS.");
 #endif
 
 	if (lib == nullptr)
@@ -84,4 +84,31 @@ void _PluginLoader::close_plugin(const std::string& filename)
 std::string _PluginLoader::get_last_error()
 {
 	return dlerror();
+}
+
+IPluginInterface* _PluginLoader::get_object(const std::string& filename, PluginType type)
+{
+	if (is_plugin_loaded(filename))
+		throw std::runtime_error("Plugin " + filename + " not loaded.");
+
+	if (type == PluginType::UNKNOW)
+		throw std::runtime_error("Unknow type of plugin.");
+
+	IPluginInterface* iface;
+
+	typedef IPluginInterface* (*FactoryMethod)();
+	FactoryMethod fm = (FactoryMethod)dlsym(libraries[filename], "factory_method");
+
+	if (fm == nullptr)
+		throw std::runtime_error("Cannot load factory method: " + get_last_error());
+
+	iface = fm();
+
+	if (iface == nullptr)
+		throw std::runtime_error("Cannot create object.");
+
+	if (iface->get_type() != type)
+		throw std::runtime_error("Cannot get specific object. Invalid plugin type.");
+
+	return iface;
 }
