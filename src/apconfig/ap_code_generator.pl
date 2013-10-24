@@ -86,16 +86,28 @@ sub generate_widget_builder
 {
 	my ($class_name, %defs) = @_;
 	
-	$collector = "void $class_name\::build_widget()\n{\n";
+	$collector = "#include <QVBoxLayout>\n";
+	$collector .= "#include <map>\n\n";
+	$collector .= "void $class_name\::build_widget()\n{\n";
+	$collector .= "\tstd::map<std::string, QVBoxLayout*> lay_map;\n\n";
 	
 	foreach $var_name (sort keys %defs)
 	{
+		my $tab_name = $defs{$var_name}{tab};
 		my $control_object = get_member_name($defs{$var_name}{control});
-		$collector .= "\tmain_widget->addItem($control_object, \"$defs{$var_name}{tab}\");\n";
+		$collector .= "\tif (!lay_map.count(\"$tab_name\"))\n";
+		$collector .= "\t\tlay_map[\"$tab_name\"] = new QVBoxLayout();\n\n";
+		$collector .= "\tlay_map[\"$tab_name\"]->addWidget($control_object);\n";
 	}
 	
+	$collector .= "\n\tfor (auto it = lay_map.begin(); it != lay_map.end(); ++it)\n\t{\n";
+	$collector .= "\t\tQFrame* frame = new QFrame();\n";
+	$collector .= "\t\tframe->setLayout(it->second);\n";
+	$collector .= "\t\tmain_widget->addItem(frame, it->first.c_str());\n\t}\n";
+	
 	$collector .= "}\n";
-	print $collector;
+	
+	return $collector;
 }
 
 $arg_cnt = $#ARGV + 1;
@@ -299,5 +311,5 @@ print $output "};\n";
 
 print $output "\n#endif\n";
 
-generate_widget_builder($main_class_name, %defined_structs);
+print $output_cpp generate_widget_builder($main_class_name, %defined_structs);
 
