@@ -1,6 +1,7 @@
 {
 	name : PID
 	control : PIDConfigurator
+	tab : PID Config
 	P : double
 	I : double
 	D : double

@@ -82,6 +82,22 @@ sub generate_accessor
 	return $collector;
 }
 
+sub generate_widget_builder
+{
+	my ($class_name, %defs) = @_;
+	
+	$collector = "void $class_name\::build_widget()\n{\n";
+	
+	foreach $var_name (sort keys %defs)
+	{
+		my $control_object = get_member_name($defs{$var_name}{control});
+		$collector .= "\tmain_widget->addItem($control_object, \"$defs{$var_name}{tab}\");\n";
+	}
+	
+	$collector .= "}\n";
+	print $collector;
+}
+
 $arg_cnt = $#ARGV + 1;
 
 if ($arg_cnt != 3)
@@ -121,7 +137,8 @@ $ifdef_str =~ s/[^a-zA-Z\d]+/_/g;
 print $output $autogenerate_string;
 print $output "#ifndef ".$ifdef_str."\n";
 print $output "#define ".$ifdef_str."\n\n";
-print $output "#include \"core/PluginInterface.h\"\n\n";
+print $output "#include \"core/PluginInterface.h\"\n";
+print $output "#include <QToolBox>\n\n";
 
 print $output_cpp $autogenerate_string;
 print $output_cpp "#include \"$output_filename\"\n\n";
@@ -129,9 +146,11 @@ print $output_cpp "#include \"$output_filename\"\n\n";
 my $struct_begin = 0;
 my $has_name = 0;
 my $has_conrol = 0;
+my $has_tab = 0;
 my %definitions = ();
 my $name;
 my $control;
+my $tab;
 my %defined_structs = ();
 
 while (my $line = <$input>)
@@ -160,12 +179,20 @@ while (my $line = <$input>)
 		{
 			parser_error($., "`control` undefined");
 		}
+		if ($has_tab == 0)
+		{
+			parser_error($., "`tab` undefined");
+		}
 		$struct_begin = 0;
 		$has_name = 0;
 		$has_control = 0;
+		$has_tab = 0;
 		print $output generate_struct($name, %definitions);
 		print $output_cpp generate_accessor($name, $main_class_name, $control, %definitions);
-		$defined_structs{$name} = $control;
+		$defined_structs{$name} = {
+			control => $control,
+			tab => $tab
+		};
 		%definitions = ();
 	}
 	elsif ($line =~ m/name\s*:\s*(.+)\s*$/)
@@ -186,6 +213,15 @@ while (my $line = <$input>)
 		$control = get_class_name($1);
 		$has_control = $.;
 	}
+	elsif ($line =~ m/tab\s*:\s*(.+)\s*$/)
+	{
+		if ($has_tab != 0)
+		{
+			parser_error($., "redefinition of `tab` previously defined on line ".$has_tab);
+		}
+		$tab = $1;
+		$has_tab = $.;
+	}
 	elsif ($line =~ m/(.+):(.+)$/)
 	{
 		my $var_name = $1;
@@ -202,7 +238,7 @@ while (my $line = <$input>)
 
 foreach $var_name (sort keys %defined_structs) 
 {
-	$filename = "apconfig/widgets/$defined_structs{$var_name}.h";
+	$filename = "apconfig/widgets/$defined_structs{$var_name}{control}.h";
 
 	if (-e $path."include/".$filename)
 	{
@@ -213,33 +249,41 @@ foreach $var_name (sort keys %defined_structs)
 print $output "\nclass $main_class_name : public IPluginInterface\n";
 print $output "{\n";
 print $output "private:\n";
-
+print $output "\tQToolBox* main_widget;\n";
 
 foreach $var_name (sort keys %defined_structs) 
 {
-	print $output "\t$defined_structs{$var_name}* ".get_member_name($defined_structs{$var_name}).";\n";
+	print $output "\t$defined_structs{$var_name}{control}* ".get_member_name($defined_structs{$var_name}{control}).";\n";
 }
+
+print $output "\n\tvoid build_widget();\n";
 
 print $output "\npublic:\n";
 print $output "\tPluginType get_type() { return PluginType::APCONFIG; }\n";
+print $output "\tQWidget* get_widget() { return main_widget; }\n";
+
 #constructor generator
 print $output "\t$main_class_name();\n";
 print $output_cpp "$main_class_name\::$main_class_name()\n{";
+print $output_cpp "\n\tmain_widget = new QToolBox();\n";
 
 foreach $var_name (sort keys %defined_structs)
 {
-	my $member_name = get_member_name($defined_structs{$var_name});
-	print $output_cpp "\n\t$member_name = new $defined_structs{$var_name}();";
+	my $member_name = get_member_name($defined_structs{$var_name}{control});
+	print $output_cpp "\n\t$member_name = new $defined_structs{$var_name}{control}();";
 }
+
+print $output_cpp "\n\n\tbuild_widget();";
 print $output_cpp "\n}\n\n";
 
 #destructor generator
 print $output "\tvirtual ~$main_class_name();\n";
 print $output_cpp "$main_class_name\::~$main_class_name()\n{";
+print $output_cpp "\n\tdelete main_widget;\n";
 
 foreach $var_name (sort keys %defined_structs)
 {
-	my $member_name = get_member_name($defined_structs{$var_name});
+	my $member_name = get_member_name($defined_structs{$var_name}{control});
 	print $output_cpp "\n\tdelete $member_name;";
 }
 print $output_cpp "\n}\n\n";
@@ -254,4 +298,6 @@ foreach $var_name (sort keys %defined_structs)
 print $output "};\n";
 
 print $output "\n#endif\n";
+
+generate_widget_builder($main_class_name, %defined_structs);
 
