@@ -11,7 +11,7 @@
 #include <map>
 #include <QLineEdit>
 
-class PIDConfigurator : QWidget
+class PIDConfigurator : public QWidget
 {
 private:
 	constexpr static const char* pid_names[] = {"P", "I", "D"};
