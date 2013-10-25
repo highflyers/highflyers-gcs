@@ -125,7 +125,7 @@ my $autogenerate_string = "// auto-generated file! Don't modify it!\n\n";
 open my $input, "<", $path.$ARGV[0] or die $!;
 
 $main_class_name = get_class_name($ARGV[1]);
-$output_filename = $main_class_name.".h";
+$output_filename = "include/apconfig/".$main_class_name.".h";
 $cpp_output_filename = $main_class_name.".cpp";
 
 open $output, ">", $path.$output_filename or die $!;
