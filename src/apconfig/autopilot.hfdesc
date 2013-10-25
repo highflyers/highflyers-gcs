@@ -2,6 +2,7 @@
 	name : PID
 	control : PIDConfigurator
 	tab : PID Config
+	pid_type : int
 	P : double
 	I : double
 	D : double
