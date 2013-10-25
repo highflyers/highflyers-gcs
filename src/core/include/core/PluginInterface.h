@@ -20,6 +20,7 @@ class IPluginInterface
 public:
 	virtual ~IPluginInterface() {}
 	static PluginType get_type() { return PluginType::UNKNOW; }
+	virtual PluginType get_type_t() = 0;
 };
 
 #endif /* PLUGININTERFACE_H_ */

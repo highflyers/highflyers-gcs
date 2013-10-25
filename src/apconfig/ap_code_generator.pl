@@ -140,7 +140,7 @@ print $output_builder "#define EXPORT_DEF __declspec( dllexport )\n";
 print $output_builder "#else\n";
 print $output_builder "#define EXPORT_DEF\n";
 print $output_builder "#endif\n\n";
-print $output_builder "EXPORT_DEF $main_class_name* ".get_member_name($main_class_name)."_builder()\n{\n";
+print $output_builder "extern \"C\" EXPORT_DEF $main_class_name* factory_method()\n{\n";
 print $output_builder "\treturn new $main_class_name();\n}\n";
 
 $ifdef_str = uc($output_filename);
@@ -271,7 +271,8 @@ foreach $var_name (sort keys %defined_structs)
 print $output "\n\tvoid build_widget();\n";
 
 print $output "\npublic:\n";
-print $output "\tPluginType get_type() { return PluginType::APCONFIG; }\n";
+print $output "\tstatic PluginType get_type() { return PluginType::APCONFIG; }\n";
+print $output "\tPluginType get_type_t() { return get_type(); }\n";
 print $output "\tQWidget* get_widget() { return main_widget; }\n";
 
 #constructor generator

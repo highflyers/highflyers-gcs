@@ -36,7 +36,7 @@ _PluginLoader::~_PluginLoader()
 
 bool _PluginLoader::is_plugin_loaded(const std::string& filename)
 {
-	return !libraries.count(filename) || libraries[filename] != nullptr;
+	return libraries.count(filename) && libraries[filename] != nullptr;
 }
 
 void _PluginLoader::open_plugin(const std::string& filename)
@@ -88,7 +88,7 @@ std::string _PluginLoader::get_last_error()
 
 IPluginInterface* _PluginLoader::get_object(const std::string& filename, PluginType type)
 {
-	if (is_plugin_loaded(filename))
+	if (!is_plugin_loaded(filename))
 		throw std::runtime_error("Plugin " + filename + " not loaded.");
 
 	if (type == PluginType::UNKNOW)
@@ -107,7 +107,7 @@ IPluginInterface* _PluginLoader::get_object(const std::string& filename, PluginT
 	if (iface == nullptr)
 		throw std::runtime_error("Cannot create object.");
 
-	if (iface->get_type() != type)
+	if (iface->get_type_t() != type)
 		throw std::runtime_error("Cannot get specific object. Invalid plugin type.");
 
 	return iface;

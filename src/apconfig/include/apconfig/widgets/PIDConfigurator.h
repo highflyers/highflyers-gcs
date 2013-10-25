@@ -14,7 +14,7 @@
 class PIDConfigurator : public QWidget
 {
 private:
-	constexpr static const char* pid_names[] = {"P", "I", "D"};
+	static const char* pid_names[3];
 	std::map<const char*, QLineEdit*> edits;
 
 	QStringList pid_items = {"AcroRoll", "AcroPitch", "AcroYaw", "StableRoll", "StablePitch", "Alt", "Vel"};

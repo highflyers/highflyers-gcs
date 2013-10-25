@@ -11,6 +11,8 @@
 #include <QLabel>
 #include <QComboBox>
 
+const char* PIDConfigurator::pid_names[] = {"P", "I", "D"};
+
 PIDConfigurator::PIDConfigurator(QWidget* parent)
 : QWidget(parent)
 {
