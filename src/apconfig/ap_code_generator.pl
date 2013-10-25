@@ -126,6 +126,7 @@ open my $input, "<", $path.$ARGV[0] or die $!;
 
 $main_class_name = get_class_name($ARGV[1]);
 $output_filename = "include/apconfig/".$main_class_name.".h";
+my $e_output_filename = "apconfig/".$main_class_name.".h";
 $cpp_output_filename = $main_class_name.".cpp";
 
 open $output, ">", $path.$output_filename or die $!;
@@ -134,14 +135,14 @@ open $output_cpp, ">", $path.$cpp_output_filename or die $!;
 open $output_builder, ">", $path.$main_class_name."Builder.cpp" or die $!;
 
 print $output_builder $autogenerate_string;
-print $output_builder "#include \"$output_filename\"\n\n";
+print $output_builder "#include \"$e_output_filename\"\n\n";
 print $output_builder "#ifdef _WIN32\n";
 print $output_builder "#define EXPORT_DEF __declspec( dllexport )\n";
 print $output_builder "#else\n";
 print $output_builder "#define EXPORT_DEF\n";
 print $output_builder "#endif\n\n";
-print $output_builder "extern \"C\" EXPORT_DEF $main_class_name* factory_method()\n{\n";
-print $output_builder "\treturn new $main_class_name();\n}\n";
+print $output_builder "extern \"C\" EXPORT_DEF HighFlyers::$main_class_name* factory_method()\n{\n";
+print $output_builder "\treturn new HighFlyers::$main_class_name();\n}\n";
 
 $ifdef_str = uc($output_filename);
 $ifdef_str =~ s/[^a-zA-Z\d]+/_/g;
@@ -151,9 +152,11 @@ print $output "#ifndef ".$ifdef_str."\n";
 print $output "#define ".$ifdef_str."\n\n";
 print $output "#include \"core/PluginInterface.h\"\n";
 print $output "#include <QToolBox>\n\n";
+print $output "namespace HighFlyers\n{\n";
 
 print $output_cpp $autogenerate_string;
-print $output_cpp "#include \"$output_filename\"\n\n";
+print $output_cpp "#include \"$e_output_filename\"\n\n";
+print $output_cpp "using namespace HighFlyers;\n\n";
 
 my $struct_begin = 0;
 my $has_name = 0;
@@ -247,6 +250,7 @@ while (my $line = <$input>)
 		};
 	}
 }
+print $output "\n} // namespace HighFlyers\n\n";
 
 foreach $var_name (sort keys %defined_structs) 
 {
@@ -258,6 +262,7 @@ foreach $var_name (sort keys %defined_structs)
 	}
 }
 
+print $output "\nnamespace HighFlyers\n{\n";
 print $output "\nclass $main_class_name : public IPluginInterface\n";
 print $output "{\n";
 print $output "private:\n";
@@ -309,7 +314,7 @@ foreach $var_name (sort keys %defined_structs)
 }
 
 print $output "};\n";
-
+print $output "\n}\n";
 print $output "\n#endif\n";
 
 print $output_cpp generate_widget_builder($main_class_name, %defined_structs);

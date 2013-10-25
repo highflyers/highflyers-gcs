@@ -11,6 +11,8 @@
 #include <map>
 #include <QLineEdit>
 
+namespace HighFlyers
+{
 class PIDConfigurator : public QWidget
 {
 private:
@@ -31,5 +33,5 @@ public:
 		return T();
 	}
 };
-
+}
 #endif /* PIDCONFIGURATOR_H_ */
