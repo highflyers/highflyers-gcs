@@ -83,7 +83,12 @@ void _PluginLoader::close_plugin(const std::string& filename)
 
 std::string _PluginLoader::get_last_error()
 {
-	return dlerror();
+	return 
+#ifdef __linux__
+		return dlerror();
+#else
+		"unknow error";
+#endif
 }
 
 IPluginInterface* _PluginLoader::get_object(const std::string& filename, PluginType type)
@@ -97,7 +102,15 @@ IPluginInterface* _PluginLoader::get_object(const std::string& filename, PluginT
 	IPluginInterface* iface;
 
 	typedef IPluginInterface* (*FactoryMethod)();
-	FactoryMethod fm = (FactoryMethod)dlsym(libraries[filename], "factory_method");
+	FactoryMethod fm =
+#ifdef __linux__
+		(FactoryMethod)dlsym(libraries[filename], "factory_method");
+#elif defined _WIN32
+		(FactoryMethod)(::GetProcAddress(reinterpret_cast<HMODULE>(libraries[filename]),
+				"factory_method"));
+#else
+		nullptr; static_assert(false, "Unsupported OS");
+#endif
 
 	if (fm == nullptr)
 		throw std::runtime_error("Cannot load factory method: " + get_last_error());
