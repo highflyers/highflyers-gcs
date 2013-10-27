@@ -85,7 +85,7 @@ std::string _PluginLoader::get_last_error()
 {
 	return 
 #ifdef __linux__
-		return dlerror();
+		dlerror();
 #else
 		"unknow error";
 #endif
