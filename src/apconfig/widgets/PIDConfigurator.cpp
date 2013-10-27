@@ -22,9 +22,13 @@ PIDConfigurator::PIDConfigurator(QWidget* parent)
 {
 	QVBoxLayout* main_layout = new QVBoxLayout();
 
+	QString regex = QString("(\\d|") + loc.decimalPoint() + ")+";
+	QRegExpValidator* number_validator = new QRegExpValidator(QRegExp(regex), NULL);
+
 	for (const char* name : pid_names)
 	{
 		edits[name] = new QLineEdit();
+		edits[name]->setValidator(number_validator);
 		QHBoxLayout* sub_lay = new QHBoxLayout();
 		sub_lay->addWidget(new QLabel(name + QString(":")));
 		sub_lay->addWidget(edits[name]);
