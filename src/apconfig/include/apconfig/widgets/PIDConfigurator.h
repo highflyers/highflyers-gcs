@@ -25,6 +25,10 @@ private:
 	void set_value(const char* l, double value);
 	double get_value(const char* l);
 
+	void p_value_changed(const QString& text);
+	void i_value_changed(const QString& text);
+	void d_value_changed(const QString& text);
+	void value_changed(const char* str);
 public:
 	PIDConfigurator(QWidget* parent = 0);
 

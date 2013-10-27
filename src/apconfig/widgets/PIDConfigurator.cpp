@@ -37,6 +37,10 @@ PIDConfigurator::PIDConfigurator(QWidget* parent)
 
 	main_layout->addWidget(pid_combo);
 
+	QObject::connect(edits["P"], &QLineEdit::textChanged, this, &PIDConfigurator::p_value_changed);
+	QObject::connect(edits["I"], &QLineEdit::textChanged, this, &PIDConfigurator::i_value_changed);
+	QObject::connect(edits["D"], &QLineEdit::textChanged, this, &PIDConfigurator::d_value_changed);
+
 	setLayout(main_layout);
 }
 
@@ -54,4 +58,24 @@ double PIDConfigurator::get_value(const char* l)
 		throw std::runtime_error("Cannot get value from PID configurator.");
 
 	return v;
+}
+
+void PIDConfigurator::p_value_changed(const QString& str)
+{
+	value_changed("P");
+}
+
+void PIDConfigurator::i_value_changed(const QString& str)
+{
+	value_changed("I");
+}
+
+void PIDConfigurator::d_value_changed(const QString& str)
+{
+	value_changed("D");
+}
+
+void PIDConfigurator::value_changed(const char* str)
+{
+	edits[str]->setStyleSheet("QLineEdit{background: #FFCCCC;}");
 }
