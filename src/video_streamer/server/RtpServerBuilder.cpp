@@ -1,4 +1,4 @@
-#include "RtpServer.h"
+#include "video_streamer/server/RtpServer.h"
 
 #ifdef _WIN32
 #define EXPORT_DEF __declspec( dllexport )
