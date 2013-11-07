@@ -1,8 +1,8 @@
-qt5_wrap_ui(UIS_HDRS battery.ui)
+qt5_wrap_ui(UIS_HDRS Battery.ui)
 add_library(telemetry_controls
 	SHARED
-	battery.cpp
-	include/battery.h
+	Battery.cpp
+	include/telemetry_controls/Battery.h
 	${UIS_HDRS}
 )	
 qt5_use_modules(telemetry_controls Widgets)
