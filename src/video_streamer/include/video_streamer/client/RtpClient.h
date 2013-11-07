@@ -19,26 +19,32 @@ private:
     /**< source of video (udp) */
     GstElement* src;
 
-    /**< rtp buffer */
-    GstElement* buffer;
-
     /**< rtp depayloader */
     GstElement* depayloader;
 
-    /**< parser */
-    GstElement* parser;
+    /**< video_rate */
+    GstElement* video_rate;
 
-    /**< filter */
-    GstElement* filter;
+    /**< fmt */
+    GstElement* fmt;
 
-    /**< matroska muxer */
+    /**< video convert */
+    GstElement* video_convert;
+
+    /**< queue */
+    GstElement* queue1;
+
+    /**< encoder */
+    GstElement* encoder;
+
+    /**< queue */
+    GstElement* queue2;
+
+    /**< muxer */
     GstElement* mux;
 
     /**< file output */
     GstElement* sink;
-
-    /**<  gstremer main loop */
-    GMainLoop* loop;
 
     /**< ID of GstBus */
     guint bus_watch_id;
