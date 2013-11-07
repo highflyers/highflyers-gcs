@@ -3,6 +3,9 @@
 *.lo
 *.o
 
+# backup files
+*~
+
 # Compiled Dynamic libraries
 *.so
 *.dylib
