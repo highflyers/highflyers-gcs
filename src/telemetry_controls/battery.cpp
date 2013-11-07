@@ -1,4 +1,4 @@
-#include "battery.h"
+#include "include/battery.h"
 #include "ui_battery.h"
 
 Battery::Battery(QWidget *parent) :

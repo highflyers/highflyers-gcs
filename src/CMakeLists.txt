@@ -2,6 +2,7 @@ add_subdirectory(video_streamer)
 add_subdirectory(apconfig)
 add_subdirectory(gui)
 add_subdirectory(core)
+add_subdirectory(telemetry_controls)
 
 add_executable(GCS main.cpp gui core)
 
