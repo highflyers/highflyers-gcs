@@ -5,8 +5,7 @@ set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}")
 
 include_directories(${GCS_SOURCE_DIR}/src/core/include)
 include_directories(${GCS_SOURCE_DIR}/src/apconfig/include)
-include_directories(${GCS_SOURCE_DIR}/src/video_streamer/client/include)
-include_directories(${GCS_SOURCE_DIR}/src/video_streamer/server/include)
+include_directories(${GCS_SOURCE_DIR}/src/video_streamer/include)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)

@@ -19,17 +19,20 @@ private:
     /**< source of video (v4l device or uri) */
     GstElement* src;
 
-    /**< x264 encoder */
-    GstElement* encoder;
+    /**< caps filter */
+    GstElement* fmt;
+
+    /**< video rate */
+    GstElement* video_rate;
+
+    /**< video convert */
+    GstElement* video_convert;
 
     /**< rtp payloader */
     GstElement* payloader;
 
     /**< UDP output */
     GstElement* sink;
-
-    /**<  gstremer main loop */
-    GMainLoop* loop;
 
     /**< ID of GstBus */
     guint bus_watch_id;

@@ -1,4 +1,4 @@
-#include "include/RtpServer.h"
+#include "video_streamer/server/RtpServer.h"
 
 using namespace HighFlyers;
 
@@ -46,20 +46,25 @@ RtpServer::RtpServer()
 
     gst_init(NULL, NULL);
 
-    //create main loop
-    loop = g_main_loop_new(NULL, FALSE);
-
     //create pipeline
     pipeline = gst_pipeline_new("pipeline");
 
     //create elements
-    encoder = gst_element_factory_make("x264enc", "encoder");
-    payloader = gst_element_factory_make("rtph264pay", "payloader");
+    fmt = gst_element_factory_make("capsfilter", "fmt");
+    video_rate = gst_element_factory_make("videorate", "video_rate");
+    video_convert = gst_element_factory_make("videoconvert", "video_convert");
+    payloader = gst_element_factory_make("rtpvrawpay", "payloader");
     sink = gst_element_factory_make("udpsink", "sink");
 
-    if (!encoder)
+    if (!video_rate)
     {
-        g_printerr("Failed to create encoder\n");
+        g_printerr("Failed to create video rate\n");
+        return;
+    }
+
+    if (!video_convert)
+    {
+        g_printerr("Failed to create video convert\n");
         return;
     }
 
@@ -75,12 +80,10 @@ RtpServer::RtpServer()
         return;
     }
 
-    /* dynamicaly allocated payload type
-    (see: http://en.wikipedia.org/wiki/RTP_audio_video_profile) */
-    g_object_set(payloader, "pt", 96, NULL);
+    g_object_set(sink, "sync", false, NULL);
 
     GstBus* bus = gst_pipeline_get_bus(GST_PIPELINE(pipeline));
-    bus_watch_id = gst_bus_add_watch(bus, bus_call, loop);
+    bus_watch_id = gst_bus_add_watch(bus, bus_call, NULL);
     gst_object_unref(bus);
 }
 
@@ -90,13 +93,13 @@ RtpServer::~RtpServer()
 
     gst_object_unref(GST_OBJECT(sink));
     gst_object_unref(GST_OBJECT(payloader));
-    gst_object_unref(GST_OBJECT(encoder));
+    gst_object_unref(GST_OBJECT(video_rate));
+    gst_object_unref(GST_OBJECT(video_convert));
     gst_object_unref(GST_OBJECT(src));
 
     gst_object_unref(GST_OBJECT(pipeline));
 
     g_source_remove(bus_watch_id);
-    g_main_loop_unref(loop);
 }
 
 void RtpServer::set_port(int port)
@@ -117,11 +120,17 @@ void RtpServer::set_video_source(const char* source, SourceType type)
 {
     if (src != NULL) gst_object_unref(GST_OBJECT(src));
 
+    GstCaps* fmtCaps;
+
     switch (type)
     {
     case V4lDevice :
         src = gst_element_factory_make("v4l2src", "source");
         g_object_set(src, "device", source, NULL);
+
+        fmtCaps = gst_caps_from_string("video/x-raw, format=YUY2, width=640,"
+                                       "height=480, framerate=30/1");
+
         break;
    /* case Uri :
         if (gst_uri_is_valid(source))
@@ -135,6 +144,9 @@ void RtpServer::set_video_source(const char* source, SourceType type)
         g_printerr("Invalid source type\n");
     }
 
+    g_object_set(fmt, "caps", fmtCaps, NULL);
+    gst_caps_unref(fmtCaps);
+
     if (!src)
     {
         g_printerr("Failed to create source\n");
@@ -147,10 +159,10 @@ bool RtpServer::init_stream()
     if (!src || _port < 1 || !_ip) return false;
 
     //adding elements to pipeline
-    gst_bin_add_many(GST_BIN(pipeline), src, encoder, payloader, sink, NULL);
+    gst_bin_add_many(GST_BIN(pipeline), src, fmt, video_rate, video_convert, payloader, sink, NULL);
 
     //linking
-    if (!gst_element_link_many(src, encoder, payloader, sink, NULL))
+    if (!gst_element_link_many(src, fmt, video_rate, video_convert, payloader, sink, NULL))
     {
         g_warning ("Failed to link elements!");
         return false;
@@ -162,8 +174,6 @@ bool RtpServer::init_stream()
 void RtpServer::start_stream()
 {
     gst_element_set_state(GST_ELEMENT(pipeline), GST_STATE_PLAYING);
-
-    g_main_loop_run(loop);
 }
 
 void RtpServer::stop_stream()
