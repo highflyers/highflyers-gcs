@@ -9,15 +9,19 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QComboBox>
 #include <stdexcept>
 
 using namespace HighFlyers;
 
 const char* PIDConfigurator::pid_names[] = {"P", "I", "D"};
+const char* PIDConfigurator::updated_value_style = "QLineEdit{background: #98FB98;}";
+const char* PIDConfigurator::edited_value_style = "QLineEdit{background: #FFCCCC;}";
 
 PIDConfigurator::PIDConfigurator(QWidget* parent)
 : QWidget(parent),
+  set_transaction(false),
+  transaction(false),
+  type(-1),
   loc(QLocale::Polish, QLocale::Poland)
 {
 	QVBoxLayout* main_layout = new QVBoxLayout();
@@ -35,7 +39,7 @@ PIDConfigurator::PIDConfigurator(QWidget* parent)
 		main_layout->addItem(sub_lay);
 	}
 
-	QComboBox* pid_combo = new QComboBox();
+	pid_combo = new QComboBox();
 
 	pid_combo->addItems(pid_items);
 
@@ -44,13 +48,18 @@ PIDConfigurator::PIDConfigurator(QWidget* parent)
 	QObject::connect(edits["P"], &QLineEdit::textChanged, this, &PIDConfigurator::p_value_changed);
 	QObject::connect(edits["I"], &QLineEdit::textChanged, this, &PIDConfigurator::i_value_changed);
 	QObject::connect(edits["D"], &QLineEdit::textChanged, this, &PIDConfigurator::d_value_changed);
+	connect(pid_combo , SIGNAL(currentIndexChanged(int)), this, SLOT(update_view(int)));
+	//QObject::connect(pid_combo, &QComboBox::currentIndexChanged, this, &PIDConfigurator::pid_type_changed);
 
 	setLayout(main_layout);
 }
 
 void PIDConfigurator::set_value(const char* l, double value)
 {
-	edits[l]->setText(loc.toString(value));
+	if (transaction)
+	{
+		values[l] = {value, true};
+	}
 }
 
 double PIDConfigurator::get_value(const char* l)
@@ -81,5 +90,37 @@ void PIDConfigurator::d_value_changed(const QString& str)
 
 void PIDConfigurator::value_changed(const char* str)
 {
-	edits[str]->setStyleSheet("QLineEdit{background: #FFCCCC;}");
+	if (!transaction)
+	{
+		edits[str]->setStyleSheet(updated_value_style);
+		model[pid_combo->currentIndex()][str] = {edits[str]->text().toDouble(), false};
+	}
+}
+
+void PIDConfigurator::start_transaction()
+{
+	transaction = true;
+}
+
+void PIDConfigurator::stop_transaction()
+{
+	model[type] = values;
+
+	if (type == pid_combo->currentIndex())
+		update_view(type);
+
+	transaction = false;
+}
+
+void PIDConfigurator::update_view(int index)
+{
+	for (auto edit : edits)
+	{
+		edit.second->setText(std::to_string(model[index][edit.first].value).c_str());
+		QString style = (model[index][edit.first].updated) ?
+				updated_value_style :
+				edited_value_style;
+		edit.second->setStyleSheet(style);
+	}
+
 }
