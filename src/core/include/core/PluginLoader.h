@@ -16,7 +16,7 @@
 namespace HighFlyers
 {
 
-class _PluginLoader
+class PluginLoader_
 {
 private:
 	std::map<std::string, void*> libraries;
@@ -24,8 +24,8 @@ private:
 	IPluginInterface* get_object(const std::string& filename, PluginType type);
 
 public:
-	_PluginLoader();
-	virtual ~_PluginLoader();
+	PluginLoader_();
+	virtual ~PluginLoader_();
 
 	void open_plugin(const std::string& filename);
 	void close_plugin(const std::string& filename);
@@ -38,6 +38,6 @@ public:
 	}
 };
 
-typedef Singleton<_PluginLoader> PluginLoader;
+typedef Singleton<PluginLoader_> PluginLoader;
 }
 #endif /* PLUGINLOADER_H_ */
