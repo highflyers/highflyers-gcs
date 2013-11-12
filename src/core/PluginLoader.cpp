@@ -17,29 +17,31 @@
 
 using namespace HighFlyers;
 
-_PluginLoader::_PluginLoader()
+PluginLoader_::PluginLoader_()
 {
 }
 
-_PluginLoader::~_PluginLoader()
+PluginLoader_::~PluginLoader_()
 {
-	for (auto it = libraries.begin(); it != libraries.end(); ++it)
+	for (auto& plugin : libraries)
 	{
 		try
 		{
-			close_plugin(it->first);
+			close_plugin(plugin.first);
 		}
 		catch (const std::runtime_error&)
-		{}
+		{
+			// TODO how to report it?
+		}
 	}
 }
 
-bool _PluginLoader::is_plugin_loaded(const std::string& filename)
+bool PluginLoader_::is_plugin_loaded(const std::string& filename)
 {
 	return libraries.count(filename) && libraries[filename] != nullptr;
 }
 
-void _PluginLoader::open_plugin(const std::string& filename)
+void PluginLoader_::open_plugin(const std::string& filename)
 {
 	if (is_plugin_loaded(filename))
 		return;
@@ -60,7 +62,7 @@ void _PluginLoader::open_plugin(const std::string& filename)
 	libraries[filename] = lib;
 }
 
-void _PluginLoader::close_plugin(const std::string& filename)
+void PluginLoader_::close_plugin(const std::string& filename)
 {
 	if (!is_plugin_loaded(filename))
 		return;
@@ -81,7 +83,7 @@ void _PluginLoader::close_plugin(const std::string& filename)
 	libraries.erase(filename);
 }
 
-std::string _PluginLoader::get_last_error()
+std::string PluginLoader_::get_last_error()
 {
 	return 
 #ifdef __linux__
@@ -91,7 +93,7 @@ std::string _PluginLoader::get_last_error()
 #endif
 }
 
-IPluginInterface* _PluginLoader::get_object(const std::string& filename, PluginType type)
+IPluginInterface* PluginLoader_::get_object(const std::string& filename, PluginType type)
 {
 	if (!is_plugin_loaded(filename))
 		throw std::runtime_error("Plugin " + filename + " not loaded.");

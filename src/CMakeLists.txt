@@ -3,10 +3,12 @@ add_subdirectory(apconfig)
 add_subdirectory(gui)
 add_subdirectory(core)
 add_subdirectory(telemetry_controls)
+add_subdirectory(protocol)
 
-add_executable(GCS main.cpp gui core)
+add_executable(GCS main.cpp gui core protocol)
 
 target_link_libraries(GCS ${GSTREAMER_LIBRARIES} video_streamer_server video_streamer_client)
 target_link_libraries(GCS gui core)
+target_link_libraries(GCS nanopb c_protocol Protocol)
 qt5_use_modules(GCS Widgets)
 

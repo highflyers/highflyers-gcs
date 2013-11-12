@@ -1,0 +1,57 @@
+message EulerAngles_t {
+	optional double roll = 1;
+	optional double pitch = 2;
+	optional double yaw = 3;
+}
+
+message Axes_t {
+	optional double x = 4;
+	optional double y = 5;
+	optional double z = 6;
+}
+
+message GPS_t {
+	optional int32 localization = 8;
+	optional int32 direction = 9;
+	optional int32 speed = 10;
+	optional int32 height = 11;
+}
+
+message Control_t {
+
+	enum Direction {
+		D_LEFT = 1;
+		D_RIGHT = 2;
+		D_FRONT = 3;
+		D_BACK = 4;
+	}
+
+	enum Rotation {
+		R_LEFT = 1;
+		R_RIGHT = 2;
+	}
+
+	optional Direction go_direction = 12;
+	optional Rotation rotate = 13;
+
+	optional bool start = 14;
+	optional bool land = 15;
+}
+
+message PID_t {
+	optional double P = 16;
+	optional double I = 17;
+	optional double D = 18;
+}
+
+message GCSData {
+
+	optional EulerAngles_t EulerAngles = 19;
+	optional Axes_t Axes = 20;
+	optional GPS_t GPS = 21;
+	optional Control_t Control = 22;
+	optional PID_t PID = 23;
+	repeated int32 waypoint = 24; // repeated already optional
+	optional int32 battery = 25;
+
+}
