@@ -117,3 +117,8 @@ int SerialPort::get_char()
 		return -1;	
 	return ((int)c) & 0xFF;
 }
+
+static std::vector<std::string> get_ports_names()
+{
+	//to do
+}
