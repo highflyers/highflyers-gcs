@@ -4,6 +4,7 @@ add_subdirectory(gui)
 add_subdirectory(core)
 add_subdirectory(telemetry_controls)
 add_subdirectory(protocol)
+add_subdirectory(communication)
 
 add_executable(GCS main.cpp gui core protocol)
 
