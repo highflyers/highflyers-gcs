@@ -53,8 +53,8 @@ bool SerialPort::open_port()
     fcntl(id, F_SETFL, O_RDWR);
     tcgetattr(id, &settings);
     cfmakeraw(&settings);
-    cfsetispeed(&settings, baudRate);
-    cfsetospeed(&settings, baudRate);
+    cfsetispeed(&settings, baud_rate);
+    cfsetospeed(&settings, baud_rate);
     
 	settings.c_cflag |= (CLOCAL | CREAD) ;
 	settings.c_cflag &= ~PARENB ;
@@ -82,7 +82,11 @@ bool SerialPort::open_port()
 	
 void SerialPort::close_port()
 {
-	if (opened) close(id);
+	if (opened)
+	{
+		if (close(id) != 0)
+			throw std::runtime_error("Couldn't close device file");
+	}
 }
 	
 void SerialPort::flush()
@@ -103,9 +107,9 @@ void SerialPort::send_string(std::string data)
 	}
 }
 
-bool SerialPort::data_available(int& howMany)
+bool SerialPort::data_available(int& how_many)
 {
-	if (ioctl(id, FIONREAD, &howMany) == -1)
+	if (ioctl(id, FIONREAD, &how_many) == -1)
 		return false;
 	return true;
 }
@@ -120,5 +124,5 @@ int SerialPort::get_char()
 
 static std::vector<std::string> get_ports_names()
 {
-	//to do
+	//TODO
 }

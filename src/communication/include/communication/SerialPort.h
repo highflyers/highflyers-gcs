@@ -10,9 +10,9 @@ namespace HighFlyers
 class SerialPort
 {
 public:
-	SerialPort(const char* dev, int baud);
-	SerialPort(const std::string name, int baud)
-		: SerialPort(name.c_str(), baud)
+
+	SerialPort(const std::string device, int baud)
+		: name(device), baud_rate(baud), opened(false), id(0)
 		{}
 		
 	~SerialPort()
@@ -31,7 +31,7 @@ public:
 	static std::vector<std::string> get_ports_names();
 	
 private:
-	speed_t baudRate;
+	speed_t baud_rate;
 	std::string name;
 	bool opened;
 	int id;
