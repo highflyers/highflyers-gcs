@@ -15,6 +15,8 @@ RtpClient::RtpClient()
     queue2 = create_gst_element_safe("queue", "queue2");
     mux = create_gst_element_safe("avimux", "mux");
     sink = create_gst_element_safe("filesink", "sink");
+    tee = create_gst_element_safe("tee", "tee");
+    window_sink = create_gst_element_safe("xvimagesink", "window_sink");
 
     GstCaps* srcCaps = gst_caps_from_string("application/x-rtp, media=(string)video,"
                                             "sampling=(string)YCbCr-4:2:2, depth=(string)8,"
@@ -41,12 +43,10 @@ RtpClient::RtpClient()
     gst_debug_add_log_function((GstLogFunction)debug_log_fnc, this, NULL);
 
     // adding elements to pipeline
-    gst_bin_add_many(GST_BIN(pipeline), src, depayloader, video_rate, fmt, video_convert,
-                     queue1, encoder, queue2, mux, sink, NULL);
+    gst_bin_add_many(GST_BIN(pipeline), src, depayloader, video_rate, fmt, video_convert, tee, NULL);
 
     // linking
-    if (!gst_element_link_many(src, depayloader, video_rate, fmt, video_convert,
-                               queue1, encoder, queue2, mux, sink, NULL))
+    if (!gst_element_link_many(src, depayloader, video_rate, fmt, video_convert, tee, NULL))
     {
         throw std::runtime_error("Failed to link elements!");
     }
@@ -72,6 +72,25 @@ void RtpClient::set_port(int port)
 
 void RtpClient::read_to_file(const char* fileName)
 {
+    gst_bin_add_many(GST_BIN(pipeline), queue1, encoder, queue2, mux, sink, NULL);
+    if (!gst_element_link_many(tee, queue1, encoder, queue2, mux, sink, NULL))
+    {
+        throw std::runtime_error("Failed to link file sink!");
+    }
     g_object_set(G_OBJECT(sink), "location", fileName, NULL);
+}
+
+void RtpClient::set_render_window(guintptr handler)
+{
+    gst_bin_add(GST_BIN(pipeline), window_sink);
+    if (!gst_element_link_many(tee, window_sink, NULL))
+    {
+        throw std::runtime_error("Failed to link window sink!");
+    }
+    gst_video_overlay_set_window_handle(GST_VIDEO_OVERLAY(window_sink), handler);
+}
+
+void RtpClient::play()
+{
     gst_element_set_state(GST_ELEMENT(pipeline), GST_STATE_PLAYING);
 }

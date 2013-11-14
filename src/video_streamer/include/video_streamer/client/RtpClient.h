@@ -1,6 +1,8 @@
 #ifndef _rtpclient_h_
 #define _rtpclient_h_
 
+#include <gst/video/videooverlay.h>
+
 #include "video_streamer/VideoStreamer.h"
 
 /**
@@ -35,6 +37,12 @@ private:
     /**< muxer */
     GstElement* mux;
 
+    /**< tee */
+    GstElement* tee;
+
+    /**< window sink */
+    GstElement* window_sink;
+
 public:
     RtpClient();
     ~RtpClient();
@@ -59,6 +67,19 @@ public:
     * Save input stream to file
     */
     void read_to_file(const char* fileName);
+
+    /**
+    * \param window handler
+    *
+    * Render input stream on window
+    */
+    void set_render_window(guintptr handler);
+
+    /**
+    *
+    * play stream
+    */
+    void play();
 };
 }
 #endif

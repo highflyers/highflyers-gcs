@@ -25,6 +25,7 @@ include_directories(${GLIB2_INCLUDE_DIRS})
 
 find_package(GStreamer REQUIRED)
 include_directories(${GSTREAMER_INCLUDE_DIRS})
+include_directories(${GSTREAMER_BASE_INCLUDE_DIRS})
 
 add_subdirectory (src) 
 add_subdirectory (test)
