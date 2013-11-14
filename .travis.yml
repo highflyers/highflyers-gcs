@@ -14,7 +14,7 @@ before_script:
   - sudo apt-get install cmake
   - sudo add-apt-repository --yes ppa:gstreamer-developers/ppa
   - sudo apt-get update -qq
-  - sudo apt-get install -qq gstreamer1.0*
+  - sudo apt-get install -qq libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
   - GCS_SRC_DIR=$(pwd)
   - sudo apt-get update
   - sudo apt-get install libgtest-dev
