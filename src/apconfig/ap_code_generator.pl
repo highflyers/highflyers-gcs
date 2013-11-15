@@ -73,10 +73,12 @@ sub generate_accessor
 	$collector .= "\n\treturn tmp;\n};\n\n";
 	
 	$collector .= "void $class_name\::set_$member_name(const $n& $member_name)\n{\n";
+	$collector .= "\t$widget->start_transaction();\n";
 	foreach $var_name (sort keys %defs)
 	{
 		$collector .= "\t$widget->set<$defs{$var_name}{type}>(\"$var_name\", $member_name.$var_name);\n";
 	}
+	$collector .= "\t$widget->stop_transaction();\n";
 	$collector .= "}\n\n";
 	
 	return $collector;

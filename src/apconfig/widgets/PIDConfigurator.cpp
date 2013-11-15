@@ -6,63 +6,58 @@
  */
 
 #include "apconfig/widgets/PIDConfigurator.h"
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <stdexcept>
 
-using namespace HighFlyers;
-
-const char* PIDConfigurator::pid_names[] = {"P", "I", "D"};
+namespace HighFlyers
+{
 const char* PIDConfigurator::updated_value_style = "QLineEdit{background: #98FB98;}";
 const char* PIDConfigurator::edited_value_style = "QLineEdit{background: #FFCCCC;}";
 
 PIDConfigurator::PIDConfigurator(QWidget* parent)
 : QWidget(parent),
-  set_transaction(false),
   transaction(false),
   type(-1),
   loc(QLocale::Polish, QLocale::Poland)
 {
-	QVBoxLayout* main_layout = new QVBoxLayout();
+	setLayout(new QVBoxLayout());
 
-	QString regex = QString("(\\d|") + loc.decimalPoint() + ")+";
-	QRegExpValidator* number_validator = new QRegExpValidator(QRegExp(regex), NULL);
-
-	for (const char* name : pid_names)
+	for (const char* name : {"P", "I", "D"})
 	{
-		edits[name] = new QLineEdit();
-		edits[name]->setValidator(number_validator);
+		edits[name[0]] = new QLineEdit();
+		edits[name[0]]->setValidator(new QDoubleValidator());
 		QHBoxLayout* sub_lay = new QHBoxLayout();
 		sub_lay->addWidget(new QLabel(name + QString(":")));
-		sub_lay->addWidget(edits[name]);
-		main_layout->addItem(sub_lay);
+		sub_lay->addWidget(edits[name[0]]);
+		static_cast<QHBoxLayout*>(layout())->addLayout(sub_lay);
 	}
 
 	pid_combo = new QComboBox();
-
 	pid_combo->addItems(pid_items);
+	layout()->addWidget(pid_combo);
 
-	main_layout->addWidget(pid_combo);
-
-	QObject::connect(edits["P"], &QLineEdit::textChanged, this, &PIDConfigurator::p_value_changed);
-	QObject::connect(edits["I"], &QLineEdit::textChanged, this, &PIDConfigurator::i_value_changed);
-	QObject::connect(edits["D"], &QLineEdit::textChanged, this, &PIDConfigurator::d_value_changed);
+	QObject::connect(edits['P'], &QLineEdit::textChanged, this, &PIDConfigurator::p_value_changed);
+	QObject::connect(edits['I'], &QLineEdit::textChanged, this, &PIDConfigurator::i_value_changed);
+	QObject::connect(edits['D'], &QLineEdit::textChanged, this, &PIDConfigurator::d_value_changed);
 	connect(pid_combo , SIGNAL(currentIndexChanged(int)), this, SLOT(update_view(int)));
-	//QObject::connect(pid_combo, &QComboBox::currentIndexChanged, this, &PIDConfigurator::pid_type_changed);
 
-	setLayout(main_layout);
+	update_view(pid_combo->currentIndex());
 }
 
-void PIDConfigurator::set_value(const char* l, double value)
+template<>
+void PIDConfigurator::set_value(char l, double value)
 {
 	if (transaction)
-	{
 		values[l] = {value, true};
-	}
 }
 
-double PIDConfigurator::get_value(const char* l)
+template<>
+void PIDConfigurator::set_value(char l, int value)
+{
+	if (transaction)
+		type = value;
+}
+
+template<>
+double PIDConfigurator::get_value(char l)
 {
 	bool ok;
 	double v = loc.toDouble(edits[l]->text(), &ok);
@@ -73,27 +68,33 @@ double PIDConfigurator::get_value(const char* l)
 	return v;
 }
 
+template<>
+int PIDConfigurator::get_value(char l)
+{
+	return pid_combo->currentIndex();
+}
+
 void PIDConfigurator::p_value_changed(const QString& str)
 {
-	value_changed("P");
+	value_changed('P');
 }
 
 void PIDConfigurator::i_value_changed(const QString& str)
 {
-	value_changed("I");
+	value_changed('I');
 }
 
 void PIDConfigurator::d_value_changed(const QString& str)
 {
-	value_changed("D");
+	value_changed('D');
 }
 
-void PIDConfigurator::value_changed(const char* str)
+void PIDConfigurator::value_changed(char str)
 {
 	if (!transaction)
 	{
-		edits[str]->setStyleSheet(updated_value_style);
-		model[pid_combo->currentIndex()][str] = {edits[str]->text().toDouble(), false};
+		edits[str]->setStyleSheet(edited_value_style);
+		model[pid_combo->currentIndex()][str]= {loc.toDouble(edits[str]->text()), false};
 	}
 }
 
@@ -114,6 +115,8 @@ void PIDConfigurator::stop_transaction()
 
 void PIDConfigurator::update_view(int index)
 {
+	transaction = true;
+
 	for (auto edit : edits)
 	{
 		edit.second->setText(std::to_string(model[index][edit.first].value).c_str());
@@ -123,4 +126,6 @@ void PIDConfigurator::update_view(int index)
 		edit.second->setStyleSheet(style);
 	}
 
+	transaction = false;
+}
 }
