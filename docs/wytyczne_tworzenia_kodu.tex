@@ -6,8 +6,9 @@
 \usepackage{listings}
 \usepackage{color}
 \title{Wytyczne tworzenia kodu w projekcie GCS}
+\newcommand{\authoremail}{\texttt{marcin.kolny@gmail.com}}
 \author{Marcin Kolny\\
-\texttt{marcin.kolny@gmail.com}}
+\authoremail}
 \date{\today}
 \begin{document}
 \definecolor{cppred}{rgb}{0.6,0,0} % strings
@@ -49,8 +50,8 @@ Nazwy funkcji pisane z małej litery. W przypadku nazw wieloczłonowych, każdy 
 \paragraph{}
 \textbf{Przykład}
 \begin{lstlisting}
-bool compare(double x, double y );
-void say_hello(string name);
+bool compare( double x, double y );
+void say_hello( string name );
 \end{lstlisting}
 \subsection{Klasy i struktury}
 Nazwy klas i struktur pisane z wielkiej litery. W przypadku nazw wieloczłonowych, każdy następny człon pisany wielką literą (notacja \textit{PascalCase}).
@@ -109,7 +110,14 @@ class SampleClass
 {};
 
 \end{lstlisting}
-
+\subsection{Pliki}
+Pliki z deklaracjami/implementacjami klasy(ew. z klasami pomocniczymi), nazywamy tak samo, jak nazwa klasy(np. dla pliku zawierającego klasę PluginLoader, tworzymy pliki \textit{PluginLoader.h}, \textit{PluginLoader.hpp}, \textit{PluginLoader.cpp}).\\
+W przypadku, gdy w danym pliku znajduje się kilka klas, lub zestaw funkcji, nazwa powinna opisywać treść pliku. Poszczególne słowa opisu pisane małymi literami, oddzielone znakiem podłogi \textbf{\_}(np. \textit{very\_interesting\_methods.h}).
+\paragraph{}
+\textbf{Rozszerzenia plików}\\
+Dla deklaracji, stosujemy rozszerzenie \textit{.h}.\\
+Dla definicji, stosujemy rozszerzenie \textit{.cpp}.\\
+Dla definicji klas szablonowych, stosujemy rozszerzenie \textit{.hpp}.
 \section{Zapis kodu}
 \subsection{Wcięcia}
 Wcięcia w kodzie powinny być wstawiane w każdym zagnieżdżeniu fizycznego bloku w postaci dodatkowego znaku tabulacji.
@@ -243,7 +251,15 @@ switch (a)
 		break;
 }
 \end{lstlisting}
-W przypadku operatora inkrementacji / dekrementacji, operator nie jest oddzielony spacja od literału.
+W przypadku operatora inkrementacji / dekrementacji, operator nie jest oddzielony spacja od literału.\\
+W funkcjach, pomiędzy nawiasem otwierającym, a typem pierwszego argumentu, a także pomiędzy ostatnim argumentem, i nawiasem zamykającym, występuje spacja.\\
+Jeśli funkcja jest bezargumentowa, nie stosuje się spacji.
+\paragraph{}
+\textbf{Przykład}
+\begin{lstlisting}
+int sample_method( int x, int y );
+void dummy_method();
+\end{lstlisting}
 \section{Komentarze}
 Komentarze są przydatnym elementem kodu, mającym na celu wyjaśnienie danego fragmentu programu. Nie należy jednak ich nadużywać. Poniżej wymienione zostały przypadki, w których należy stosować komentarze. 
 Wszystkie komentarze pisane są w formacie Doxygen: \href{http://doxygen.org/}{dokumentacja Doxygen} w wariancie \textit{QT style}, i umieszczane powinny być w plikach nagłówkowych.
@@ -260,5 +276,5 @@ Obowiązkowo komentarze powinny wystąpić dla następujących elementów:
 \subsection{Język komentarzy}
 Komentarze pisane w języku angielskim.
 \section{Uwagi i propozycje zmian}
-Wszelkie uwagi oraz propozycje zmian należy zgłaszać autorowi dokumentu na adres e-mail \href{mailto:marcin.kolny@gmail.com}{marcin.kolny@gmail.com}
+Wszelkie uwagi oraz propozycje zmian należy zgłaszać autorowi dokumentu na adres e-mail \authoremail.
 \end{document}
