@@ -21,7 +21,7 @@ class PluginLoader_
 private:
 	std::map<std::string, void*> libraries;
 	bool is_plugin_loaded(const std::string& filename);
-	IPluginInterface* get_object(const std::string& filename, PluginType type);
+	std::string get_last_error();
 
 public:
 	PluginLoader_();
@@ -29,7 +29,8 @@ public:
 
 	void open_plugin(const std::string& filename);
 	void close_plugin(const std::string& filename);
-	std::string get_last_error();
+
+	IPluginInterface* get_object(const std::string& filename, PluginType type);
 
 	template<typename T>
 	T* get_object(const std::string& filename)

@@ -98,9 +98,6 @@ IPluginInterface* PluginLoader_::get_object(const std::string& filename, PluginT
 	if (!is_plugin_loaded(filename))
 		throw std::runtime_error("Plugin " + filename + " not loaded.");
 
-	if (type == PluginType::UNKNOW)
-		throw std::runtime_error("Unknow type of plugin.");
-
 	IPluginInterface* iface;
 
 	typedef IPluginInterface* (*FactoryMethod)();
@@ -122,7 +119,7 @@ IPluginInterface* PluginLoader_::get_object(const std::string& filename, PluginT
 	if (iface == nullptr)
 		throw std::runtime_error("Cannot create object.");
 
-	if (iface->get_type_t() != type)
+	if (type != PluginType::UNKNOW && iface->get_type_t() != type)
 		throw std::runtime_error("Cannot get specific object. Invalid plugin type.");
 
 	return iface;
