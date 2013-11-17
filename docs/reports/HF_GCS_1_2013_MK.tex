@@ -1,0 +1,94 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{polski}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage[margin=30mm]{geometry}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\usepackage{graphicx}
+
+%%%%%%%%%%%%%% TUTAJ USTAWIENIA %%%%%%%%%%%%%%%%%%%
+\author{Marcin Kolny}
+\newcommand{\reportnumber}{1} % numer raportu/spotkania
+\newcommand{\teamname}{GCS} % nazwa grupy
+\date{14 listopada 2013} % data odbycia spotkania
+%%%%%%%%%%%%%% KONIEC USTAWIEN %%%%%%%%%%%%%%%%%%%
+
+\newcommand{\reportnumberfull}{\reportnumber/\the\year}
+\begin{document}
+\rhead{zebranie nr \reportnumberfull}
+\lhead{
+  \begin{picture}(0,0)
+    \put(0, 20){\raisebox{-0.5\height}{\includegraphics[width=20mm]{logo.png}}}
+  \end{picture}
+}
+\begin{minipage}{0.46\textwidth}
+  \begin{flushleft}
+    \textbf{MKN HIGH FLYERS}\\
+    \teamname
+  \end{flushleft}
+\end{minipage}
+\begin{minipage}{0.46\textwidth}
+  \begin{flushright}
+    \makeatletter
+    \@date
+    \makeatother
+  \end{flushright}
+\end{minipage}\\
+\begin{center}
+  \textsc{\LARGE SPRAWOZDANIE Z ZEBRANIA\\NR \reportnumberfull}
+\end{center}
+
+
+\begin{tabular}{ |p{0.5cm}|p{6cm}| }
+  \hline
+  \multicolumn{2}{|c|}{Lista obecnych} \\
+  \hline
+  1 & Marcin Kolny\\
+  2 & Wojciech Dudzik\\
+  3 & Tomasz Widenka\\
+  4 & Maciej Smolarczyk\\
+  5 & Tomasz Guźniczak\\
+  6 & Mateusz Ucher\\
+  \hline
+\end{tabular}
+
+\section{Sprawy ogólne}
+\begin{enumerate}
+\item{Licencja GCS}\\
+  Póki co nie ustalono licencji, na jakiej będzie wydawane oprogramowanie. Ustalono natomiast następujące warunki licencji:
+  \begin{enumerate}
+  \item{Niewirusowa}
+  \item{Możliwość modyfikacji przez każdą osobę}
+  \item{Możliwość używania w komercyjnych projektach}
+  \end{enumerate}
+  Na następnym spotkaniu zostanie ustalona licencja.
+\item{Aktualizacja pliku README.md}\\
+  Aktualizacji pliku podjął się Mateusz Ucher, z pomocą Marcina Kolnego. Plik powinien zawierać kilka słów o projekcie, a także instrukcję kompilacji projektu.
+\item{Nowy podprojekt - symulator}\\
+  Sprawa na razie oczekuje na realizację, zajmie się prawdopodobnie Tomasz Widenka.
+\item{Ustalenia odnośnie zapisu kodu}\\
+  Zmiany odnoszące się do stylu zapisu kodu zostały zapisane w commicie: highflyers-gcs : master : 1160eeacd6158f077c65883d06938be25ea1a8f0
+\item{Nagłówki plików}\\
+  Nie zostało ustalone, co powinno być w nagłówkach każdego pliku. Będzie to zależne od wybranej licencji.
+\item{Hardware dla GCS}\\
+  Paulina Wilk rozgląda się za sprzętem, mogącym posłużyć jako Naziemna Stacja Kontroli Lotu.
+\end{enumerate}
+
+\section{Sprawy techniczne}
+\begin{enumerate}
+\item{Wyjątki}\\
+  Zdecydowaliśmy, że ze względu na rozbudowaną hierarchię wyjątków w bibliotece standardowej, nie będziemy definiować własnych klas.
+\item{H vs HPP}\\
+  Zostały ustalone zasady związane z rozszerzeniami dla plików. highflyers-gcs : master : 1160eeacd6158f077c65883d06938be25ea1a8f0
+\end{enumerate}
+\begin{flushright}
+  \line(1,0){120}\\
+  Autor sprawozdania:\\
+  \makeatletter
+  \emph{\@author}
+  \makeatother
+\end{flushright}
+
+\end{document}
+
