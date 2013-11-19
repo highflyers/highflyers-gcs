@@ -60,6 +60,7 @@ void PluginLoader_::open_plugin(const std::string& filename)
 				filename + ". Error: " + get_last_error());
 
 	libraries[filename] = lib;
+	notify<std::string>(&PluginObserver::plugin_loaded, filename);
 }
 
 void PluginLoader_::close_plugin(const std::string& filename)
@@ -76,11 +77,12 @@ void PluginLoader_::close_plugin(const std::string& filename)
 			0; static_assert(false, "Unsupported OS.");
 #endif
 
-	if (!ret)
+	if (ret)
 		throw std::runtime_error("Cannot close plugin " +
 				filename + ". Error: " + get_last_error());
 
 	libraries.erase(filename);
+	notify<std::string>(&PluginObserver::plugin_unloaded, filename);
 }
 
 std::string PluginLoader_::get_last_error()

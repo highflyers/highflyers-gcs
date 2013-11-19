@@ -10,13 +10,15 @@
 
 #include "Singleton.h"
 #include "PluginInterface.h"
+#include "PluginObserver.h"
+#include "IObservable.h"
 #include <string>
 #include <map>
 
 namespace HighFlyers
 {
 
-class PluginLoader_
+class PluginLoader_  : public IObservable<PluginObserver>
 {
 private:
 	std::map<std::string, void*> libraries;

@@ -3,6 +3,7 @@ project (GCS)
 enable_testing()
 set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}")
 
+include_directories(${GCS_SOURCE_DIR}/src/)
 include_directories(${GCS_SOURCE_DIR}/src/core/include)
 include_directories(${GCS_SOURCE_DIR}/src/apconfig/include)
 include_directories(${GCS_SOURCE_DIR}/src/video_streamer/include)

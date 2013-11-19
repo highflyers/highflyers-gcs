@@ -28,6 +28,7 @@
      <string>Plugins</string>
     </property>
     <addaction name="actionLoad_Plugin"/>
+    <addaction name="separator"/>
    </widget>
    <addaction name="menuPlugins"/>
   </widget>

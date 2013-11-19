@@ -11,24 +11,19 @@
 using namespace HighFlyers;
 using namespace std;
 
-CoreController::CoreController()
+CoreController::CoreController(MainWindow* gui)
+: gui(gui)
 {
 	loader = PluginLoader::get_instance();
+	loader->register_observer(this);
+	gui->set_controller(this);
 }
 
-IPluginInterface* CoreController::load_plugin(const string& filename, PluginType type)
+void CoreController::load_plugin(const string& filename)
 {
 	try
 	{
 		loader->open_plugin(filename);
-
-		switch (type)
-		{
-		case PluginType::APCONFIG:
-			return loader->get_object<ApConfig>(filename);
-		case PluginType::UNKNOW:
-			return loader->get_object(filename, type);
-		}
 	}
 	catch (const std::exception& ex)
 	{
@@ -37,4 +32,17 @@ IPluginInterface* CoreController::load_plugin(const string& filename, PluginType
 	}
 }
 
+void CoreController::unload_plugin(const string& filename)
+{
+	loader->close_plugin(filename);
+}
 
+void CoreController::plugin_loaded(IObservable<PluginObserver>* sender, std::string filename)
+{
+	gui->plugin_added(loader->get_object(filename, PluginType::UNKNOW), filename.c_str());
+}
+
+void CoreController::plugin_unloaded(IObservable<PluginObserver>* sender, std::string filename)
+{
+	gui->plugin_removed(filename.c_str());
+}
