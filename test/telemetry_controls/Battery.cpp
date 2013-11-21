@@ -37,15 +37,3 @@ TEST( BatteryTest, CheckReturn_procentForZeros )
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
