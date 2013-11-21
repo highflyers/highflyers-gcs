@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "core/PluginInterface.h"
+#include "core/plugin_interfaces/IPlugin.h"
 #include <QMainWindow>
 #include <map>
 
@@ -26,7 +26,7 @@ public:
 	explicit MainWindow( QWidget *parent = 0 );
 	~MainWindow();
 
-	void plugin_added( IPluginInterface* plugin, const QString& plugin_name );
+	void plugin_added( IPlugin* plugin, const QString& plugin_name );
 	void plugin_removed( QString filename );
 
 	void set_controller( CoreController* controller );

@@ -95,14 +95,14 @@ std::string PluginLoader_::get_last_error()
 #endif
 }
 
-IPluginInterface* PluginLoader_::get_object( const std::string& filename, PluginType type )
+IPlugin* PluginLoader_::get_object( const std::string& filename, PluginType type )
 {
 	if (!is_plugin_loaded( filename ))
 		throw std::runtime_error( "Plugin " + filename + " not loaded." );
 
-	IPluginInterface* iface;
+	IPlugin* iface;
 
-	typedef IPluginInterface* (*FactoryMethod)();
+	typedef IPlugin* (*FactoryMethod)();
 	FactoryMethod fm =
 #ifdef __linux__
 		(FactoryMethod)dlsym( libraries[filename], "factory_method" );

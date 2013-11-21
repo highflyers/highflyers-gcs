@@ -9,7 +9,7 @@
 #define PLUGINLOADER_H_
 
 #include "Singleton.h"
-#include "PluginInterface.h"
+#include "plugin_interfaces/IPlugin.h"
 #include "PluginObserver.h"
 #include "IObservable.h"
 #include <string>
@@ -32,7 +32,7 @@ public:
 	void open_plugin( const std::string& filename );
 	void close_plugin( const std::string& filename );
 
-	IPluginInterface* get_object( const std::string& filename, PluginType type );
+	IPlugin* get_object( const std::string& filename, PluginType type );
 
 	template<typename T>
 	T* get_object( const std::string& filename )

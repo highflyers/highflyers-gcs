@@ -131,6 +131,7 @@ $output_filename = "include/apconfig/".$main_class_name.".h";
 my $e_output_filename = "apconfig/".$main_class_name.".h";
 $cpp_output_filename = $main_class_name.".cpp";
 
+open $output_interface, ">", $path."../core/include/core/plugin_interfaces/IApConfigPlugin.h" or die $!;
 open $output, ">", $path.$output_filename or die $!;
 open $output_cpp, ">", $path.$cpp_output_filename or die $!;
 
@@ -152,9 +153,15 @@ $ifdef_str =~ s/[^a-zA-Z\d]+/_/g;
 print $output $autogenerate_string;
 print $output "#ifndef ".$ifdef_str."\n";
 print $output "#define ".$ifdef_str."\n\n";
-print $output "#include \"core/PluginInterface.h\"\n";
+print $output "#include \"core/plugin_interfaces/IApConfigPlugin.h\"\n";
 print $output "#include <QToolBox>\n\n";
 print $output "namespace HighFlyers\n{\n";
+
+print $output_interface "#ifndef I_AP_CONFIG_PLUGIN_H\n";
+print $output_interface "#define I_AP_CONFIG_PLUGIN_H\n\n";
+print $output_interface "#include \"IPlugin.h\"\n";
+print $output_interface "#include <QtWidgets>\n";
+print $output_interface "\nnamespace HighFlyers\n{\n";
 
 print $output_cpp $autogenerate_string;
 print $output_cpp "#include \"$e_output_filename\"\n\n";
@@ -204,7 +211,7 @@ while (my $line = <$input>)
 		$has_name = 0;
 		$has_control = 0;
 		$has_tab = 0;
-		print $output generate_struct($name, %definitions);
+		print $output_interface generate_struct($name, %definitions);
 		print $output_cpp generate_accessor($name, $main_class_name, $control, %definitions);
 		$defined_structs{$name} = {
 			control => $control,
@@ -264,8 +271,14 @@ foreach $var_name (sort keys %defined_structs)
 	}
 }
 
+print $output_interface "\nclass IApConfigPlugin : public IPlugin\n";
+print $output_interface "{\n";
+print $output_interface "public:\n";
+print $output_interface "\tvirtual ~IApConfigPlugin(){}\n";
+print $output_interface "\tvirtual QWidget* get_widget() = 0;\n";
+
 print $output "\nnamespace HighFlyers\n{\n";
-print $output "\nclass $main_class_name : public IPluginInterface\n";
+print $output "\nclass $main_class_name : public IApConfigPlugin\n";
 print $output "{\n";
 print $output "private:\n";
 print $output "\tQToolBox* main_widget;\n";
@@ -313,11 +326,17 @@ foreach $var_name (sort keys %defined_structs)
 	my $member_name = get_member_name($var_name);
 	print $output "\t$var_name get_$member_name() const;\n";
 	print $output "\tvoid set_$member_name(const $var_name& $member_name);\n";
+	print $output_interface "\tvirtual $var_name get_$member_name() const = 0;\n";
+	print $output_interface "\tvirtual void set_$member_name(const $var_name& $member_name) = 0;\n";
 }
 
 print $output "};\n";
 print $output "\n}\n";
 print $output "\n#endif\n";
+
+print $output_interface "};\n";
+print $output_interface "\n}\n";
+print $output_interface "\n#endif\n";
 
 print $output_cpp generate_widget_builder($main_class_name, %defined_structs);
 
