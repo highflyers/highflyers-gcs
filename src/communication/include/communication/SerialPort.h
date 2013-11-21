@@ -11,9 +11,7 @@ class SerialPort
 {
 public:
 
-	SerialPort(const std::string device, int baud)
-		: name(device), baud_rate(baud), opened(false), id(0)
-		{}
+	SerialPort(const std::string device, int baud);
 		
 	~SerialPort()
 	{

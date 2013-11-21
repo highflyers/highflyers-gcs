@@ -1,20 +1,22 @@
 #include "include/communication/SerialPort.h"
 
 #include <exception>
+#include <stdexcept>
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fcntl.h>
-
+#include <boost/asio/serial_port.hpp>
 
 
 using namespace std;
 using namespace HighFlyers;
 
-SerialPort::SerialPort(const char* dev, int baud)
+SerialPort::SerialPort(string dev, int baud)
 {
 	name = dev;
+	baud_rate = baud;
 	switch (baud)
 	{
 	case     50:	baud =     B50 ; break ;
@@ -85,7 +87,7 @@ void SerialPort::close_port()
 	if (opened)
 	{
 		if (close(id) != 0)
-			throw std::runtime_error("Couldn't close device file");
+			throw runtime_error("Couldn't close device file");
 	}
 }
 	
