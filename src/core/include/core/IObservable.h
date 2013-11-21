@@ -22,22 +22,22 @@ protected:
 	std::set<OBSERVER*> observers;
 
 	template<typename T>
-	void notify(std::function<void(OBSERVER*, IObservable<OBSERVER>*, T value)> fnc, T value)
+	void notify( std::function<void( OBSERVER*, IObservable<OBSERVER>*, T value )> fnc, T value )
 	{
 		for (auto o : observers)
-			fnc(o, this, value);
+			fnc( o, this, value );
 	}
 
 public:
 	virtual ~IObservable() {}
 
-	void register_observer(OBSERVER* observer)
+	void register_observer( OBSERVER* observer )
 	{
-		observers.insert(observer);
+		observers.insert( observer );
 	}
-	void unregister_observer(OBSERVER* observer)
+	void unregister_observer( OBSERVER* observer )
 	{
-		observers.erase(observer);
+		observers.erase( observer );
 	}
 };
 }

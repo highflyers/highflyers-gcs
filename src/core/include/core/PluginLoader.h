@@ -22,22 +22,22 @@ class PluginLoader_  : public IObservable<PluginObserver>
 {
 private:
 	std::map<std::string, void*> libraries;
-	bool is_plugin_loaded(const std::string& filename);
+	bool is_plugin_loaded( const std::string& filename );
 	std::string get_last_error();
 
 public:
 	PluginLoader_();
 	virtual ~PluginLoader_();
 
-	void open_plugin(const std::string& filename);
-	void close_plugin(const std::string& filename);
+	void open_plugin( const std::string& filename );
+	void close_plugin( const std::string& filename );
 
-	IPluginInterface* get_object(const std::string& filename, PluginType type);
+	IPluginInterface* get_object( const std::string& filename, PluginType type );
 
 	template<typename T>
-	T* get_object(const std::string& filename)
+	T* get_object( const std::string& filename )
 	{
-		return static_cast<T*>(get_object(filename, T::get_type()));
+		return static_cast<T*>( get_object( filename, T::get_type() ) );
 	}
 };
 

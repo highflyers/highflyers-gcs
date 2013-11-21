@@ -23,19 +23,19 @@ private Q_SLOTS:
 	void load_plugin();
 
 public:
-	explicit MainWindow(QWidget *parent = 0);
+	explicit MainWindow( QWidget *parent = 0 );
 	~MainWindow();
 
-	void plugin_added(IPluginInterface* plugin, const QString& plugin_name);
-	void plugin_removed(QString filename);
+	void plugin_added( IPluginInterface* plugin, const QString& plugin_name );
+	void plugin_removed( QString filename );
 
-	void set_controller(CoreController* controller);
+	void set_controller( CoreController* controller );
 
 private:
 	Ui::MainWindow *ui;
 	std::map<QString, QWidget*> plugin_widgets;
 
-	void unload_plugin(QString plugin_name);
+	void unload_plugin( QString plugin_name );
 };
 
 }

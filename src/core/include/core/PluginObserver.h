@@ -16,8 +16,8 @@ class PluginObserver
 {
 public:
 	virtual ~PluginObserver(){}
-	virtual void plugin_loaded(IObservable<PluginObserver>* sender, std::string filename) = 0;
-	virtual void plugin_unloaded(IObservable<PluginObserver>* sender, std::string filename) = 0;
+	virtual void plugin_loaded( IObservable<PluginObserver>* sender, std::string filename ) = 0;
+	virtual void plugin_unloaded( IObservable<PluginObserver>* sender, std::string filename ) = 0;
 };
 }
 

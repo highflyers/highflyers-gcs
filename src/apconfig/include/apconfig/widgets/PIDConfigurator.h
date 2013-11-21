@@ -44,44 +44,44 @@ private:
 	template<typename T>
 	T get_value(char l);
 
-	void p_value_changed(const QString& text);
-	void i_value_changed(const QString& text);
-	void d_value_changed(const QString& text);
-	void value_changed(char str);
+	void p_value_changed( const QString& text );
+	void i_value_changed( const QString& text );
+	void d_value_changed( const QString& text );
+	void value_changed( char str );
 
 public Q_SLOTS:
-	void update_view(int index);
+	void update_view( int index );
 
 public:
-	PIDConfigurator(QWidget* parent = 0);
+	PIDConfigurator( QWidget* parent = 0 );
 	virtual ~PIDConfigurator(){}
 
 	template<typename T>
-	void set(const char* label, const T& value)
+	void set( const char* label, const T& value )
 	{
 		if (strlen(label) < 1)
-			throw std::runtime_error("invalid zero-length label");
+			throw std::runtime_error( "invalid zero-length label" );
 
-		if (!strcmp(label, "pid_type"))
-			set_value(label[0], value);
-		else if (edits.count(std::toupper(label[0])))
-			set_value(std::toupper(label[0]), value);
+		if (!strcmp( label, "pid_type" ))
+			set_value( label[0], value );
+		else if (edits.count( std::toupper( label[0] ) ))
+			set_value( std::toupper( label[0] ), value );
 		else
-			throw std::runtime_error("unknown label");
+			throw std::runtime_error( "unknown label" );
 	}
 
 	template<typename T>
-	T get(const char* label)
+	T get( const char* label )
 	{
-		if (strlen(label) < 1)
-			throw std::runtime_error("invalid zero-length label");
+		if (strlen( label ) < 1)
+			throw std::runtime_error( "invalid zero-length label" );
 
-		if (!strcmp(label, "pid_type"))
-			return get_value<T>(0);
-		else if (edits.count(std::toupper(label[0])))
-			return get_value<T>(std::toupper(label[0]));
+		if (!strcmp( label, "pid_type" ))
+			return get_value<T>( 0 );
+		else if (edits.count( std::toupper( label[0] ) ))
+			return get_value<T>( std::toupper( label[0] ));
 
-		throw std::runtime_error("unknown label");
+		throw std::runtime_error( "unknown label" );
 	}
 
 	void start_transaction();

@@ -21,15 +21,15 @@ private:
 	MainWindow* gui;
 
 protected:
-	virtual void plugin_loaded(IObservable<PluginObserver>* sender, std::string filename);
-	virtual void plugin_unloaded(IObservable<PluginObserver>* sender, std::string filename);
+	virtual void plugin_loaded( IObservable<PluginObserver>* sender, std::string filename );
+	virtual void plugin_unloaded( IObservable<PluginObserver>* sender, std::string filename );
 
 public:
-	CoreController(MainWindow* gui);
+	CoreController( MainWindow* gui );
 	virtual ~CoreController(){}
 
-	void load_plugin(const std::string& filename);
-	void unload_plugin(const std::string& filename);
+	void load_plugin( const std::string& filename );
+	void unload_plugin( const std::string& filename );
 
 };
 
