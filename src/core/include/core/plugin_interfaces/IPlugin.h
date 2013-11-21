@@ -16,6 +16,7 @@ enum class PluginType
 	UNKNOW,
 	APCONFIG,
 	TELEMETRY,
+	VIDEO
 };
 
 class IPlugin

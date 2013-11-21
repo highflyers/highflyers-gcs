@@ -6,7 +6,7 @@
  */
 
 #include "CoreController.h"
-#include "apconfig/ApConfig.h"
+#include "plugin_interfaces.h"
 
 using namespace HighFlyers;
 using namespace std;

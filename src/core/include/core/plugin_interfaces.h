@@ -10,5 +10,6 @@
 
 #include "plugin_interfaces/IPlugin.h"
 #include "plugin_interfaces/IApConfigPlugin.h"
+#include "plugin_interfaces/IVideoSourcePlugin.h"
 
 #endif /* INTERFACES_H_ */

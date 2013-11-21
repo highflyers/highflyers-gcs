@@ -4,7 +4,7 @@
 #include "core/CoreController.h"
 
 #include "core/PluginLoader.h"
-#include "apconfig/ApConfig.h"
+#include "core/plugin_interfaces.h"
 
 #include <QHBoxLayout>
 
@@ -68,7 +68,7 @@ void MainWindow::plugin_added( IPlugin* plugin, const QString& plugin_name )
 	switch (plugin->get_type_t())
 	{
 	case PluginType::APCONFIG:
-		plugin_widget = static_cast<ApConfig*>( plugin )->get_widget();
+		plugin_widget = static_cast<IApConfigPlugin*>( plugin )->get_widget();
 		break;
 	}
 
