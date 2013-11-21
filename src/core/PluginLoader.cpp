@@ -60,6 +60,7 @@ void PluginLoader_::open_plugin(const std::string& filename)
 				filename + ". Error: " + get_last_error());
 
 	libraries[filename] = lib;
+	notify<std::string>(&PluginObserver::plugin_loaded, filename);
 }
 
 void PluginLoader_::close_plugin(const std::string& filename)
@@ -76,11 +77,12 @@ void PluginLoader_::close_plugin(const std::string& filename)
 			0; static_assert(false, "Unsupported OS.");
 #endif
 
-	if (!ret)
+	if (ret)
 		throw std::runtime_error("Cannot close plugin " +
 				filename + ". Error: " + get_last_error());
 
 	libraries.erase(filename);
+	notify<std::string>(&PluginObserver::plugin_unloaded, filename);
 }
 
 std::string PluginLoader_::get_last_error()
@@ -93,37 +95,34 @@ std::string PluginLoader_::get_last_error()
 #endif
 }
 
-IPluginInterface* PluginLoader_::get_object(const std::string& filename, PluginType type)
+IPlugin* PluginLoader_::get_object( const std::string& filename, PluginType type )
 {
-	if (!is_plugin_loaded(filename))
-		throw std::runtime_error("Plugin " + filename + " not loaded.");
+	if (!is_plugin_loaded( filename ))
+		throw std::runtime_error( "Plugin " + filename + " not loaded." );
 
-	if (type == PluginType::UNKNOW)
-		throw std::runtime_error("Unknow type of plugin.");
+	IPlugin* iface;
 
-	IPluginInterface* iface;
-
-	typedef IPluginInterface* (*FactoryMethod)();
+	typedef IPlugin* (*FactoryMethod)();
 	FactoryMethod fm =
 #ifdef __linux__
-		(FactoryMethod)dlsym(libraries[filename], "factory_method");
+		(FactoryMethod)dlsym( libraries[filename], "factory_method" );
 #elif defined _WIN32
-		(FactoryMethod)(::GetProcAddress(reinterpret_cast<HMODULE>(libraries[filename]),
-				"factory_method"));
+		(FactoryMethod)(::GetProcAddress( reinterpret_cast<HMODULE>( libraries[filename] ),
+				"factory_method" ) );
 #else
-		nullptr; static_assert(false, "Unsupported OS");
+		nullptr; static_assert( false, "Unsupported OS" );
 #endif
 
 	if (fm == nullptr)
-		throw std::runtime_error("Cannot load factory method: " + get_last_error());
+		throw std::runtime_error( "Cannot load factory method: " + get_last_error() );
 
 	iface = fm();
 
 	if (iface == nullptr)
-		throw std::runtime_error("Cannot create object.");
+		throw std::runtime_error( "Cannot create object." );
 
-	if (iface->get_type_t() != type)
-		throw std::runtime_error("Cannot get specific object. Invalid plugin type.");
+	if (type != PluginType::UNKNOW && iface->get_type_t() != type)
+		throw std::runtime_error( "Cannot get specific object. Invalid plugin type." );
 
 	return iface;
 }

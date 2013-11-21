@@ -15,7 +15,7 @@ class SampleObserver
 private:
 	int last_value;
 public:
-	void value_added(IObservable<SampleObserver>*, int value)
+	void value_added( IObservable<SampleObserver>*, int value )
 	{
 		last_value = value;
 	}
@@ -31,32 +31,32 @@ class SampleObservable : public IObservable<SampleObserver>
 public:
 	int append_value(int value)
 	{
-		notify<int>(&SampleObserver::value_added, value);
+		notify<int>( &SampleObserver::value_added, value );
 		return 0;
 	}
 };
 
-TEST(IObservableTest, ShouldNotifyObserver)
+TEST( IObservableTest, ShouldNotifyObserver )
 {
 	SampleObservable observable;
 	SampleObserver observer;
-	observable.register_observer(&observer);
+	observable.register_observer( &observer );
 
-	observable.append_value(12);
-	ASSERT_EQ(12, observer.get_last_value());
+	observable.append_value( 12 );
+	ASSERT_EQ( 12, observer.get_last_value() );
 }
 
-TEST(IObservableTest, ShouldCorrectlyRegisterAndUnregisterObserver)
+TEST( IObservableTest, ShouldCorrectlyRegisterAndUnregisterObserver )
 {
 	SampleObservable observable;
 	SampleObserver observer;
-	observable.register_observer(&observer);
+	observable.register_observer( &observer );
 
-	observable.append_value(12);
-	ASSERT_EQ(12, observer.get_last_value());
+	observable.append_value( 12 );
+	ASSERT_EQ( 12, observer.get_last_value() );
 
-	observable.unregister_observer(&observer);
+	observable.unregister_observer( &observer );
 
-	observable.append_value(13);
-	ASSERT_NE(13, observer.get_last_value());
+	observable.append_value( 13 );
+	ASSERT_NE( 13, observer.get_last_value() );
 }

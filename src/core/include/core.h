@@ -12,5 +12,7 @@
 #include "core/PluginInterface.h"
 #include "core/PluginLoader.h"
 #include "core/Singleton.h"
+#include "core/CoreController.h"
+#include "core/interfaces.h"
 
 #endif /* CORE_H_ */

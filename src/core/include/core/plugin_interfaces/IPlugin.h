@@ -1,12 +1,12 @@
 /*
- * PluginInterface.h
+ * IPlugin.h
  *
  *  Created on: 24 pa? 2013
  *      Author: Marcin Kolny
  */
 
-#ifndef PLUGININTERFACE_H_
-#define PLUGININTERFACE_H_
+#ifndef I_PLUGIN_H_
+#define I_PLUGIN_H_
 
 namespace HighFlyers
 {
@@ -18,14 +18,14 @@ enum class PluginType
 	TELEMETRY,
 };
 
-class IPluginInterface
+class IPlugin
 {
 public:
-	virtual ~IPluginInterface() {}
+	virtual ~IPlugin() {}
 	static PluginType get_type() { return PluginType::UNKNOW; }
 	virtual PluginType get_type_t() = 0;
 };
 
 }
 
-#endif /* PLUGININTERFACE_H_ */
+#endif /* I_PLUGIN_H_ */

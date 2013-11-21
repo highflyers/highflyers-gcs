@@ -3,4 +3,6 @@ add_library(gui
 	MainWindow.cpp
 	${UIS_HDRS})
 	
+target_link_libraries(gui apconfig)
+	
 qt5_use_modules(gui Widgets)
