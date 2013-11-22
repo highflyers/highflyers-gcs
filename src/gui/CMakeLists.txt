@@ -1,9 +1,9 @@
 qt5_wrap_ui(UIS_HDRS MainWindow.ui)
 add_library(gui
 	MainWindow.cpp
+	VideoPlayer.cpp
 	include/gui/MainWindow.h
+	include/gui/VideoPlayer.h
 	${UIS_HDRS})
-	
-target_link_libraries(gui apconfig)
 	
 qt5_use_modules(gui Widgets)

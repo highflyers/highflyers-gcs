@@ -1,4 +1,4 @@
-#include "gui/MainWindow.h"
+#include "gui.h"
 #include "ui_MainWindow.h"
 
 #include "core/CoreController.h"
@@ -69,6 +69,17 @@ void MainWindow::plugin_added( IPlugin* plugin, const QString& plugin_name )
 	{
 	case PluginType::APCONFIG:
 		plugin_widget = static_cast<IApConfigPlugin*>( plugin )->get_widget();
+		break;
+	case PluginType::VIDEO:
+		IVideoSourcePlugin* casted_plugin =
+				static_cast<IVideoSourcePlugin*>( plugin );
+
+		plugin_widget = new VideoPlayer();
+		WId xwinid = plugin_widget->winId();
+
+		casted_plugin->set_render_window( xwinid );
+		casted_plugin->play( false );
+		casted_plugin->set_filename( "ball" );
 		break;
 	}
 
