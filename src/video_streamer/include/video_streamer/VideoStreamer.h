@@ -2,7 +2,7 @@
 #define VIDEOSTREAMER_H
 
 #include <gst/gst.h>
-#include <cstring>
+#include <string.h>
 
 #include "core/IObservable.h"
 #include "video_streamer/IVSObserver.h"
@@ -55,6 +55,7 @@ protected:
 	/**< handler of forwarding messages from the streaming threads */
 	static gboolean bus_call( GstBus* bus, GstMessage* msg, gpointer data );
 
+#ifdef DEBUG
 	static void debug_log_fnc( GstDebugCategory* category,
 							   GstDebugLevel level,
 							   const gchar* file,
@@ -63,6 +64,7 @@ protected:
 							   GObject* object,
 							   GstDebugMessage* message,
 							   gpointer user_data );
+#endif
 
 	/**< UDP server port */
 	int port;

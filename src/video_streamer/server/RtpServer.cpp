@@ -21,9 +21,11 @@ RtpServer::RtpServer()
 	gst_object_unref( bus );
 
 	// set debug log
-	gst_debug_set_active( FALSE );
+#ifdef DEBUG
+	gst_debug_set_active( TRUE );
 	gst_debug_set_default_threshold( GST_LEVEL_WARNING );
 	gst_debug_add_log_function( ( GstLogFunction )debug_log_fnc, this, NULL );
+#endif
 }
 
 RtpServer::~RtpServer()

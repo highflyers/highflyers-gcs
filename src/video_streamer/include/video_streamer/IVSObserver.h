@@ -1,28 +1,21 @@
 #ifndef IOBSERVER_H
 #define IOBSERVER_H
 
+#include "DebugInfo.h"
+
 namespace HighFlyers
 {
 class IVSObserver
 {
-public:
-	typedef struct
-	{
-		GstDebugCategory* category;
-		GstDebugLevel level;
-		const gchar* file;
-		const gchar* fnc;
-		gint line;
-		GObject* object;
-		GstDebugMessage* message;
-	} DebugInfo;
-
 private:
 	GstMessage* last_bus_call_msg;
+#ifdef DEBUG
 	DebugInfo last_debug_msg;
+#endif
 
 public:
-	virtual void debug_log( IObservable<IVSObserver>* obs, DebugInfo msg )
+#ifdef DEBUG
+	virtual void debug_log( IObservable<IVSObserver>* sender, DebugInfo msg )
 	{
 		last_debug_msg = msg;
 	}
@@ -31,9 +24,9 @@ public:
 	{
 		return last_debug_msg;
 	}
+#endif
 
-
-	virtual void bus_call( IObservable<IVSObserver>* obs, GstMessage* msg )
+	virtual void bus_call( IObservable<IVSObserver>* sender, GstMessage* msg )
 	{
 		last_bus_call_msg = msg;
 	}

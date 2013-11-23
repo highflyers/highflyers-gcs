@@ -1,13 +1,15 @@
 #include "video_streamer/VideoStreamer.h"
+#include "video_streamer/DebugInfo.h"
 
 using namespace HighFlyers;
 
 gboolean VideoStreamer::bus_call( GstBus* bus, GstMessage* msg, gpointer data )
 {
-	( ( VideoStreamer* )data )->notify<GstMessage*>( &IVSObserver::bus_call, ( GstMessage* )msg );
+	static_cast<VideoStreamer*>( data )->notify<GstMessage*>( &IVSObserver::bus_call, ( GstMessage* )msg );
 	return TRUE;
 }
 
+#ifdef DEBUG
 void VideoStreamer::debug_log_fnc( GstDebugCategory* category,
 								   GstDebugLevel level,
 								   const gchar* file,
@@ -17,15 +19,16 @@ void VideoStreamer::debug_log_fnc( GstDebugCategory* category,
 								   GstDebugMessage* message,
 								   gpointer data )
 {
-	IVSObserver::DebugInfo info;
+	DebugInfo info;
 	info.category = category;
 	info.file = file;
 	info.fnc = fnc;
 	info.line = line;
 	info.object = object;
 	info.message = message;
-	( ( VideoStreamer* )data )->notify<IVSObserver::DebugInfo>( &IVSObserver::debug_log, info );
+	static_cast<VideoStreamer*>( data )->notify<DebugInfo>( &IVSObserver::debug_log, info );
 }
+#endif
 
 VideoStreamer::VideoStreamer()
 {
@@ -35,7 +38,9 @@ VideoStreamer::VideoStreamer()
 
 	gst_init( NULL, NULL );
 
+#ifdef DEBUG
 	gst_debug_remove_log_function( gst_debug_log_default );
+#endif
 
 	// create pipeline
 	pipeline = gst_pipeline_new( "pipeline" );
