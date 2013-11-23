@@ -4,7 +4,7 @@
 TEST( BatteryTest, CheckSetMaxValue )
 {
 	float expected = 42.f;
-	Battery_Control battery;
+	BatteryWidget battery;
 	battery.set_maxvalue( expected );
 	ASSERT_FLOAT_EQ( battery.get_maxvalue(), expected );
 }
@@ -12,7 +12,7 @@ TEST( BatteryTest, CheckSetMaxValue )
 TEST( BatteryTest, CheckReturn_procent )
 {
 	int expected = 0;
-	Battery_Control bat;
+	BatteryWidget bat;
 
 	for (int i=0; i < 90; i++)
 	{
@@ -21,19 +21,19 @@ TEST( BatteryTest, CheckReturn_procent )
 		bat.set_value( i + 11 );
 		expected = (( bat.get_value() - bat.get_minvalue() ) * 100 / ( bat.get_maxvalue() - bat.get_minvalue() ) );
 
-		ASSERT_EQ( bat.return_procent(), expected );
+		ASSERT_EQ( bat.return_percent(), expected );
 	}
 }
 
 TEST( BatteryTest, CheckReturn_procentForZeros )
 {
 	int expected = 0;
-	Battery_Control batt;
+	BatteryWidget batt;
 	batt.set_maxvalue( 0 );
 	batt.set_minvalue( 0 );
 	batt.set_value( 0 );
 
-	ASSERT_EQ( batt.return_procent(), expected );
+	ASSERT_EQ( batt.return_percent(), expected );
 
 
 }
