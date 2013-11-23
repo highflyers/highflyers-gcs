@@ -1,5 +1,5 @@
-#ifndef _server_h_
-#define _server_h_
+#ifndef SERVER_H
+#define SERVER_H
 
 #include "server/RtpServer.h"
 

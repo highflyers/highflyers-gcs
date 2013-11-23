@@ -1,5 +1,5 @@
-#ifndef _video_streamer_h_
-#define _video_streamer_h_
+#ifndef VIDEO_STREAMER_H
+#define VIDEO_STREAMER_H
 
 #include "video_streamer/client.h"
 #include "video_streamer/server.h"
