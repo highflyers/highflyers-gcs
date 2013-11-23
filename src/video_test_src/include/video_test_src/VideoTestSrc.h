@@ -22,12 +22,14 @@ class VideoTestSrc : public IVideoSourcePlugin
 {
 private:
 	GstElement* source;
+	GstElement* converter;
 	GstElement* window_sink;
 	GstElement* tee;
 	GstElement* queue;
 	GstElement* pipeline;
 	GstElement* app_sink;
 	unsigned int window_handler;
+	Image* current_image;
 
 private:
 	void save_params( const std::string& pattern );
@@ -42,6 +44,8 @@ public:
 	virtual void set_render_window( unsigned int handler );
 	virtual void set_filename( const std::string& filename );
 	virtual QWidget* get_config_window();
+
+	static GstFlowReturn new_appsink_sample( GstAppSink *gstappsink, gpointer object );
 };
 
 }
