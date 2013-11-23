@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 #include "telemetry_controls/Battery.h"
 
+using namespace HighFlyers;
+
 TEST( BatteryTest, CheckSetMaxValue )
 {
 	float expected = 42.f;
