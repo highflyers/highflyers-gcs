@@ -12,75 +12,75 @@ namespace HighFlyers
 class VideoStreamer : public IObservable<IVSObserver>
 {
 public:
-    VideoStreamer();
-    virtual ~VideoStreamer();
+	VideoStreamer();
+	virtual ~VideoStreamer();
 
-    /**
-     * \param IP Address
-     *
-     * IP Address
-     */
-    virtual void set_ip(const char* host) = 0;
+	/**
+	 * \param host IP Address
+	 *
+	 * IP Address
+	 */
+	virtual void set_ip( const char* host ) = 0;
 
-    /**
-    * \return hostname or IP Address
-    *
-    * getter for host
-    */
-    char* get_ip()
-    {
-        return _ip;
-    }
+	/**
+	* \return hostname or IP Address
+	*
+	* getter for host
+	*/
+	char* get_ip()
+	{
+		return ip;
+	}
 
-    /**
-    * \param port
-    *
-    * Port
-    */
-    virtual void set_port(int port) = 0;
+	/**
+	* \param port Port
+	*
+	* Port
+	*/
+	virtual void set_port( int port ) = 0;
 
-    /**
-    * \return port
-    *
-    * getter for port
-    */
-    int get_port()
-    {
-        return _port;
-    }
+	/**
+	* \return port
+	*
+	* getter for port
+	*/
+	int get_port()
+	{
+		return port;
+	}
 
 protected:
-    GstElement* create_gst_element_safe(const gchar *factoryname, const gchar *name);
+	GstElement* create_gst_element_safe( const gchar* factory_name, const gchar* name );
 
-    /**< handler of forwarding messages from the streaming threads */
-    static gboolean bus_call(GstBus* bus, GstMessage* msg, gpointer data);
+	/**< handler of forwarding messages from the streaming threads */
+	static gboolean bus_call( GstBus* bus, GstMessage* msg, gpointer data );
 
-    static void debug_log_fnc(GstDebugCategory *category,
-                              GstDebugLevel level,
-                              const gchar *file,
-                              const gchar *function,
-                              gint line,
-                              GObject *object,
-                              GstDebugMessage *message,
-                              gpointer user_data);
+	static void debug_log_fnc( GstDebugCategory* category,
+							   GstDebugLevel level,
+							   const gchar* file,
+							   const gchar* fnc,
+							   gint line,
+							   GObject* object,
+							   GstDebugMessage* message,
+							   gpointer user_data );
 
-    /**< UDP server port */
-    int _port;
+	/**< UDP server port */
+	int port;
 
-    /**< UDP server host name */
-    char* _ip;
+	/**< UDP server host name */
+	char* ip;
 
-    /**< gstreamer pipeline */
-    GstElement* pipeline;
+	/**< gstreamer pipeline */
+	GstElement* pipeline;
 
-    /**< source of video */
-    GstElement* src;
+	/**< source of video */
+	GstElement* src;
 
-    /**< output for video */
-    GstElement* sink;
+	/**< output for video */
+	GstElement* sink;
 
-    /**< ID of GstBus */
-    guint bus_watch_id;
+	/**< ID of GstBus */
+	guint bus_watch_id;
 };
 }
 

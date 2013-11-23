@@ -1,5 +1,5 @@
-#ifndef _client_h_
-#define _client_h_
+#ifndef CLIENT_H
+#define CLIENT_H
 
 #include "client/RtpClient.h"
 
