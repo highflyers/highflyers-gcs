@@ -37,9 +37,11 @@ RtpClient::RtpClient()
 	gst_object_unref( bus );
 
 	// set debug log
-	gst_debug_set_active( FALSE );
+#ifdef DEBUG
+	gst_debug_set_active( TRUE );
 	gst_debug_set_default_threshold( GST_LEVEL_WARNING );
 	gst_debug_add_log_function( ( GstLogFunction )debug_log_fnc, this, NULL );
+#endif
 
 	// adding elements to pipeline
 	gst_bin_add_many( GST_BIN( pipeline ), src, depayloader, video_rate, fmt, video_convert, tee, NULL );
