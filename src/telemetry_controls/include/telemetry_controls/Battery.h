@@ -8,85 +8,93 @@
 #include <QHBoxLayout>
 
 
-class Battery_Control;
-class Batterybar;
-
 namespace Ui {
 class Battery;
 }
+
+
+namespace HighFlyers
+{
+
+class BatteryWidget;
+class BatteryBar;
+
+
+
 
 class Battery : public QWidget
 {
 	Q_OBJECT
 
 public:
-	explicit Battery(QWidget *parent = 0);
+	explicit Battery( QWidget *parent = 0 );
 	virtual ~Battery();
-	QLabel *max, *min,*actual,*volt;
-	Batterybar *status;
+	QLabel *max, *min, *actual, *volt;
+	BatteryBar *status;
 
 public:
 	Ui::Battery *ui;
 
 protected:
-	void paintEvent(QPaintEvent *event);
+	void paintEvent( QPaintEvent *event );
 
 };
 
 
-class Battery_Control
+class BatteryWidget
 {
 private:
 
 	float maxvalue;
 	float minvalue;
-	float value;
+	float voltage;
 	Battery gui;
 
 public:
 
-	Battery_Control();
+	BatteryWidget( float current = 4, float max = 6, float min = 0 );		//if there are all 0 it doesn't make sense so they are some radomly choose values
 
 	float get_maxvalue();
 
-	void set_maxvalue(float voltage);
+	void set_maxvalue( float maximum );
 
 	float get_minvalue();
 
-	void set_minvalue(float voltage);
+	void set_minvalue( float miniumum );
 
 	float get_value();
 
-	void set_value(float voltage);
+	void set_voltage( float voltage_ );
 
-	int return_procent();
+	int return_percent();
 
 	void update();
 };
 
 
 
-class Batterybar : public QWidget
+class BatteryBar : public QWidget
 {
 	Q_OBJECT
 
-	Q_PROPERTY(Qt::Alignment alignment_ READ getalignment WRITE setAlignment)
+	Q_PROPERTY( Qt::Alignment alignment_ READ getalignment WRITE setAlignment )
 
 public:
-	Batterybar(QWidget *parent = 0);
-	~Batterybar();
+	BatteryBar( QWidget *parent = 0 );
+	~BatteryBar();
 
 	Qt::Alignment alignment_;
-	int procent;
-	int wid;
+	int percentage;
+	int width_;			//added this underscore for purpose look at paintevent
 	int margin;
 
 	Qt::Alignment getalignment() const;
-	void setAlignment(Qt::Alignment alignment);
+	void setAlignment( Qt::Alignment alignment );
 
 protected:
-	void paintEvent(QPaintEvent *event);
+	void paintEvent( QPaintEvent *event );
 };
 
+}
 #endif // BATTERY_H
 
