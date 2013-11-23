@@ -75,11 +75,22 @@ void MainWindow::plugin_added( IPlugin* plugin, const QString& plugin_name )
 				static_cast<IVideoSourcePlugin*>( plugin );
 
 		plugin_widget = new VideoPlayer();
-		WId xwinid = plugin_widget->winId();
+		VideoPlayer* video_widget= static_cast<VideoPlayer*>( plugin_widget );
 
+		WId xwinid = video_widget->get_canvas_handler();
+		connect( video_widget, &VideoPlayer::state_clicked, [casted_plugin]( bool play ){
+			if (play)
+				casted_plugin->play( false );
+			else
+				casted_plugin->stop();
+		} );
+		connect( video_widget, &VideoPlayer::config_window_requested, [casted_plugin]{
+			if (casted_plugin->get_config_window() != nullptr)
+				casted_plugin->get_config_window()->show();
+			else
+				QMessageBox::information(0, "No Config", "Configuration is not available for this plugin.");
+		} );
 		casted_plugin->set_render_window( xwinid );
-		casted_plugin->play( false );
-		casted_plugin->set_filename( "ball" );
 		break;
 	}
 

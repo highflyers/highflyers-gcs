@@ -25,6 +25,7 @@ public:
 	virtual void stop() = 0;
 	virtual Image* get_image() = 0;
 	virtual void set_render_window( unsigned int handler ) = 0;
+	virtual QWidget* get_config_window() { return nullptr; }
 };
 
 }

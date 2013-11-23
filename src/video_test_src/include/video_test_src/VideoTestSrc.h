@@ -13,6 +13,7 @@
 #include <gst/gst.h>
 #include <gst/app/gstappsink.h>
 #include <gst/video/videooverlay.h>
+#include <QtWidgets>
 
 namespace HighFlyers
 {
@@ -26,6 +27,10 @@ private:
 	GstElement* queue;
 	GstElement* pipeline;
 	GstElement* app_sink;
+	unsigned int window_handler;
+
+private:
+	void save_params( const std::string& pattern );
 
 public:
 	VideoTestSrc();
@@ -36,6 +41,7 @@ public:
 	virtual Image* get_image();
 	virtual void set_render_window( unsigned int handler );
 	virtual void set_filename( const std::string& filename );
+	virtual QWidget* get_config_window();
 };
 
 }

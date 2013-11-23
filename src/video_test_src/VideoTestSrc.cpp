@@ -10,6 +10,7 @@
 using namespace HighFlyers;
 
 VideoTestSrc::VideoTestSrc()
+: window_handler( -1 )
 {
 	gst_init( NULL, NULL );
 	source = gst_element_factory_make( "videotestsrc", NULL );
@@ -41,6 +42,8 @@ VideoTestSrc::~VideoTestSrc()
 void VideoTestSrc::play( bool recording )
 {
 	// no recording implemented, it's test only.
+	if (window_handler != -1)
+		set_render_window( window_handler );
 	gst_element_set_state( pipeline, GST_STATE_PLAYING );
 }
 
@@ -56,10 +59,16 @@ Image* VideoTestSrc::get_image()
 
 void VideoTestSrc::set_render_window( unsigned int handler )
 {
+	window_handler = handler;
 	gst_video_overlay_set_window_handle( GST_VIDEO_OVERLAY( window_sink ), handler );
 }
 
 void VideoTestSrc::set_filename( const std::string& filename )
+{
+	// not implemented
+}
+
+void VideoTestSrc::save_params( const std::string& pattern )
 {
 	GParamSpec* param_spec =
 			g_object_class_find_property( G_OBJECT_GET_CLASS( source ), "pattern" );
@@ -68,11 +77,11 @@ void VideoTestSrc::set_filename( const std::string& filename )
 
 	GEnumValue *values;
 	guint j = 0;
-	values = G_ENUM_CLASS (g_type_class_ref(param_spec->value_type))->values;
+	values = G_ENUM_CLASS ( g_type_class_ref( param_spec->value_type ) )->values;
 
 	while (values[j].value_name)
 	{
-		if (filename == values[j].value_nick)
+		if (pattern == values[j].value_nick)
 		{
 			pos = values[j].value;
 			break;
@@ -81,4 +90,39 @@ void VideoTestSrc::set_filename( const std::string& filename )
 	}
 
 	g_object_set( G_OBJECT( source ), "pattern", pos );
+}
+
+QWidget* VideoTestSrc::get_config_window()
+{
+	auto frame = new QFrame();
+
+	frame->setLayout( new QVBoxLayout() );
+
+	auto pattern_frame = new QFrame();
+	frame->layout()->addWidget( pattern_frame );
+	pattern_frame->setLayout( new QHBoxLayout() );
+	pattern_frame->layout()->addWidget( new QLabel( "Source pattern: " ) );
+	auto pattern_combo = new QComboBox();
+	pattern_combo->addItems( { "smpte", "black", "red", "circular", "ball" } );
+	pattern_frame->layout()->addWidget( pattern_combo );
+
+	auto ok_canc_frame = new QFrame();
+	ok_canc_frame->setLayout( new QHBoxLayout() );
+
+	auto ok_canc_button = new QPushButton( "Cancel" );
+	ok_canc_frame->layout()->addWidget( ok_canc_button );
+	QObject::connect( ok_canc_button, &QPushButton::clicked, [frame]{
+		frame->close();
+	} );
+
+	ok_canc_button = new QPushButton( "OK" );
+	ok_canc_frame->layout()->addWidget( ok_canc_button );
+	QObject::connect( ok_canc_button, &QPushButton::clicked, [this, pattern_combo, frame]{
+		save_params( pattern_combo->currentText().toUtf8().constData() );
+		frame->close();
+	} );
+
+	frame->layout()->addWidget(ok_canc_frame);
+
+	return frame;
 }
