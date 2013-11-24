@@ -2,7 +2,8 @@
 #define VIDEOSTREAMER_H
 
 #include <gst/gst.h>
-#include <string.h>
+#include <string>
+#include <stdexcept>
 
 #include "core/IObservable.h"
 #include "video_streamer/IVSObserver.h"
@@ -20,14 +21,14 @@ public:
 	 *
 	 * IP Address
 	 */
-	virtual void set_ip( const char* host ) = 0;
+	virtual void set_ip( std::string host ) = 0;
 
 	/**
 	* \return hostname or IP Address
 	*
 	* getter for host
 	*/
-	char* get_ip()
+	std::string get_ip()
 	{
 		return ip;
 	}
@@ -70,7 +71,7 @@ protected:
 	int port;
 
 	/**< UDP server host name */
-	char* ip;
+	std::string ip;
 
 	/**< gstreamer pipeline */
 	GstElement* pipeline;

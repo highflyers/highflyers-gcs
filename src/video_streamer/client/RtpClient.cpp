@@ -3,6 +3,8 @@
 using namespace HighFlyers;
 
 RtpClient::RtpClient()
+	: window_handler( 0 ),
+	  current_image( nullptr )
 {
 	// create elements
 	src = create_gst_element_safe( "udpsrc", "source" );
@@ -51,18 +53,18 @@ RtpClient::RtpClient()
 	{
 		throw std::runtime_error( "Failed to link elements!" );
 	}
+
 }
 
 RtpClient::~RtpClient()
 {
+	delete current_image;
 }
 
-void RtpClient::set_ip( const char* host )
+void RtpClient::set_ip( std::string host )
 {
-	ip = new char[strlen( host ) + 1];
-	strcpy( ip, host );
-
-	g_object_set( src, "address", host, NULL );
+	ip = host;
+	g_object_set( src, "address", host.c_str(), NULL );
 }
 
 void RtpClient::set_port( int port )
@@ -71,31 +73,58 @@ void RtpClient::set_port( int port )
 	g_object_set( src, "port", port, NULL );
 }
 
-void RtpClient::read_to_file( const char* file_name )
+void RtpClient::set_filename( const std::string& filename )
 {
-	gst_bin_add_many( GST_BIN( pipeline ), queue1, encoder, queue2, mux, sink, NULL );
-
-	if ( !gst_element_link_many( tee, queue1, encoder, queue2, mux, sink, NULL ) )
-	{
-		throw std::runtime_error( "Failed to link file sink!" );
-	}
-
-	g_object_set( G_OBJECT( sink ), "location", file_name, NULL );
+	g_object_set( G_OBJECT( sink ), "location", filename.c_str(), NULL );
 }
 
-void RtpClient::set_render_window( guintptr handler )
+void RtpClient::set_render_window( unsigned int handler )
 {
+	window_handler = handler;
+	gst_video_overlay_set_window_handle( GST_VIDEO_OVERLAY( window_sink ), handler );
+}
+
+void RtpClient::play( bool recording )
+{
+	if ( recording )
+	{
+		gst_bin_add_many( GST_BIN( pipeline ), queue1, encoder, queue2, mux, sink, NULL );
+
+		if ( !gst_element_link_many( tee, queue1, encoder, queue2, mux, sink, NULL ) )
+		{
+			throw std::runtime_error( "Failed to link file sink!" );
+		}
+	}
+
 	gst_bin_add( GST_BIN( pipeline ), window_sink );
 
-	if ( !gst_element_link_many( tee, window_sink, NULL ) )
+	if ( !gst_element_link( tee, window_sink ) )
 	{
 		throw std::runtime_error( "Failed to link window sink!" );
 	}
 
-	gst_video_overlay_set_window_handle( GST_VIDEO_OVERLAY( window_sink ), handler );
-}
+	if ( window_handler != 0 )
+		set_render_window( window_handler );
 
-void RtpClient::play()
-{
 	gst_element_set_state( GST_ELEMENT( pipeline ), GST_STATE_PLAYING );
 }
+
+void RtpClient::stop()
+{
+	gst_element_set_state( GST_ELEMENT( pipeline ), GST_STATE_NULL );
+}
+
+Image* RtpClient::get_image()
+{
+	return current_image;
+}
+
+QWidget* RtpClient::get_config_window()
+{
+	auto frame = new QFrame();
+
+	//To implement
+
+	return frame;
+}
+

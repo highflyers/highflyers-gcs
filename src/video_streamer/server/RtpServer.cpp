@@ -32,12 +32,10 @@ RtpServer::~RtpServer()
 {
 }
 
-void RtpServer::set_ip( const char* host )
+void RtpServer::set_ip( std::string host )
 {
-	ip = new char[strlen( host ) + 1];
-	strcpy( ip, host );
-
-	g_object_set( sink, "host", host, NULL );
+	host = ip;
+	g_object_set( sink, "host", host.c_str(), NULL );
 }
 
 
@@ -47,17 +45,17 @@ void RtpServer::set_port( int port )
 	g_object_set( sink, "port", port, NULL );
 }
 
-void RtpServer::set_video_source( const char* source, SourceType type )
+void RtpServer::set_video_source( std::string source, SourceType type )
 {
 	if ( src != NULL ) gst_object_unref( GST_OBJECT( src ) );
 
-	GstCaps* fmt_caps;
+	GstCaps* fmt_caps = NULL;
 
 	switch ( type )
 	{
 	case V4lDevice :
 		src = create_gst_element_safe( "v4l2src", "source" );
-		g_object_set( src, "device", source, NULL );
+		g_object_set( src, "device", source.c_str(), NULL );
 
 		fmt_caps = gst_caps_from_string( "video/x-raw, format=YUY2, width=640,"
 										 "height=480, framerate=30/1" );
@@ -82,7 +80,7 @@ void RtpServer::set_video_source( const char* source, SourceType type )
 
 bool RtpServer::init_stream()
 {
-	if ( !src || port < 1 || !ip ) return false;
+	if ( !src || port < 1 || ip == "" ) return false;
 
 	//adding elements to pipeline
 	gst_bin_add_many( GST_BIN( pipeline ), src, fmt, video_rate, video_convert, payloader, sink, NULL );
