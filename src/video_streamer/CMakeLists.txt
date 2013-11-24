@@ -9,3 +9,6 @@ add_library(video_streamer_server SHARED
 	server/RtpServer.cpp
 	server/RtpServerBuilder.cpp
 )
+
+qt5_use_modules(video_streamer_client Widgets)
+qt5_use_modules(video_streamer_server Widgets)

@@ -34,7 +34,7 @@ VideoStreamer::VideoStreamer()
 {
 	// initialization
 	port = -1;
-	ip = NULL;
+	ip = "";
 
 	gst_init( NULL, NULL );
 

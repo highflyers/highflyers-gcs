@@ -2,6 +2,10 @@
 #define RTPCLIENT_H
 
 #include <gst/video/videooverlay.h>
+#include <QtWidgets>
+
+#include "core/plugin_interfaces/IVideoSourcePlugin.h"
+#include "core/Image.h"
 
 #include "video_streamer/VideoStreamer.h"
 
@@ -10,7 +14,7 @@
  */
 namespace HighFlyers
 {
-class RtpClient : public VideoStreamer
+class RtpClient : public VideoStreamer, IVideoSourcePlugin
 {
 private:
 	/**< rtp depayloader */
@@ -43,6 +47,10 @@ private:
 	/**< window sink */
 	GstElement* window_sink;
 
+	unsigned int window_handler;
+
+	Image* current_image;
+
 public:
 	RtpClient();
 	~RtpClient();
@@ -52,7 +60,7 @@ public:
 	 *
 	 * IP Address
 	 */
-	void set_ip( const char* host );
+	void set_ip( std::string host );
 
 	/**
 	* \param port Port
@@ -66,20 +74,30 @@ public:
 	*
 	* Save input stream to file
 	*/
-	void read_to_file( const char* file_name );
+	void set_filename( const std::string& filename );
 
 	/**
 	* \param handler window handler
 	*
 	* Render input stream on window
 	*/
-	void set_render_window( guintptr handler );
+	void set_render_window( unsigned int handler );
 
 	/**
 	*
 	* play stream
 	*/
-	void play();
+	void play( bool recording );
+
+	/**
+	*
+	* stop stream
+	*/
+	void stop();
+
+	Image* get_image();
+
+	QWidget* get_config_window();
 };
 }
 #endif
