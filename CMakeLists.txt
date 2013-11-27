@@ -3,7 +3,8 @@ project (GCS)
 enable_testing()
 set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}")
 
-include_directories(${GCS_SOURCE_DIR}/src/)
+
+include_directories(${GCS_SOURCE_DIR}/src/gui/include)
 include_directories(${GCS_SOURCE_DIR}/src/core/include)
 include_directories(${GCS_SOURCE_DIR}/src/apconfig/include)
 include_directories(${GCS_SOURCE_DIR}/src/video_streamer/include)
@@ -12,6 +13,7 @@ include_directories(${GCS_SOURCE_DIR}/src/protocol/include)
 include_directories(${GCS_SOURCE_DIR}/src/protocol/c_protocol/include)
 include_directories(${GCS_SOURCE_DIR}/src/protocol/c_protocol/nanopb)
 include_directories(${GCS_SOURCE_DIR}/src/communication/include)
+include_directories(${GCS_SOURCE_DIR}/src/video_test_src/include)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)

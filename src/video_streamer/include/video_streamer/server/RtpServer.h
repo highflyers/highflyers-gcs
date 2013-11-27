@@ -1,5 +1,5 @@
-#ifndef _rtpserver_h_
-#define _rtpserver_h_
+#ifndef RTPSERVER_H
+#define RTPSERVER_H
 
 #include "video_streamer/VideoStreamer.h"
 
@@ -12,70 +12,70 @@ class RtpServer : public VideoStreamer
 {
 private:
 
-    /**< caps filter */
-    GstElement* fmt;
+	/**< caps filter */
+	GstElement* fmt;
 
-    /**< video rate */
-    GstElement* video_rate;
+	/**< video rate */
+	GstElement* video_rate;
 
-    /**< video convert */
-    GstElement* video_convert;
+	/**< video convert */
+	GstElement* video_convert;
 
-    /**< rtp payloader */
-    GstElement* payloader;
+	/**< rtp payloader */
+	GstElement* payloader;
 
 public:
 
-    /**< Type of the video source */
-    enum SourceType
-    {
-        //Uri, //TODO
-        V4lDevice
-    };
+	/**< Type of the video source */
+	enum SourceType
+	{
+		//Uri, //TODO
+		V4lDevice
+	};
 
-    RtpServer();
-    ~RtpServer();
+	RtpServer();
+	~RtpServer();
 
-    /**
-     * \param video source (e.g. /dev/video0 or file://fileName)
-     * \param source type
-     *
-     * Set video to stream.
-     */
-    void set_video_source(const char* source, SourceType type);
+	/**
+	 * \param source video source (e.g. /dev/video0 or file://fileName)
+	 * \param type source type
+	 *
+	 * Set video to stream.
+	 */
+	void set_video_source( std::string source, SourceType type );
 
-    /**
-     * \param hostname or IP Address
-     *
-     * host used by server
-     */
-    void set_ip(const char* host);
+	/**
+	 * \param host hostname or IP Address
+	 *
+	 * host used by server
+	 */
+	void set_ip( std::string host );
 
-    /**
-    * \param port
-    *
-    * Port
-    */
-    void set_port(int port);
+	/**
+	* \param port Port
+	*
+	* Port
+	*/
+	void set_port( int port );
 
-    /**
-    *
-    * \return true if initialization success
-    *
-    * initialization of stream that you have to use
-    * after setting all necessary server parameters.
-    */
-    bool init_stream();
+	/**
+	*
+	* \return true if initialization success
+	*
+	* initialization of stream that you have to use
+	* after setting all necessary server parameters.
+	*/
+	bool init_stream();
 
-    /**
-    * Allows you to stop streaming
-    */
-    void stop_stream();
+	/**
+	* Allows you to stop streaming
+	*/
+	void stop_stream();
 
-    /**
-    * Allows you to start streaming
-    */
-    void start_stream();
+	/**
+	* Allows you to start streaming
+	*/
+	void start_stream();
 };
 }
 

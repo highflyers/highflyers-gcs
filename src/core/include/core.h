@@ -9,10 +9,11 @@
 #define CORE_H_
 
 #include "core/IObservable.h"
-#include "core/PluginInterface.h"
+#include "core/Image.h"
 #include "core/PluginLoader.h"
 #include "core/Singleton.h"
 #include "core/CoreController.h"
-#include "core/interfaces.h"
+#include "core/plugin_interfaces.h"
+
 
 #endif /* CORE_H_ */

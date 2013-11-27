@@ -1,10 +1,10 @@
-#include "MainWindow.h"
+#include "gui.h"
 #include "ui_MainWindow.h"
 
 #include "core/CoreController.h"
 
 #include "core/PluginLoader.h"
-#include "apconfig/ApConfig.h"
+#include "core/plugin_interfaces.h"
 
 #include <QHBoxLayout>
 
@@ -68,7 +68,29 @@ void MainWindow::plugin_added( IPlugin* plugin, const QString& plugin_name )
 	switch (plugin->get_type_t())
 	{
 	case PluginType::APCONFIG:
-		plugin_widget = static_cast<ApConfig*>( plugin )->get_widget();
+		plugin_widget = static_cast<IApConfigPlugin*>( plugin )->get_widget();
+		break;
+	case PluginType::VIDEO:
+		IVideoSourcePlugin* casted_plugin =
+				static_cast<IVideoSourcePlugin*>( plugin );
+
+		plugin_widget = new VideoPlayer();
+		VideoPlayer* video_widget= static_cast<VideoPlayer*>( plugin_widget );
+
+		WId xwinid = video_widget->get_canvas_handler();
+		connect( video_widget, &VideoPlayer::state_clicked, [casted_plugin]( bool play ){
+			if (play)
+				casted_plugin->play( false );
+			else
+				casted_plugin->stop();
+		} );
+		connect( video_widget, &VideoPlayer::config_window_requested, [casted_plugin]{
+			if (casted_plugin->get_config_window() != nullptr)
+				casted_plugin->get_config_window()->show();
+			else
+				QMessageBox::information(0, "No Config", "Configuration is not available for this plugin.");
+		} );
+		casted_plugin->set_render_window( xwinid );
 		break;
 	}
 

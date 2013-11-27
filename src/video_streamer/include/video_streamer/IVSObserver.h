@@ -1,47 +1,40 @@
-#ifndef _iobserver_h_
-#define _iobserver_h_
+#ifndef IOBSERVER_H
+#define IOBSERVER_H
+
+#include "DebugInfo.h"
 
 namespace HighFlyers
 {
 class IVSObserver
 {
-public:
-    typedef struct
-    {
-        GstDebugCategory *category;
-        GstDebugLevel level;
-        const gchar *file;
-        const gchar *function;
-        gint line;
-        GObject *object;
-        GstDebugMessage *message;
-    } debugInfo;
-
 private:
-    GstMessage* last_bus_call_msg;
-    debugInfo last_debug_msg;
+	GstMessage* last_bus_call_msg;
+#ifdef DEBUG
+	DebugInfo last_debug_msg;
+#endif
 
 public:
-    virtual void debug_log(IObservable<IVSObserver>*, debugInfo msg)
-    {
-        last_debug_msg = msg;
-    }
+#ifdef DEBUG
+	virtual void debug_log( IObservable<IVSObserver>* sender, DebugInfo msg )
+	{
+		last_debug_msg = msg;
+	}
 
-    debugInfo get_last_debug_log_msg()
-    {
-        return last_debug_msg;
-    }
+	DebugInfo get_last_debug_log_msg()
+	{
+		return last_debug_msg;
+	}
+#endif
 
+	virtual void bus_call( IObservable<IVSObserver>* sender, GstMessage* msg )
+	{
+		last_bus_call_msg = msg;
+	}
 
-    virtual void bus_call(IObservable<IVSObserver>*, GstMessage* msg)
-    {
-        last_bus_call_msg = msg;
-    }
-
-    GstMessage* get_last_bus_call_msg()
-    {
-        return last_bus_call_msg;
-    }
+	GstMessage* get_last_bus_call_msg()
+	{
+		return last_bus_call_msg;
+	}
 };
 }
 
