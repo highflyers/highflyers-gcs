@@ -39,111 +39,170 @@ SerialPort::SerialPort(string dev, int baud)
 	case 230400:	baud = B230400 ; break ;
 	default:
 		throw exception();
-  }
+	}
+	opened = false;
 }
 
 
 bool SerialPort::open_port()
 {
-	boost::system::error_code error;
-	if (port.is_open())
+	if (port)
 		return true;
+	boost::system::error_code error;
+	port = shared_ptr<boost::asio::serial_port>(new boost::asio::serial_port(io_service));
 
-	port.open(name, error);
+	port->open(name, error);
 	if (error)
 	{
-		throw runtime_error();
+		throw runtime_error("Couldn't open port!");
 	}
-
-	port.set_option(boost::asio::serial_port_base::baud_rate(baud_rate));
-	port.set_option(boost::asio::serial_port_base::character_size(8)); //make this configurable?
-	port.set_option(boost::asio::serial_port_base
-			::stop_bits(boost::asio::serial_port_base::stop_bits::one));
-	port.set_option(boost::asio::serial_port_base
-			::parity(boost::asio::serial_port_base::parity::none));
-	port.set_option(boost::asio::serial_port_base
-			::flow_control(boost::asio::serial_port_base::flow_control::none));
-
-	/*termios settings;
-	if (
-		(id = open (name.c_str(), O_RDWR | O_NOCTTY | O_NDELAY | O_NONBLOCK))
-	  	== -1
-	  	)
-    	return false;
-    	
-    fcntl(id, F_SETFL, O_RDWR);
-    tcgetattr(id, &settings);
-    cfmakeraw(&settings);
-    cfsetispeed(&settings, baud_rate);
-    cfsetospeed(&settings, baud_rate);
-    
-	settings.c_cflag |= (CLOCAL | CREAD) ;
-	settings.c_cflag &= ~PARENB ;
-	settings.c_cflag &= ~CSTOPB ;
-	settings.c_cflag &= ~CSIZE ;
-	settings.c_cflag |= CS8 ;
-	settings.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG) ;
-	settings.c_oflag &= ~OPOST ;
-	
-	settings.c_cc[VMIN] = 0;
-	settings.c_cc[VTIME] = 100;
-	
-	tcsetattr(id, TCSANOW | TCSAFLUSH, &settings);
-	
-	int id_status;
-	ioctl(id, TIOCMGET, &id_status);
-	id_status |= TIOCM_DTR;
-	id_status |= TIOCM_RTS;
-	ioctl(id, TIOCMSET, &id_status);
-	
-	usleep(1000);
 	opened = true;
-	return true;   */
+	port->set_option(boost::asio::serial_port_base::baud_rate(baud_rate));
+	port->set_option(boost::asio::serial_port_base::character_size(8)); //make this configurable?
+	port->set_option(boost::asio::serial_port_base
+			::stop_bits(boost::asio::serial_port_base::stop_bits::one));
+	port->set_option(boost::asio::serial_port_base
+			::parity(boost::asio::serial_port_base::parity::none));
+	port->set_option(boost::asio::serial_port_base
+			::flow_control(boost::asio::serial_port_base::flow_control::none));
+	
+	//thread init here!
+	
+	return true;
 }
 	
 void SerialPort::close_port()
 {
-	if (opened)
+	/*if (opened)
 	{
 		if (close(id) != 0)
 			throw runtime_error("Couldn't close device file");
-	}
+	}*/
 }
 	
 void SerialPort::flush()
 {
-	if (opened) tcflush(id, TCIOFLUSH);
+	/*if (opened) tcflush(id, TCIOFLUSH);*/
 }
 
 void SerialPort::send_char(char c)
 {
-	if (opened) write(id, &c, 1);
+	/*if (opened) write(id, &c, 1);*/
 }
 
 void SerialPort::send_string(std::string data)
 {
-	if (opened)
+	/*if (opened)
 	{
 		write(id, data.c_str(), data.length());
-	}
+	}*/
 }
 
 bool SerialPort::data_available(int& how_many)
 {
-	if (ioctl(id, FIONREAD, &how_many) == -1)
+	/*if (ioctl(id, FIONREAD, &how_many) == -1)
 		return false;
-	return true;
+	return true;*/
 }
 
 int SerialPort::get_char()
 {
-	unsigned char c;
+	/*unsigned char c;
 	if (read(id, &c, 1) != 1)
 		return -1;	
-	return ((int)c) & 0xFF;
+	return ((int)c) & 0xFF;*/
 }
 
 static std::vector<std::string> get_ports_names()
 {
 	//TODO
 }
+
+
+
+bool SerialPort::get_baud_rate( unsigned int& out_baud )
+{
+	if (port->is_open())
+	{
+		boost::asio::serial_port_base::baud_rate baud;
+
+		if ( ! try_get_option( baud ) )
+			return false;
+
+		out_baud = baud.value();
+		return true;
+	}
+	return false;
+}
+
+bool SerialPort::get_parity( SerialPort::Parity& out_parity )
+{
+	if (port->is_open())
+	{
+		boost::asio::serial_port_base::parity parity;
+
+		if (!try_get_option( parity ) )
+			return false;
+
+		switch (parity.value())
+		{
+			case parity.even: out_parity = Parity::Even; break;
+			case parity.none: out_parity = Parity::None; break;
+			case parity.odd: out_parity = Parity::Odd; break;
+		}
+	}
+	return false;
+}
+bool SerialPort::get_stop_bits( SerialPort::StopBits& out_stop_bits )
+{
+	if (port->is_open())
+	{
+		boost::asio::serial_port_base::stop_bits bits;
+
+		if ( ! try_get_option( bits ) )
+			return false;
+
+		switch (bits.value())
+		{
+			case bits.one: out_stop_bits = StopBits::One; break;
+			case bits.onepointfive: out_stop_bits = StopBits::OnePointHalf; break;
+			case bits.two: out_stop_bits = StopBits::Two; break;
+		}
+		return true;
+	}
+	return false;
+}
+bool SerialPort::get_character_size( unsigned char& out_char_size )
+{
+	if (port->is_open())
+	{
+		boost::asio::serial_port_base::character_size size;
+
+		if ( !try_get_option( size ) )
+			return false;
+
+		out_char_size = size.value();
+		return true;
+	}
+	return false;
+}
+bool SerialPort::get_flow_control( SerialPort::FlowControl& out_flow_control )
+{
+	if (port->is_open())
+	{
+		boost::asio::serial_port_base::flow_control flow;
+
+		if (! try_get_option( flow ))
+			return false;
+
+		switch (flow.value())
+		{
+			case flow.hardware: out_flow_control = FlowControl::Hardware; break;
+			case flow.software: out_flow_control = FlowControl::Software; break;
+			case flow.none: out_flow_control = FlowControl::None; break;
+		}
+		return true;
+	}
+	return false;
+}
+
