@@ -3,6 +3,7 @@
 #include <termios.h>
 #include <string>
 #include <vector>
+#include <boost/asio/serial_port.hpp>
 
 namespace HighFlyers
 {
@@ -29,10 +30,12 @@ public:
 	static std::vector<std::string> get_ports_names();
 	
 private:
-	speed_t baud_rate;
+	int baud_rate;
+	boost::asio::io_service io;
+
 	std::string name;
 	bool opened;
-	int id;
+	boost::asio::serial_port port;
 };
 
 }

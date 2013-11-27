@@ -7,7 +7,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <boost/asio/serial_port.hpp>
+
 
 
 using namespace std;
@@ -45,7 +45,26 @@ SerialPort::SerialPort(string dev, int baud)
 
 bool SerialPort::open_port()
 {
-	termios settings;
+	boost::system::error_code error;
+	if (port.is_open())
+		return true;
+
+	port.open(name, error);
+	if (error)
+	{
+		throw runtime_error();
+	}
+
+	port.set_option(boost::asio::serial_port_base::baud_rate(baud_rate));
+	port.set_option(boost::asio::serial_port_base::character_size(8)); //make this configurable?
+	port.set_option(boost::asio::serial_port_base
+			::stop_bits(boost::asio::serial_port_base::stop_bits::one));
+	port.set_option(boost::asio::serial_port_base
+			::parity(boost::asio::serial_port_base::parity::none));
+	port.set_option(boost::asio::serial_port_base
+			::flow_control(boost::asio::serial_port_base::flow_control::none));
+
+	/*termios settings;
 	if (
 		(id = open (name.c_str(), O_RDWR | O_NOCTTY | O_NDELAY | O_NONBLOCK))
 	  	== -1
@@ -79,7 +98,7 @@ bool SerialPort::open_port()
 	
 	usleep(1000);
 	opened = true;
-	return true;    
+	return true;   */
 }
 	
 void SerialPort::close_port()
