@@ -61,10 +61,13 @@ RtpClient::~RtpClient()
 	delete current_image;
 }
 
-void RtpClient::set_ip( std::string host )
+void RtpClient::set_ip( const std::string& host )
 {
-	ip = host;
-	g_object_set( src, "address", host.c_str(), NULL );
+	ip = host.c_str();
+
+	if ( ip.empty() ) ip = "127.0.0.1";
+
+	g_object_set( src, "address", ip.c_str(), NULL );
 }
 
 void RtpClient::set_port( int port )
@@ -86,6 +89,8 @@ void RtpClient::set_render_window( unsigned int handler )
 
 void RtpClient::play( bool recording )
 {
+	//TODO Dynamically changing the pipeline
+
 	if ( recording )
 	{
 		gst_bin_add_many( GST_BIN( pipeline ), queue1, encoder, queue2, mux, sink, NULL );
@@ -123,7 +128,43 @@ QWidget* RtpClient::get_config_window()
 {
 	auto frame = new QFrame();
 
-	//To implement
+	frame->setLayout( new QVBoxLayout() );
+
+	auto settingBox = new QGroupBox();
+	auto le_ip = new QLineEdit( QString::fromStdString( get_ip() ) );
+	auto sb_port = new QSpinBox();
+	sb_port->setRange( 0, 65535 );
+	sb_port->setValue( get_port() );
+
+
+	QFormLayout* formLayout = new QFormLayout;
+	formLayout->addRow( "IP: ", le_ip );
+	formLayout->addRow( "Port: ", sb_port );
+	settingBox->setLayout( formLayout );
+
+	frame->layout()->addWidget( settingBox );
+	settingBox->setTitle( "Connection" );
+
+	auto ok_canc_frame = new QFrame();
+	ok_canc_frame->setLayout( new QHBoxLayout() );
+
+	auto ok_canc_button = new QPushButton( "Cancel" );
+	ok_canc_frame->layout()->addWidget( ok_canc_button );
+	QObject::connect( ok_canc_button, &QPushButton::clicked, [frame]
+	{
+		frame->close();
+	} );
+
+	ok_canc_button = new QPushButton( "OK" );
+	ok_canc_frame->layout()->addWidget( ok_canc_button );
+	QObject::connect( ok_canc_button, &QPushButton::clicked, [this, le_ip, sb_port, frame]
+	{
+		set_ip( le_ip->text().toStdString() );
+		set_port( sb_port->value() );
+		frame->close();
+	} );
+
+	frame->layout()->addWidget( ok_canc_frame );
 
 	return frame;
 }
