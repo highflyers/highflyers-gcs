@@ -65,6 +65,10 @@ public:
 
 private:
 	typedef boost::system::system_error boost_error;
+	typedef boost::asio::serial_port_base::stop_bits boost_bits;
+	typedef boost::asio::serial_port_base::flow_control boost_flow;
+	typedef boost::asio::serial_port_base::parity boost_parity;
+
 	int baud_rate;
 	boost::asio::io_service io;
 
@@ -72,6 +76,16 @@ private:
 	bool opened;
 	boost::asio::io_service io_service;
 	std::shared_ptr<boost::asio::serial_port> port;
+
+	void translate_exception( const boost_error& ex )
+	{
+		throw std::runtime_error( "Exception code: " + std::to_string( ex.code().value() ) + ". " + ex.what() );
+	}
+
+	void throw_init_error()
+	{
+		throw std::runtime_error("SerialPort object has not been correctly initialized");
+	}
 
 	template <typename OPT>
 	bool try_get_option( OPT& opt)
@@ -83,6 +97,19 @@ private:
 		catch (boost_error& ex)
 		{
 				return false;
+		}
+	}
+
+	template <typename OPT>
+	void try_set_option(const OPT& opt)
+	{
+		try
+		{
+			port->set_option(opt);
+		}
+		catch(boost_error& ex)
+		{
+			translate_exception(ex);
 		}
 	}
 };
