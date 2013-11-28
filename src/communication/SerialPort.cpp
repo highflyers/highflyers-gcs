@@ -7,7 +7,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fcntl.h>
-
+#include <thread>
 
 
 using namespace std;
@@ -44,7 +44,7 @@ bool SerialPort::open_port()
 	port->set_option(boost::asio::serial_port_base
 			::flow_control(boost::asio::serial_port_base::flow_control::none));
 	
-	//thread init here!
+	thread t(bind(&boost::asio::io_service::run, &io_service));
 	
 	return true;
 }
