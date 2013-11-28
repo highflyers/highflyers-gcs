@@ -14,7 +14,7 @@
  */
 namespace HighFlyers
 {
-class RtpClient : public VideoStreamer, IVideoSourcePlugin
+class RtpClient : public IVideoSourcePlugin, public VideoStreamer
 {
 private:
 	/**< rtp depayloader */
@@ -60,7 +60,7 @@ public:
 	 *
 	 * IP Address
 	 */
-	void set_ip( std::string host );
+	void set_ip( const std::string& host );
 
 	/**
 	* \param port Port

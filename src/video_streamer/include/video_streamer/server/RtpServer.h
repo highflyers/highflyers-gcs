@@ -42,14 +42,14 @@ public:
 	 *
 	 * Set video to stream.
 	 */
-	void set_video_source( std::string source, SourceType type );
+	void set_video_source( const std::string& source, SourceType type );
 
 	/**
 	 * \param host hostname or IP Address
 	 *
 	 * host used by server
 	 */
-	void set_ip( std::string host );
+	void set_ip( const std::string& host );
 
 	/**
 	* \param port Port
