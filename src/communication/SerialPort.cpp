@@ -79,7 +79,22 @@ void SerialPort::async_read()
 void SerialPort::on_receive_do( const boost::system::error_code& error, size_t bytes_transferred)
 {
 	lock.lock();
-	string data;
+	if (!port || !port->is_open())
+	{
+		lock.unlock();
+		return;
+	}
+	if (error)
+	{
+		async_read();
+		lock.unlock();
+		return;
+	}
+
+	if (bytes_transferred < BUFFER_SIZE)
+		buffer[bytes_transferred] = '\0';
+
+	string data(buffer);
 	//TODO
 	notify<string>(&SerialPortObserver::on_receive, data);
 	lock.unlock();
