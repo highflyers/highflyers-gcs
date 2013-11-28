@@ -35,16 +35,15 @@ bool SerialPort::open_port()
 		throw runtime_error("Couldn't open port!");
 	}
 	opened = true;
-	port->set_option(boost::asio::serial_port_base::baud_rate(baud_rate));
-	port->set_option(boost::asio::serial_port_base::character_size(8)); //make this configurable?
-	port->set_option(boost::asio::serial_port_base
-			::stop_bits(boost::asio::serial_port_base::stop_bits::one));
-	port->set_option(boost::asio::serial_port_base
-			::parity(boost::asio::serial_port_base::parity::none));
-	port->set_option(boost::asio::serial_port_base
-			::flow_control(boost::asio::serial_port_base::flow_control::none));
+	port->set_option
+			( boost::asio::serial_port_base::baud_rate( baud_rate ) );
+	port->set_option
+			( boost::asio::serial_port_base::character_size( 8 ) );
+	port->set_option( boost_bits( boost_bits::one ) );
+	port->set_option(boost_parity( boost_parity::none ) );
+	port->set_option(boost_flow( boost_flow::none ) );
 	
-	thread t(bind(&boost::asio::io_service::run, &io_service));
+	thread t([this](){io_service.run();});
 	
 	return true;
 }
