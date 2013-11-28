@@ -8,7 +8,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <thread>
-
+#include <boost/asio/placeholders.hpp>
+#include <boost/bind.hpp>
 
 using namespace std;
 using namespace HighFlyers;
@@ -17,7 +18,6 @@ SerialPort::SerialPort(string dev, int baud)
 {
 	name = dev;
 	baud_rate = baud;
-	opened = false;
 	port = shared_ptr<boost::asio::serial_port>(new boost::asio::serial_port(io_service));
 }
 
@@ -34,7 +34,7 @@ bool SerialPort::open_port()
 	{
 		throw runtime_error("Couldn't open port!");
 	}
-	opened = true;
+
 	port->set_option
 			( boost::asio::serial_port_base::baud_rate( baud_rate ) );
 	port->set_option
@@ -50,13 +50,41 @@ bool SerialPort::open_port()
 	
 void SerialPort::close_port()
 {
-	/*if (opened)
+	lock.lock();
+	if (port && port->is_open())
 	{
-		if (close(id) != 0)
-			throw runtime_error("Couldn't close device file");
-	}*/
+		port->cancel();
+		port->close();
+	}
+	io_service.stop();
+	io_service.reset();
+	lock.unlock();
 }
 	
+void SerialPort::async_read()
+{
+	if (!port || !port->is_open())
+		return;
+	port->async_read_some
+		(
+			boost::asio::buffer( buffer, BUFFER_SIZE ),
+			[this]
+			 ( boost::system::error_code e, size_t b )
+			 {
+				on_receive_do(e, b);
+			 }
+		);
+}
+
+void SerialPort::on_receive_do( const boost::system::error_code& error, size_t bytes_transferred)
+{
+	lock.lock();
+	string data;
+	//TODO
+	notify<string>(&SerialPortObserver::on_receive, data);
+	lock.unlock();
+}
+
 void SerialPort::flush()
 {
 	/*if (opened) tcflush(id, TCIOFLUSH);*/
