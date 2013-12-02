@@ -13,6 +13,7 @@
 #include "core/PluginLoader.h"
 #include "core/Singleton.h"
 #include "core/CoreController.h"
+#include "core/Logger.h"
 #include "core/plugin_interfaces.h"
 
 

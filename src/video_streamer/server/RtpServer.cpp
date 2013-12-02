@@ -32,10 +32,20 @@ RtpServer::~RtpServer()
 {
 }
 
+<<<<<<< HEAD
 void RtpServer::set_ip( std::string host )
 {
 	host = ip;
 	g_object_set( sink, "host", host.c_str(), NULL );
+=======
+void RtpServer::set_ip( const std::string& host )
+{
+	ip = host.c_str();
+
+	if ( ip.empty() ) ip = "127.0.0.1";
+
+	g_object_set( sink, "host", ip.c_str(), NULL );
+>>>>>>> ba5290a22392af357f8f54822d70afc3b67843cf
 }
 
 
@@ -45,7 +55,11 @@ void RtpServer::set_port( int port )
 	g_object_set( sink, "port", port, NULL );
 }
 
+<<<<<<< HEAD
 void RtpServer::set_video_source( std::string source, SourceType type )
+=======
+void RtpServer::set_video_source( const std::string& source, SourceType type )
+>>>>>>> ba5290a22392af357f8f54822d70afc3b67843cf
 {
 	if ( src != NULL ) gst_object_unref( GST_OBJECT( src ) );
 
@@ -80,7 +94,11 @@ void RtpServer::set_video_source( std::string source, SourceType type )
 
 bool RtpServer::init_stream()
 {
+<<<<<<< HEAD
 	if ( !src || port < 1 || ip == "" ) return false;
+=======
+	if ( !src || port < 1 || ip.empty() ) return false;
+>>>>>>> ba5290a22392af357f8f54822d70afc3b67843cf
 
 	//adding elements to pipeline
 	gst_bin_add_many( GST_BIN( pipeline ), src, fmt, video_rate, video_convert, payloader, sink, NULL );

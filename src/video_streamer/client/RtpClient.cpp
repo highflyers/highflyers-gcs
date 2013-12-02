@@ -59,6 +59,7 @@ RtpClient::RtpClient()
 RtpClient::~RtpClient()
 {
 	delete current_image;
+<<<<<<< HEAD
 }
 
 void RtpClient::set_ip( std::string host )
@@ -128,3 +129,115 @@ QWidget* RtpClient::get_config_window()
 	return frame;
 }
 
+=======
+}
+
+void RtpClient::set_ip( const std::string& host )
+{
+	ip = host.c_str();
+
+	if ( ip.empty() ) ip = "127.0.0.1";
+
+	g_object_set( src, "address", ip.c_str(), NULL );
+}
+
+void RtpClient::set_port( int port )
+{
+	this->port = port;
+	g_object_set( src, "port", port, NULL );
+}
+
+void RtpClient::set_filename( const std::string& filename )
+{
+	g_object_set( G_OBJECT( sink ), "location", filename.c_str(), NULL );
+}
+
+void RtpClient::set_render_window( unsigned int handler )
+{
+	window_handler = handler;
+	gst_video_overlay_set_window_handle( GST_VIDEO_OVERLAY( window_sink ), handler );
+}
+
+void RtpClient::play( bool recording )
+{
+	//TODO Dynamically changing the pipeline
+
+	if ( recording )
+	{
+		gst_bin_add_many( GST_BIN( pipeline ), queue1, encoder, queue2, mux, sink, NULL );
+
+		if ( !gst_element_link_many( tee, queue1, encoder, queue2, mux, sink, NULL ) )
+		{
+			throw std::runtime_error( "Failed to link file sink!" );
+		}
+	}
+
+	gst_bin_add( GST_BIN( pipeline ), window_sink );
+
+	if ( !gst_element_link( tee, window_sink ) )
+	{
+		throw std::runtime_error( "Failed to link window sink!" );
+	}
+
+	if ( window_handler != 0 )
+		set_render_window( window_handler );
+
+	gst_element_set_state( GST_ELEMENT( pipeline ), GST_STATE_PLAYING );
+}
+
+void RtpClient::stop()
+{
+	gst_element_set_state( GST_ELEMENT( pipeline ), GST_STATE_NULL );
+}
+
+Image* RtpClient::get_image()
+{
+	return current_image;
+}
+
+QWidget* RtpClient::get_config_window()
+{
+	auto frame = new QFrame();
+
+	frame->setLayout( new QVBoxLayout() );
+
+	auto settingBox = new QGroupBox();
+	auto le_ip = new QLineEdit( QString::fromStdString( get_ip() ) );
+	auto sb_port = new QSpinBox();
+	sb_port->setRange( 0, 65535 );
+	sb_port->setValue( get_port() );
+
+
+	QFormLayout* formLayout = new QFormLayout;
+	formLayout->addRow( "IP: ", le_ip );
+	formLayout->addRow( "Port: ", sb_port );
+	settingBox->setLayout( formLayout );
+
+	frame->layout()->addWidget( settingBox );
+	settingBox->setTitle( "Connection" );
+
+	auto ok_canc_frame = new QFrame();
+	ok_canc_frame->setLayout( new QHBoxLayout() );
+
+	auto ok_canc_button = new QPushButton( "Cancel" );
+	ok_canc_frame->layout()->addWidget( ok_canc_button );
+	QObject::connect( ok_canc_button, &QPushButton::clicked, [frame]
+	{
+		frame->close();
+	} );
+
+	ok_canc_button = new QPushButton( "OK" );
+	ok_canc_frame->layout()->addWidget( ok_canc_button );
+	QObject::connect( ok_canc_button, &QPushButton::clicked, [this, le_ip, sb_port, frame]
+	{
+		set_ip( le_ip->text().toStdString() );
+		set_port( sb_port->value() );
+		frame->close();
+	} );
+
+	frame->layout()->addWidget( ok_canc_frame );
+
+	return frame;
+}
+
+>>>>>>> ba5290a22392af357f8f54822d70afc3b67843cf

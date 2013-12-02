@@ -21,7 +21,11 @@ public:
 	 *
 	 * IP Address
 	 */
+<<<<<<< HEAD
 	virtual void set_ip( std::string host ) = 0;
+=======
+	virtual void set_ip( const std::string& host ) = 0;
+>>>>>>> ba5290a22392af357f8f54822d70afc3b67843cf
 
 	/**
 	* \return hostname or IP Address
@@ -30,6 +34,11 @@ public:
 	*/
 	std::string get_ip()
 	{
+<<<<<<< HEAD
+=======
+		if ( ip.empty() ) return "127.0.0.1";
+
+>>>>>>> ba5290a22392af357f8f54822d70afc3b67843cf
 		return ip;
 	}
 

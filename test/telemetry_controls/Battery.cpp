@@ -11,7 +11,7 @@ TEST( BatteryTest, CheckSetMaxValue )
 	ASSERT_FLOAT_EQ( battery.get_maxvalue(), expected );
 }
 
-TEST( BatteryTest, CheckReturn_procent )
+TEST( BatteryTest, CheckReturn_percent )
 {
 	int expected = 0;
 	BatteryWidget bat;
@@ -27,15 +27,101 @@ TEST( BatteryTest, CheckReturn_procent )
 	}
 }
 
-TEST( BatteryTest, CheckReturn_procentForZeros )
+TEST( BatteryTest, CheckReturn_percentForZeros )
 {
 	int expected = 0;
 	BatteryWidget batt;
 	batt.set_maxvalue( 0 );
 	batt.set_minvalue( 0 );
 	batt.set_voltage( 0 );
+<<<<<<< HEAD
+
+	ASSERT_EQ( batt.return_percent(), expected );
+=======
 
 	ASSERT_EQ( batt.return_percent(), expected );
 
 
 }
+
+TEST( BatteryTest, CheckReturn_percentForBigNumber )
+{
+	BatteryWidget bat;
+	bat.set_maxvalue( 999999999999 );
+	bat.set_minvalue( 999999999997 );
+	bat.set_voltage( 999999999998 );
+	int expected = 50;
+
+	ASSERT_EQ( bat.return_percent(), expected );
+}
+
+TEST( BatteryTest, CheckReturn_percentForWideRange )
+{
+	BatteryWidget bat;
+	bat.set_maxvalue( 999999999999 );
+	bat.set_minvalue( -999999999999 );
+	bat.set_voltage( 0 );
+	int expected = 50;
+	ASSERT_EQ( bat.return_percent(), expected );
+
+}
+
+TEST( BatteryTest, CheckReturn_percentWithUpSideDownWideRange )
+{
+	BatteryWidget bat;
+	bat.set_maxvalue( -999999999999 );
+	bat.set_minvalue( 999999999999 );
+	bat.set_voltage( 0 );
+	int expected = 50;
+	ASSERT_EQ( bat.return_percent(), expected );
+}
+
+TEST( BatteryTest, CheckReturn_percentForMaxLowerThanMin )
+{
+	BatteryWidget bat;
+	bat.set_maxvalue( -1 );
+	bat.set_minvalue( 1 );
+	bat.set_voltage( 0 );
+	int expected = 50;
+	ASSERT_EQ( bat.return_percent(), expected );
+}
+
+TEST( BatteryTest, ChechkReturn_percentForZeroMaxMinAndDiffValue )
+{
+	BatteryWidget bat;
+	bat.set_maxvalue( 0 );
+	bat.set_minvalue( 0 );
+	bat.set_voltage( 1 );
+	int expected = 0;
+	ASSERT_EQ( bat.return_percent(), expected );
+}
+>>>>>>> ba5290a22392af357f8f54822d70afc3b67843cf
+
+TEST( BatteryTest, CheckReturn_percentForNegativeNumbers )
+{
+	BatteryWidget bat;
+	bat.set_maxvalue( -3 );
+	bat.set_minvalue( -10 );
+	bat.set_voltage( -4 );
+	float expected = ( 600/7 );
+	ASSERT_EQ( bat.return_percent(), expected );
+}
+
+TEST( BatteryTest, CheckReturn_percentForWrongNegativeNumbers )
+{
+	BatteryWidget bat;
+	bat.set_maxvalue( -10 );
+	bat.set_minvalue( -2 );
+	bat.set_voltage( 1 );
+	float expected = -( 75/2 );
+	ASSERT_EQ( bat.return_percent(), expected );
+}
+
+
+
+
+
+
+
+
+
