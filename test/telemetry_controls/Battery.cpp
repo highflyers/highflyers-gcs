@@ -11,7 +11,7 @@ TEST( BatteryTest, CheckSetMaxValue )
 	ASSERT_FLOAT_EQ( battery.get_maxvalue(), expected );
 }
 
-TEST( BatteryTest, CheckReturn_procent )
+TEST( BatteryTest, CheckReturn_percent )
 {
 	int expected = 0;
 	BatteryWidget bat;
@@ -27,7 +27,7 @@ TEST( BatteryTest, CheckReturn_procent )
 	}
 }
 
-TEST( BatteryTest, CheckReturn_procentForZeros )
+TEST( BatteryTest, CheckReturn_percentForZeros )
 {
 	int expected = 0;
 	BatteryWidget batt;
@@ -40,76 +40,76 @@ TEST( BatteryTest, CheckReturn_procentForZeros )
 
 }
 
-TEST( BatteryTest, CheckReturn_procentForBigNumber )
+TEST( BatteryTest, CheckReturn_percentForBigNumber )
 {
-	Battery_Control bat;
+	BatteryWidget bat;
 	bat.set_maxvalue( 999999999999 );
 	bat.set_minvalue( 999999999997 );
-	bat.set_value( 999999999998 );
+	bat.set_voltage( 999999999998 );
 	int expected = 50;
 
-	ASSERT_EQ( bat.return_procent(), expected );
+	ASSERT_EQ( bat.return_percent(), expected );
 }
 
-TEST( BatteryTest, CheckReturn_procentForWideRange )
+TEST( BatteryTest, CheckReturn_percentForWideRange )
 {
-	Battery_Control bat;
+	BatteryWidget bat;
 	bat.set_maxvalue( 999999999999 );
 	bat.set_minvalue( -999999999999 );
-	bat.set_value( 0 );
+	bat.set_voltage( 0 );
 	int expected = 50;
-	ASSERT_EQ( bat.return_procent(), expected );
+	ASSERT_EQ( bat.return_percent(), expected );
 
 }
 
-TEST( BatteryTest, CheckReturn_procentWithUpSideDownWideRange )
+TEST( BatteryTest, CheckReturn_percentWithUpSideDownWideRange )
 {
-	Battery_Control bat;
+	BatteryWidget bat;
 	bat.set_maxvalue( -999999999999 );
 	bat.set_minvalue( 999999999999 );
-	bat.set_value( 0 );
+	bat.set_voltage( 0 );
 	int expected = 50;
-	ASSERT_EQ( bat.return_procent(), expected );
+	ASSERT_EQ( bat.return_percent(), expected );
 }
 
-TEST( BatteryTest, CheckReturn_procentForMaxLowerThanMin )
+TEST( BatteryTest, CheckReturn_percentForMaxLowerThanMin )
 {
-	Battery_Control bat;
+	BatteryWidget bat;
 	bat.set_maxvalue( -1 );
 	bat.set_minvalue( 1 );
-	bat.set_value( 0 );
+	bat.set_voltage( 0 );
 	int expected = 50;
-	ASSERT_EQ( bat.return_procent(), expected );
+	ASSERT_EQ( bat.return_percent(), expected );
 }
 
-TEST( BatteryTest, ChechkReturn_procentForZeroMaxMinAndDiffValue )
+TEST( BatteryTest, ChechkReturn_percentForZeroMaxMinAndDiffValue )
 {
-	Battery_Control bat;
+	BatteryWidget bat;
 	bat.set_maxvalue( 0 );
 	bat.set_minvalue( 0 );
-	bat.set_value( 1 );
+	bat.set_voltage( 1 );
 	int expected = 0;
-	ASSERT_EQ( bat.return_procent(), expected );
+	ASSERT_EQ( bat.return_percent(), expected );
 }
 
-TEST( BatteryTest, CheckReturn_procentForNegativeNumbers )
+TEST( BatteryTest, CheckReturn_percentForNegativeNumbers )
 {
-	Battery_Control bat;
+	BatteryWidget bat;
 	bat.set_maxvalue( -3 );
 	bat.set_minvalue( -10 );
-	bat.set_value( -4 );
+	bat.set_voltage( -4 );
 	float expected = ( 600/7 );
-	ASSERT_EQ( bat.return_procent(), expected );
+	ASSERT_EQ( bat.return_percent(), expected );
 }
 
-TEST( BatteryTest, CheckReturn_procentForWrongNegativeNumbers )
+TEST( BatteryTest, CheckReturn_percentForWrongNegativeNumbers )
 {
-	Battery_Control bat;
+	BatteryWidget bat;
 	bat.set_maxvalue( -10 );
 	bat.set_minvalue( -2 );
-	bat.set_value( 1 );
+	bat.set_voltage( 1 );
 	float expected = -( 75/2 );
-	ASSERT_EQ( bat.return_procent(), expected );
+	ASSERT_EQ( bat.return_percent(), expected );
 }
 
 
