@@ -45,26 +45,26 @@ class BatteryWidget
 {
 private:
 
-	float maxvalue;
-	float minvalue;
-	float voltage;
+	double maxvalue;
+	double minvalue;
+	double voltage;
 	Battery gui;
 
 public:
 
-	BatteryWidget( float current = 4, float max = 6, float min = 0 );		//if there are all 0 it doesn't make sense so they are some radomly choose values
+	BatteryWidget( double current, double max, double min );
 
 	float get_maxvalue();
 
-	void set_maxvalue( float maximum );
+	void set_maxvalue( double maximum );
 
 	float get_minvalue();
 
-	void set_minvalue( float miniumum );
+	void set_minvalue( double miniumum );
 
 	float get_value();
 
-	void set_voltage( float voltage_ );
+	void set_voltage( double voltage_ );
 
 	int return_percent();
 
@@ -85,7 +85,7 @@ public:
 
 	Qt::Alignment alignment_;
 	int percentage;
-	int width_;			//added this underscore for purpose look at paintevent
+	int bar_width;
 	int margin;
 
 	Qt::Alignment getalignment() const;
