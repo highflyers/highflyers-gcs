@@ -1,9 +1,6 @@
-find_package(Boost REQUIRED COMPONENTS regex)
-
 add_library(core
 	PluginLoader.cpp
 	CoreController.cpp
-	Logger.cpp
 	Image.cpp)
 
 include_directories(include/core)
