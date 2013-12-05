@@ -46,14 +46,13 @@ RtpClient::RtpClient()
 #endif
 
 	// adding elements to pipeline
-	gst_bin_add_many( GST_BIN( pipeline ), src, depayloader, video_rate, fmt, video_convert, tee, NULL );
+	gst_bin_add_many( GST_BIN( pipeline ), src, depayloader, video_rate, fmt, video_convert, tee, window_sink, NULL );
 
 	// linking
-	if ( !gst_element_link_many( src, depayloader, video_rate, fmt, video_convert, tee, NULL ) )
+	if ( !gst_element_link_many( src, depayloader, video_rate, fmt, video_convert, tee, window_sink, NULL ) )
 	{
 		throw std::runtime_error( "Failed to link elements!" );
 	}
-
 }
 
 RtpClient::~RtpClient()
@@ -67,7 +66,7 @@ void RtpClient::set_ip( const std::string& host )
 
 	if ( ip.empty() ) ip = "127.0.0.1";
 
-	g_object_set( src, "address", ip.c_str(), NULL );
+	g_object_set( src, "multicast-group", ip.c_str(), NULL );
 }
 
 void RtpClient::set_port( int port )
@@ -94,18 +93,10 @@ void RtpClient::play( bool recording )
 	if ( recording )
 	{
 		gst_bin_add_many( GST_BIN( pipeline ), queue1, encoder, queue2, mux, sink, NULL );
-
 		if ( !gst_element_link_many( tee, queue1, encoder, queue2, mux, sink, NULL ) )
 		{
 			throw std::runtime_error( "Failed to link file sink!" );
 		}
-	}
-
-	gst_bin_add( GST_BIN( pipeline ), window_sink );
-
-	if ( !gst_element_link( tee, window_sink ) )
-	{
-		throw std::runtime_error( "Failed to link window sink!" );
 	}
 
 	if ( window_handler != 0 )
