@@ -6,7 +6,7 @@ using namespace HighFlyers;
 TEST( BatteryTest, CheckSetMaxValue )
 {
 	float expected = 42.f;
-	BatteryWidget battery;
+	BatteryWidget battery(4,6,2);
 	battery.set_maxvalue( expected );
 	ASSERT_FLOAT_EQ( battery.get_maxvalue(), expected );
 }
@@ -14,7 +14,7 @@ TEST( BatteryTest, CheckSetMaxValue )
 TEST( BatteryTest, CheckReturn_percent )
 {
 	int expected = 0;
-	BatteryWidget bat;
+	BatteryWidget bat(4,6,2);
 
 	for (int i=0; i < 90; i++)
 	{
@@ -30,7 +30,7 @@ TEST( BatteryTest, CheckReturn_percent )
 TEST( BatteryTest, CheckReturn_percentForZeros )
 {
 	int expected = 0;
-	BatteryWidget batt;
+	BatteryWidget batt(4,6,2);
 	batt.set_maxvalue( 0 );
 	batt.set_minvalue( 0 );
 	batt.set_voltage( 0 );
@@ -42,7 +42,7 @@ TEST( BatteryTest, CheckReturn_percentForZeros )
 
 TEST( BatteryTest, CheckReturn_percentForBigNumber )
 {
-	BatteryWidget bat;
+	BatteryWidget bat(4,6,2);
 	bat.set_maxvalue( 999999999999 );
 	bat.set_minvalue( 999999999997 );
 	bat.set_voltage( 999999999998 );
@@ -53,7 +53,7 @@ TEST( BatteryTest, CheckReturn_percentForBigNumber )
 
 TEST( BatteryTest, CheckReturn_percentForWideRange )
 {
-	BatteryWidget bat;
+	BatteryWidget bat(4,6,2);
 	bat.set_maxvalue( 999999999999 );
 	bat.set_minvalue( -999999999999 );
 	bat.set_voltage( 0 );
@@ -64,7 +64,7 @@ TEST( BatteryTest, CheckReturn_percentForWideRange )
 
 TEST( BatteryTest, CheckReturn_percentWithUpSideDownWideRange ) //check not for expected but ASSERT_THROW
 {
-	BatteryWidget bat;
+	BatteryWidget bat(4,6,2);
 	bat.set_maxvalue( -999999999999 );
 	bat.set_minvalue( 999999999999 );
 	bat.set_voltage( 0 );
@@ -74,7 +74,7 @@ TEST( BatteryTest, CheckReturn_percentWithUpSideDownWideRange ) //check not for 
 
 TEST( BatteryTest, CheckReturn_percentForMaxLowerThanMin ) // check not for expected but ASSERT_THROW
 {
-	BatteryWidget bat;
+	BatteryWidget bat(4,6,2);
 	bat.set_maxvalue( -1 );
 	bat.set_minvalue( 1 );
 	bat.set_voltage( 0 );
@@ -84,7 +84,7 @@ TEST( BatteryTest, CheckReturn_percentForMaxLowerThanMin ) // check not for expe
 
 TEST( BatteryTest, ChechkReturn_percentForZeroMaxMinAndDiffValue )
 {
-	BatteryWidget bat;
+	BatteryWidget bat(4,6,2);
 	bat.set_maxvalue( 0 );
 	bat.set_minvalue( 0 );
 	bat.set_voltage( 1 );
@@ -95,7 +95,7 @@ TEST( BatteryTest, ChechkReturn_percentForZeroMaxMinAndDiffValue )
 
 TEST( BatteryTest, CheckReturn_percentForNegativeNumbers )
 {
-	BatteryWidget bat;
+	BatteryWidget bat(4,6,2);
 	bat.set_maxvalue( -3 );
 	bat.set_minvalue( -10 );
 	bat.set_voltage( -4 );
@@ -105,7 +105,7 @@ TEST( BatteryTest, CheckReturn_percentForNegativeNumbers )
 
 TEST( BatteryTest, CheckReturn_percentForWrongNegativeNumbers )
 {
-	BatteryWidget bat;
+	BatteryWidget bat(4,6,2);
 	bat.set_maxvalue( -10 );
 	bat.set_minvalue( -2 );
 	bat.set_voltage( 1 );
