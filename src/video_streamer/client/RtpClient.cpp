@@ -59,77 +59,6 @@ RtpClient::RtpClient()
 RtpClient::~RtpClient()
 {
 	delete current_image;
-<<<<<<< HEAD
-}
-
-void RtpClient::set_ip( std::string host )
-{
-	ip = host;
-	g_object_set( src, "address", host.c_str(), NULL );
-}
-
-void RtpClient::set_port( int port )
-{
-	this->port = port;
-	g_object_set( src, "port", port, NULL );
-}
-
-void RtpClient::set_filename( const std::string& filename )
-{
-	g_object_set( G_OBJECT( sink ), "location", filename.c_str(), NULL );
-}
-
-void RtpClient::set_render_window( unsigned int handler )
-{
-	window_handler = handler;
-	gst_video_overlay_set_window_handle( GST_VIDEO_OVERLAY( window_sink ), handler );
-}
-
-void RtpClient::play( bool recording )
-{
-	if ( recording )
-	{
-		gst_bin_add_many( GST_BIN( pipeline ), queue1, encoder, queue2, mux, sink, NULL );
-
-		if ( !gst_element_link_many( tee, queue1, encoder, queue2, mux, sink, NULL ) )
-		{
-			throw std::runtime_error( "Failed to link file sink!" );
-		}
-	}
-
-	gst_bin_add( GST_BIN( pipeline ), window_sink );
-
-	if ( !gst_element_link( tee, window_sink ) )
-	{
-		throw std::runtime_error( "Failed to link window sink!" );
-	}
-
-	if ( window_handler != 0 )
-		set_render_window( window_handler );
-
-	gst_element_set_state( GST_ELEMENT( pipeline ), GST_STATE_PLAYING );
-}
-
-void RtpClient::stop()
-{
-	gst_element_set_state( GST_ELEMENT( pipeline ), GST_STATE_NULL );
-}
-
-Image* RtpClient::get_image()
-{
-	return current_image;
-}
-
-QWidget* RtpClient::get_config_window()
-{
-	auto frame = new QFrame();
-
-	//To implement
-
-	return frame;
-}
-
-=======
 }
 
 void RtpClient::set_ip( const std::string& host )
@@ -239,5 +168,3 @@ QWidget* RtpClient::get_config_window()
 
 	return frame;
 }
-
->>>>>>> ba5290a22392af357f8f54822d70afc3b67843cf

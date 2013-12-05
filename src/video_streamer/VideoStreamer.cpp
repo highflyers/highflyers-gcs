@@ -5,11 +5,8 @@ using namespace HighFlyers;
 
 gboolean VideoStreamer::bus_call( GstBus* bus, GstMessage* msg, gpointer data )
 {
-<<<<<<< HEAD
-	static_cast<VideoStreamer*>( data )->notify<GstMessage*>( &IVSObserver::bus_call, ( GstMessage* )msg );
-=======
+
 //	static_cast<VideoStreamer*>( data )->notify<GstMessage*>( &IVSObserver::bus_call, ( GstMessage* )msg );
->>>>>>> ba5290a22392af357f8f54822d70afc3b67843cf
 	return TRUE;
 }
 
