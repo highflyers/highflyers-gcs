@@ -34,10 +34,6 @@ TEST( BatteryTest, CheckReturn_percentForZeros )
 	batt.set_maxvalue( 0 );
 	batt.set_minvalue( 0 );
 	batt.set_voltage( 0 );
-<<<<<<< HEAD
-
-	ASSERT_EQ( batt.return_percent(), expected );
-=======
 
 	ASSERT_EQ( batt.return_percent(), expected );
 
@@ -95,7 +91,7 @@ TEST( BatteryTest, ChechkReturn_percentForZeroMaxMinAndDiffValue )
 	int expected = 0;
 	ASSERT_EQ( bat.return_percent(), expected );
 }
->>>>>>> ba5290a22392af357f8f54822d70afc3b67843cf
+
 
 TEST( BatteryTest, CheckReturn_percentForNegativeNumbers )
 {
