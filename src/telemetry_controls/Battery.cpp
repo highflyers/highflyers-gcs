@@ -73,7 +73,7 @@ void Battery::paintEvent( QPaintEvent *event )
 
 
 
-BatteryWidget::BatteryWidget( float current, float max, float min ): voltage(current), maxvalue(max), minvalue(min)
+BatteryWidget::BatteryWidget( double current, double max, double min ): voltage(current), maxvalue(max), minvalue(min)
 {
 	update();
 }
@@ -84,9 +84,17 @@ float BatteryWidget::get_maxvalue()
 	return maxvalue;
 }
 
-void BatteryWidget::set_maxvalue( float maximum )
+void BatteryWidget::set_maxvalue( double maximum )
 {
-	maxvalue = maximum;
+	if(maximum > minvalue)
+	{
+		maxvalue = maximum;
+	}
+	else
+	{
+		maxvalue = get_minvalue();
+		set_minvalue(maximum);
+	}
 }
 
 float BatteryWidget::get_minvalue()
@@ -94,9 +102,18 @@ float BatteryWidget::get_minvalue()
 	return minvalue;
 }
 
-void BatteryWidget::set_minvalue( float miniumum )
+void BatteryWidget::set_minvalue( double minimum )
 {
-	minvalue = miniumum;
+	if(minvalue < maxvalue)
+	{
+		minvalue = minimum;
+	}
+	else
+	{
+		minvalue = get_maxvalue();
+		set_maxvalue(minimum);
+	}
+
 }
 
 float BatteryWidget::get_value()
@@ -104,15 +121,23 @@ float BatteryWidget::get_value()
 	return voltage;
 }
 
-void BatteryWidget::set_voltage( float voltage_ )
+void BatteryWidget::set_voltage( double voltage_ )
 {
-	if(voltage > maxvalue)
+	if(voltage > maxvalue && maxvalue > 0)
 	{
 		voltage = get_maxvalue();
 	}
-	else if(voltage < minvalue)
+	else if(voltage < minvalue && minvalue > 0)
 	{
 		voltage = get_minvalue();
+	}
+	else if(voltage > minvalue && minvalue < 0)
+	{
+		voltage = get_minvalue();
+	}
+	else if(voltage < maxvalue && maxvalue < 0)
+	{
+		voltage = get_maxvalue();
 	}
 	else
 	{
@@ -137,9 +162,9 @@ int BatteryWidget::return_percent()
 
 void BatteryWidget::update()
 {
-	gui.max->setText( QString::number(get_maxvalue()) + " V" );
-	gui.min->setText( QString::number(get_minvalue()) + " V" );
-	gui.actual->setText( QString::number(get_value()) + " V" );
+	gui.max->setText( QString::number( get_maxvalue() ) + " V" );
+	gui.min->setText( QString::number( get_minvalue() ) + " V" );
+	gui.actual->setText( QString::number( get_value() ) + " V" );
 	gui.status->percentage = return_percent();
 }
 
@@ -147,7 +172,7 @@ void BatteryWidget::update()
 
 BatteryBar::BatteryBar( QWidget *parent )
 {
-	width_ = 35;
+	bar_width = 35;
 	margin = 2;
 }
 
@@ -178,9 +203,9 @@ void BatteryBar::paintEvent( QPaintEvent *event )
 		if ( alignment_ & Qt::AlignLeft )
 			x = 0;
 		else if ( alignment_ & Qt::AlignRight )
-			x = width() - width_;					//if there is no underscore there is error that expression cannot be used as function
+			x = width() - bar_width;
 		else if ( alignment_ & Qt::AlignHCenter )
-			x = (width() - width_)/2;
+			x = (width() - bar_width)/2;
 		else if ( alignment_ & Qt::AlignJustify )
 			x = 0;
 
@@ -193,7 +218,7 @@ void BatteryBar::paintEvent( QPaintEvent *event )
 
 	QBrush background( Qt::gray,Qt::SolidPattern );
 	mypainter.setBrush( background );
-	mypainter.drawRoundedRect( x,y,width_,height(),10,10 );		// background
+	mypainter.drawRoundedRect( x,y,bar_width,height(),10,10 );		// background
 
 	if( percentage > 25 )
 	{
@@ -209,7 +234,7 @@ void BatteryBar::paintEvent( QPaintEvent *event )
 	int temp = (height()) * ((float)percentage / 100);	// calculate how height in px should be progressbar rectangle
 	int halfmargin = margin / 2;
 	int y1 = height() - temp + halfmargin;		// calculate where it should start drawing on y
-	mypainter.drawRoundedRect( x+halfmargin, y1, width_ - margin, temp - margin, 10, 10 );
+	mypainter.drawRoundedRect( x+halfmargin, y1, bar_width - margin, temp - margin, 10, 10 );
 
 	if( percentage > 48 )
 	{
@@ -221,7 +246,7 @@ void BatteryBar::paintEvent( QPaintEvent *event )
 		QPen textpen(Qt::white);
 		mypainter.setPen(textpen);
 	}
-	mypainter.drawText( width()/2 - width_/2 + margin, height()/2 ,30,30,0,QString::number(percentage)  + "%" );
+	mypainter.drawText( width()/2 - bar_width/2 + margin, height()/2 ,30,30,0,QString::number(percentage)  + "%" );
 }
 
 

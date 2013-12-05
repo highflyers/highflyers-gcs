@@ -159,4 +159,3 @@ QWidget* RtpClient::get_config_window()
 
 	return frame;
 }
-
