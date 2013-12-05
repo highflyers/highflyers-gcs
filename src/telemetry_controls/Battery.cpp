@@ -102,11 +102,11 @@ float BatteryWidget::get_minvalue()
 	return minvalue;
 }
 
-void BatteryWidget::set_minvalue( double miniumum )
+void BatteryWidget::set_minvalue( double minimum )
 {
 	if(minvalue < maxvalue)
 	{
-		minvalue = miniumum;
+		minvalue = minimum;
 	}
 	else
 	{
