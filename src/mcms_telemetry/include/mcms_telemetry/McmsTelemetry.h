@@ -10,11 +10,22 @@
 
 #include "core/plugin_interfaces/ITelemetryControlsPlugin.h"
 
+namespace Ui {
+	class McmsTelemetry;
+}
+
 namespace HighFlyers {
 
-class McmsTelemetry : public ITelemetryControlsPlugin
+class McmsTelemetry : public ITelemetryControlsPlugin, public QWidget
 {
-	QWidget* get_widget() {return nullptr;}
+	Q_OBJECT
+
+private:
+	Ui::McmsTelemetry* ui;
+
+public:
+	McmsTelemetry( QWidget* parent = 0 );
+	QWidget* get_widget() { return this; }
 	void set_battery_value( double value ){}
 	void set_latitude( double value ){}
 	void set_longitude( double value ){}
