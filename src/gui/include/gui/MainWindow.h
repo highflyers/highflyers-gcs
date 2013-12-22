@@ -17,7 +17,12 @@ class MainWindow : public QMainWindow
 {
 	Q_OBJECT
 
+private:
+	Ui::MainWindow *ui;
 	CoreController* controller;
+	std::map<QString, QWidget*> plugin_widgets;
+
+	void unload_plugin( QString plugin_name );
 
 private Q_SLOTS:
 	void load_plugin();
@@ -30,12 +35,6 @@ public:
 	void plugin_removed( QString filename );
 
 	void set_controller( CoreController* controller );
-
-private:
-	Ui::MainWindow *ui;
-	std::map<QString, QWidget*> plugin_widgets;
-
-	void unload_plugin( QString plugin_name );
 };
 
 }

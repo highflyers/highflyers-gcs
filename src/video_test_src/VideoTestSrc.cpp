@@ -100,7 +100,7 @@ void VideoTestSrc::save_params( const std::string& pattern )
 		j++;
 	}
 
-	g_object_set( G_OBJECT( source ), "pattern", pos );
+	g_object_set( G_OBJECT( source ), "pattern", pos, NULL );
 }
 
 QWidget* VideoTestSrc::get_config_window()

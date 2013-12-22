@@ -63,7 +63,7 @@ void MainWindow::plugin_added( IPlugin* plugin, const QString& plugin_name )
 	QObject::connect( action, &QAction::triggered, [action, this]{
 		unload_plugin( action->text() );
 	} );
-	QWidget* plugin_widget = nullptr;
+	QWidget* plugin_widget;
 
 	switch (plugin->get_type_t())
 	{
@@ -71,6 +71,7 @@ void MainWindow::plugin_added( IPlugin* plugin, const QString& plugin_name )
 		plugin_widget = static_cast<IApConfigPlugin*>( plugin )->get_widget();
 		break;
 	case PluginType::VIDEO:
+	{
 		IVideoSourcePlugin* casted_plugin =
 				static_cast<IVideoSourcePlugin*>( plugin );
 
@@ -91,6 +92,10 @@ void MainWindow::plugin_added( IPlugin* plugin, const QString& plugin_name )
 				QMessageBox::information(0, "No Config", "Configuration is not available for this plugin.");
 		} );
 		casted_plugin->set_render_window( xwinid );
+		break;
+	}
+	default:
+		plugin_widget = nullptr;
 		break;
 	}
 

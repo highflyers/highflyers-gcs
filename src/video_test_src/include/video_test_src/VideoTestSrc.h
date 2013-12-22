@@ -28,7 +28,7 @@ private:
 	GstElement* queue;
 	GstElement* pipeline;
 	GstElement* app_sink;
-	unsigned int window_handler;
+	int window_handler;
 	Image* current_image;
 
 private:

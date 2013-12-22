@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.8.9)
 project (GCS)
 enable_testing()
-set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "-std=c++0x -Wall -pedantic ${CMAKE_CXX_FLAGS}")
 
 
 include_directories(${GCS_SOURCE_DIR}/src/gui/include)
@@ -14,6 +14,7 @@ include_directories(${GCS_SOURCE_DIR}/src/protocol/c_protocol/include)
 include_directories(${GCS_SOURCE_DIR}/src/protocol/c_protocol/nanopb)
 include_directories(${GCS_SOURCE_DIR}/src/communication/include)
 include_directories(${GCS_SOURCE_DIR}/src/video_test_src/include)
+include_directories(${GCS_SOURCE_DIR}/src/mcms_telemetry/include)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)

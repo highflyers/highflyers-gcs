@@ -70,7 +70,7 @@ sub generate_accessor
 		$collector .= "\ttmp.$var_name = $widget->get<$defs{$var_name}{type}>(\"$var_name\");\n";
 	}
 
-	$collector .= "\n\treturn tmp;\n};\n\n";
+	$collector .= "\n\treturn tmp;\n}\n\n";
 	
 	$collector .= "void $class_name\::set_$member_name(const $n& $member_name)\n{\n";
 	$collector .= "\t$widget->start_transaction();\n";

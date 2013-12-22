@@ -102,10 +102,9 @@ IPlugin* PluginLoader_::get_object( const std::string& filename, PluginType type
 
 	IPlugin* iface;
 
-	typedef IPlugin* (*FactoryMethod)();
-	FactoryMethod fm =
+	void* function_symbol =
 #ifdef __linux__
-		(FactoryMethod)dlsym( libraries[filename], "factory_method" );
+		dlsym( libraries[filename], "factory_method" );
 #elif defined _WIN32
 		(FactoryMethod)(::GetProcAddress( reinterpret_cast<HMODULE>( libraries[filename] ),
 				"factory_method" ) );
@@ -113,9 +112,13 @@ IPlugin* PluginLoader_::get_object( const std::string& filename, PluginType type
 		nullptr; static_assert( false, "Unsupported OS" );
 #endif
 
-	if (fm == nullptr)
+	if (function_symbol == nullptr)
 		throw std::runtime_error( "Cannot load factory method: " + get_last_error() );
 
+	typedef IPlugin* (*FactoryMethod)();
+	FactoryMethod fm;
+
+	*reinterpret_cast<void **>(&fm) = function_symbol;
 	iface = fm();
 
 	if (iface == nullptr)
