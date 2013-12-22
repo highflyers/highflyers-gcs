@@ -30,7 +30,8 @@ public:
 	enum SourceType
 	{
 		//Uri, //TODO
-		V4lDevice
+		V4lDevice,
+		VideoTest,
 	};
 
 	RtpServer();
@@ -51,6 +52,12 @@ public:
 	 */
 	void set_ip( const std::string& host );
 
+	/**
+	 * \param caps caps, describing video (e.g. width, height, video format, framerate etc.)
+	 *
+	 * sets video caps
+	 */
+	void set_caps( const std::string& caps );
 	/**
 	* \param port Port
 	*

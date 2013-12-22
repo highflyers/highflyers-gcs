@@ -32,5 +32,6 @@ include_directories(${GSTREAMER_BASE_INCLUDE_DIRS})
 
 add_subdirectory (src) 
 add_subdirectory (test)
+add_subdirectory (tools)
 add_test(NAME Test COMMAND Test)
 

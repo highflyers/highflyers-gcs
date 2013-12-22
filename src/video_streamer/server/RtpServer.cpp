@@ -52,33 +52,40 @@ void RtpServer::set_video_source( const std::string& source, SourceType type )
 {
 	if ( src != NULL ) gst_object_unref( GST_OBJECT( src ) );
 
-	GstCaps* fmt_caps = NULL;
-
 	switch ( type )
 	{
 	case V4lDevice :
 		src = create_gst_element_safe( "v4l2src", "source" );
 		g_object_set( src, "device", source.c_str(), NULL );
-
-		fmt_caps = gst_caps_from_string( "video/x-raw, format=YUY2, width=640,"
-										 "height=480, framerate=30/1" );
-
 		break;
+	case VideoTest:
+	{
+		src = create_gst_element_safe( "videotestsrc", "source" );
+		GParamSpec* param = g_object_class_find_property( G_OBJECT_GET_CLASS ( src ), "pattern" );
+		GEnumValue *values = G_ENUM_CLASS ( g_type_class_ref( param->value_type ) )->values;
+		guint j = 0;
 
-		/* case Uri :
-		     if (gst_uri_is_valid(source))
-		     {
-		         src = create_gst_element_safe("uridecodebin", "source");
-		         g_object_set(src, "uri", source, NULL);
-		     }
-		     else GST_ERROR("Invalid URI\n");
-		     break; */
+		while (values[j].value_name)
+		{
+			if (values[j].value_nick == source)
+			{
+				g_object_set( src, "pattern", j, NULL );
+				break;
+			}
+			j++;
+		}
+	}
+		break;
 	default:
 		GST_ERROR( "Invalid source type\n" );
 	}
+}
+
+void RtpServer::set_caps( const std::string& caps )
+{
+	GstCaps* fmt_caps = gst_caps_from_string( caps.c_str() );
 
 	g_object_set( fmt, "caps", fmt_caps, NULL );
-	gst_caps_unref( fmt_caps );
 }
 
 bool RtpServer::init_stream()
