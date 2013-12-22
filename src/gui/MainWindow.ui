@@ -30,7 +30,13 @@
     <addaction name="actionLoad_Plugin"/>
     <addaction name="separator"/>
    </widget>
+   <widget class="QMenu" name="menuCommunication">
+    <property name="title">
+     <string>Communication</string>
+    </property>
+   </widget>
    <addaction name="menuPlugins"/>
+   <addaction name="menuCommunication"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">

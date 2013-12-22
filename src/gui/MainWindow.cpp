@@ -42,7 +42,7 @@ void MainWindow::load_plugin()
 #endif
 					+ ")" );
 
-	controller->load_plugin( plugin_filename.toUtf8().constData() );
+			controller->load_plugin( plugin_filename.toUtf8().constData() );
 }
 
 void MainWindow::unload_plugin( QString plugin_name )
@@ -94,6 +94,19 @@ void MainWindow::plugin_added( IPlugin* plugin, const QString& plugin_name )
 		casted_plugin->set_render_window( xwinid );
 		break;
 	}
+	case PluginType::COMMUNICATION:
+	{
+		QAction* action = new QAction( "Properties " + plugin_name + "...", nullptr );
+
+		ui->menuCommunication->addAction( action );
+		QObject::connect( action, &QAction::triggered, [plugin]{
+			QWidget* config_widget = static_cast<ICommunicationPlugin*>( plugin )->get_configuration_widget();
+
+			if (config_widget != nullptr)
+				config_widget->show();
+		});
+		break;
+	}
 	default:
 		plugin_widget = nullptr;
 		break;
@@ -109,9 +122,16 @@ void MainWindow::plugin_added( IPlugin* plugin, const QString& plugin_name )
 
 void MainWindow::plugin_removed( QString filename )
 {
-	QList<QAction*> actions = ui->menuPlugins->actions();
+	for (QAction* action : ui->menuPlugins->actions())
+	{
+		if (action->text().contains( filename, Qt::CaseSensitive ))
+		{
+			ui->menuPlugins->removeAction( action );
+			break;
+		}
+	}
 
-	for (QAction* action : actions)
+	for (QAction* action : ui->menuCommunication->actions())
 	{
 		if (action->text().contains( filename, Qt::CaseSensitive ))
 		{
