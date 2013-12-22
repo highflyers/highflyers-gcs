@@ -26,13 +26,13 @@ private:
 public:
 	McmsTelemetry( QWidget* parent = 0 );
 	QWidget* get_widget() { return this; }
-	void set_battery_value( double value ){}
-	void set_latitude( double value ){}
-	void set_longitude( double value ){}
-	void set_heading( double value ){}
-	void set_yaw( double value ){}
-	void set_roll( double value ){}
-	void set_pitch( double value ){}
+	void set_battery_value( double value );
+	void set_latitude( double value );
+	void set_longitude( double value );
+	void set_heading( double value );
+	void set_yaw( double value );
+	void set_roll( double value );
+	void set_pitch( double value );
 };
 
 }

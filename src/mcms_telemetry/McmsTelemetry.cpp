@@ -15,3 +15,17 @@ McmsTelemetry::McmsTelemetry( QWidget* parent )
   ui( new Ui::McmsTelemetry )
 {
 }
+
+#define SETTER_IMPL(WHAT, QT_CONTROL) \
+void McmsTelemetry::set_##WHAT( double value ) \
+{ \
+	ui->QT_CONTROL->setText(QString::number(value)); \
+}
+
+SETTER_IMPL(battery_value, batteryVoltageLineEdit)
+SETTER_IMPL(latitude, latitudeLineEdit)
+SETTER_IMPL(longitude, longitudeLineEdit)
+SETTER_IMPL(heading, headingLineEdit)
+SETTER_IMPL(yaw, yawLineEdit)
+SETTER_IMPL(pitch, pitchLineEdit)
+SETTER_IMPL(roll, rollLineEdit)
