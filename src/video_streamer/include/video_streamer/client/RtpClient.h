@@ -47,9 +47,41 @@ private:
 	/**< window sink */
 	GstElement* window_sink;
 
+	/**< UDP caps */
+	std::string udp_caps;
+
+	/**
+	 * video caps
+	 */
+	std::string video_caps;
+
 	unsigned int window_handler;
 
 	Image* current_image;
+
+	/**
+	 * Gets udp caps
+	 */
+	std::string get_udp_caps() const;
+
+	/**
+	 * Gets video caps
+	 */
+	std::string get_video_caps() const;
+
+	/**
+	 * \param caps udp caps
+	 *
+	 * Sets udp caps
+	 */
+	void set_udp_caps( const std::string& caps );
+
+	/**
+	 * \param caps video caps
+	 *
+	 * Sets video caps
+	 */
+	void set_video_caps( const std::string& caps );
 
 public:
 	RtpClient();
@@ -63,36 +95,36 @@ public:
 	void set_ip( const std::string& host );
 
 	/**
-	* \param port Port
-	*
-	* Port
-	*/
+	 * \param port Port
+	 *
+	 * Port
+	 */
 	void set_port( int port );
 
 	/**
-	* \param file_name file name (mkv format)
-	*
-	* Save input stream to file
-	*/
+	 * \param file_name file name (mkv format)
+	 *
+	 * Save input stream to file
+	 */
 	void set_filename( const std::string& filename );
 
 	/**
-	* \param handler window handler
-	*
-	* Render input stream on window
-	*/
+	 * \param handler window handler
+	 *
+	 * Render input stream on window
+	 */
 	void set_render_window( unsigned int handler );
 
 	/**
-	*
-	* play stream
-	*/
+	 *
+	 * play stream
+	 */
 	void play( bool recording );
 
 	/**
-	*
-	* stop stream
-	*/
+	 *
+	 * stop stream
+	 */
 	void stop();
 
 	Image* get_image();

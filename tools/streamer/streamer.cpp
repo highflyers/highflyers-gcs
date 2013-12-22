@@ -15,7 +15,7 @@ int main( int argc, char** argv )
 	server.set_ip( "127.0.0.1" );
 	server.set_port( 5000 );
 	server.set_video_source( "ball", HighFlyers::RtpServer::VideoTest );
-	server.set_caps( "video/x-raw,YUY2,width=640,height=480,framerate=24/1" );
+	server.set_caps( "video/x-raw,format=YUY2,width=640,height=480,framerate=24/1" );
 	server.init_stream();
 	server.start_stream();
 
