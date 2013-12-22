@@ -18,6 +18,7 @@ class ITelemetryControlsPlugin : public IPlugin
 public:
 	virtual QWidget* get_widget() = 0;
 	virtual PluginType get_type_t() { return PluginType::TELEMETRY; }
+	virtual ~ITelemetryControlsPlugin() {}
 
 	virtual void set_battery_value( double value ) = 0;
 	virtual void set_latitude( double value ) = 0;

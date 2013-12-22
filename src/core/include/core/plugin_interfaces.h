@@ -11,5 +11,7 @@
 #include "plugin_interfaces/IPlugin.h"
 #include "plugin_interfaces/IApConfigPlugin.h"
 #include "plugin_interfaces/IVideoSourcePlugin.h"
+#include "plugin_interfaces/ITelemetryControlsPlugin.h"
+#include "plugin_interfaces/ICommunicationPlugin.h"
 
 #endif /* INTERFACES_H_ */
