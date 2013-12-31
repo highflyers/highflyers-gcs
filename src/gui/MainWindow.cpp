@@ -28,6 +28,8 @@ MainWindow::~MainWindow()
 void MainWindow::set_controller( CoreController* controller )
 {
 	this->controller = controller;
+
+	controller->load_set_of_plugins("default_plugins");
 }
 
 void MainWindow::load_plugin()
@@ -43,7 +45,16 @@ void MainWindow::load_plugin()
 					+ ")" );
 
 	if (!plugin_filename.isNull())
-		controller->load_plugin( plugin_filename.toUtf8().constData() );
+	{
+		try
+		{
+			controller->load_plugin( plugin_filename.toUtf8().constData() );
+		}
+		catch (const std::exception& ex)
+		{
+			QMessageBox::information(nullptr, "Error", ex.what());
+		}
+	}
 }
 
 void MainWindow::unload_plugin( QString plugin_name )
@@ -70,6 +81,9 @@ void MainWindow::plugin_added( IPlugin* plugin, const QString& plugin_name )
 	{
 	case PluginType::APCONFIG:
 		plugin_widget = static_cast<IApConfigPlugin*>( plugin )->get_widget();
+		break;
+	case PluginType::TELEMETRY:
+		plugin_widget = static_cast<ITelemetryControlsPlugin*>( plugin )->get_widget();
 		break;
 	case PluginType::VIDEO:
 	{

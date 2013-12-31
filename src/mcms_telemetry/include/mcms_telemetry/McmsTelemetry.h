@@ -9,23 +9,16 @@
 #define MCMSTELEMETRY_H_
 
 #include "core/plugin_interfaces/ITelemetryControlsPlugin.h"
+#include "mcms_telemetry/McmsTelemetryWidget.h"
 
-namespace Ui {
-	class McmsTelemetry;
-}
-
-namespace HighFlyers {
-
-class McmsTelemetry : public ITelemetryControlsPlugin, public QWidget
+class McmsTelemetry : public HighFlyers::ITelemetryControlsPlugin
 {
-	Q_OBJECT
-
-private:
-	Ui::McmsTelemetry* ui;
+	McmsTelemetryWidget* tw;
 
 public:
-	McmsTelemetry( QWidget* parent = 0 );
-	QWidget* get_widget() { return this; }
+	McmsTelemetry();
+	virtual ~McmsTelemetry();
+	QWidget* get_widget() { return tw; }
 	void set_battery_value( double value );
 	void set_latitude( double value );
 	void set_longitude( double value );
@@ -34,7 +27,5 @@ public:
 	void set_roll( double value );
 	void set_pitch( double value );
 };
-
-}
 
 #endif /* MCMSTELEMETRY_H_ */

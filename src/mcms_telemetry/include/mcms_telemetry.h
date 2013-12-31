@@ -9,5 +9,6 @@
 #define MCMS_TELEMETRY_H_
 
 #include "mcms_telemetry/McmsTelemetry.h"
+#include "mcms_telemetry/McmsTelemetryWidget.h"
 
 #endif /* MCMS_TELEMETRY_H_ */

@@ -7,6 +7,7 @@
 
 #include "CoreController.h"
 #include "plugin_interfaces.h"
+#include "PluginSetLoader.h"
 
 using namespace HighFlyers;
 using namespace std;
@@ -17,6 +18,11 @@ CoreController::CoreController( MainWindow* gui )
 	loader = PluginLoader::get_instance();
 	loader->register_observer( this );
 	gui->set_controller( this );
+}
+
+void CoreController::load_set_of_plugins( const string& filename )
+{
+	PluginSetLoader().load(filename);
 }
 
 void CoreController::load_plugin( const string& filename )

@@ -13,9 +13,9 @@
 
 #include "mcms_telemetry/McmsTelemetry.h"
 
-extern "C" EXPORT_DEF HighFlyers::McmsTelemetry* factory_method()
+extern "C" EXPORT_DEF McmsTelemetry* factory_method()
 {
-	return new HighFlyers::McmsTelemetry();
+	return new McmsTelemetry();
 }
 
 

@@ -28,9 +28,9 @@ public:
 	CoreController( MainWindow* gui );
 	virtual ~CoreController(){}
 
+	void load_set_of_plugins( const std::string& filename );
 	void load_plugin( const std::string& filename );
 	void unload_plugin( const std::string& filename );
-
 };
 
 }
