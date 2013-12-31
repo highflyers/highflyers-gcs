@@ -64,7 +64,7 @@ void MainWindow::plugin_added( IPlugin* plugin, const QString& plugin_name )
 	QObject::connect( action, &QAction::triggered, [action, this]{
 		unload_plugin( action->text() );
 	} );
-	QWidget* plugin_widget;
+	QWidget* plugin_widget = nullptr;
 
 	switch (plugin->get_type_t())
 	{
@@ -105,6 +105,8 @@ void MainWindow::plugin_added( IPlugin* plugin, const QString& plugin_name )
 
 			if (config_widget != nullptr)
 				config_widget->show();
+			else
+				QMessageBox::information(0, "No Config", "Configuration is not available for this plugin.");
 		});
 		break;
 	}

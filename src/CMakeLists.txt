@@ -7,6 +7,7 @@ add_subdirectory(protocol)
 add_subdirectory(communication)
 add_subdirectory(video_test_src)
 add_subdirectory(mcms_telemetry)
+add_subdirectory(fake_comm)
 
 add_executable(GCS main.cpp gui core protocol video_streamer)
 
