@@ -122,6 +122,8 @@ void MainWindow::plugin_added( IPlugin* plugin, const QString& plugin_name )
 			else
 				QMessageBox::information(0, "No Config", "Configuration is not available for this plugin.");
 		});
+
+		plugin_widget = new CommunicationWidget();
 		break;
 	}
 	default:

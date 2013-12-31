@@ -10,5 +10,6 @@
 
 #include "gui/MainWindow.h"
 #include "gui/VideoPlayer.h"
+#include "gui/CommunicationWidget.h"
 
 #endif /* GUI_H_ */
