@@ -42,7 +42,8 @@ void MainWindow::load_plugin()
 #endif
 					+ ")" );
 
-			controller->load_plugin( plugin_filename.toUtf8().constData() );
+	if (!plugin_filename.isNull())
+		controller->load_plugin( plugin_filename.toUtf8().constData() );
 }
 
 void MainWindow::unload_plugin( QString plugin_name )
