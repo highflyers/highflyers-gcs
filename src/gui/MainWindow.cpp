@@ -29,7 +29,14 @@ void MainWindow::set_controller( CoreController* controller )
 {
 	this->controller = controller;
 
-	controller->load_set_of_plugins("default_plugins");
+	try
+	{
+		controller->load_set_of_plugins("default_plugins");
+	}
+	catch (...)
+	{
+		// todo log this event!
+	}
 }
 
 void MainWindow::load_plugin()
