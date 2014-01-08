@@ -72,12 +72,10 @@ static uint8_t *serialize_frame( struct GCSFrame *frame )
 	\param data Serialized GCS Struct.
 	\return GCS Frame containing deserialized data.
 */
-static struct GCSFrame *deserialize_toframe( uint8_t *data )
+static struct GCSFrame *deserialize_to_frame( struct GCSFrame *rframe, uint8_t *data )
 {
 
 	assert( data != NULL );
-
-	struct GCSFrame *rframe = (struct GCSFrame *)malloc( sizeof( struct GCSFrame ) );
 
 	rframe->function_code = data[0];
 	rframe->bytes_following = data[1];
@@ -160,13 +158,13 @@ uint32_t decode_resp_battery_status( uint8_t *resp )
 
 	assert( resp != NULL );
 
-	struct GCSFrame *f = deserialize_toframe( resp );
+	struct GCSFrame f;
+	deserialize_to_frame( &f, resp );
 
-	assert( f->gcs_data != NULL );
-	uint32_t battery_status = f->gcs_data->battery;
+	assert( f.gcs_data != NULL );
+	uint32_t battery_status = f.gcs_data->battery;
 
-	free( f->gcs_data );
-	free( f );
+	free( f.gcs_data );
 
 	return battery_status;
 
@@ -197,12 +195,13 @@ void decode_req_PID_set( uint8_t *req, double *P, double *I, double *D )
 
 	assert( req != NULL && P != NULL && I != NULL && D != NULL );
 
-	struct GCSFrame *f = deserialize_toframe( req );
-	*P = f->gcs_data->PID.P;
-	*I = f->gcs_data->PID.I;
-	*D = f->gcs_data->PID.D;
+	struct GCSFrame f;
+	deserialize_to_frame( &f, req );
 
-	free( f->gcs_data );
-	free( f );
+	*P = f.gcs_data->PID.P;
+	*I = f.gcs_data->PID.I;
+	*D = f.gcs_data->PID.D;
+
+	free( f.gcs_data );
 
 }

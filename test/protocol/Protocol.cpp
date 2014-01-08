@@ -1,4 +1,4 @@
-#include "Protocol.hpp"
+#include "protocol/Protocol.hpp"
 #include "crc16.h"
 #include "c_protocol.h"
 #include <gtest/gtest.h>
@@ -20,7 +20,8 @@ TEST( Protocol, battery_status_requests )
 
 	ASSERT_EQ( NELEMS(valid_battery_status_req)-2, t[1] );
 
-	for( uint32_t i = 0; i < NELEMS(valid_battery_status_req); ++i ) {
+	for( uint32_t i = 0; i < NELEMS(valid_battery_status_req); ++i )
+	{
 		EXPECT_EQ( valid_battery_status_req[i], t[i] );
 	}
 

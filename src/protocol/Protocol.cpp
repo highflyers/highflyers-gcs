@@ -3,7 +3,7 @@
 	C++ wrapper for c_protocol library.
 */
 
-#include "Protocol.hpp"
+#include "protocol/Protocol.hpp"
 
 uint8_t *HighFlyers::Protocol::create_req_battery_status()
 {
