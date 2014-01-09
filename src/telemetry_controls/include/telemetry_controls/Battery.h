@@ -54,19 +54,15 @@ public:
 
 	BatteryWidget( double current, double max, double min );
 
-	float get_maxvalue();
+	float get_maxvalue() const;
 
-	void set_maxvalue( double maximum );
+	float get_minvalue() const;
 
-	float get_minvalue();
-
-	void set_minvalue( double miniumum );
-
-	float get_value();
+	float get_value() const;
 
 	void set_voltage( double voltage_ );
 
-	int return_percent();
+	int return_percent() const;
 
 	void update();
 };

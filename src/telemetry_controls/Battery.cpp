@@ -1,6 +1,7 @@
 #include "telemetry_controls/Battery.h"
 #include "ui_Battery.h"
 
+#include <stdexcept>
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -73,82 +74,41 @@ void Battery::paintEvent( QPaintEvent *event )
 
 
 
-BatteryWidget::BatteryWidget( double current, double max, double min ): voltage(current), maxvalue(max), minvalue(min)
+BatteryWidget::BatteryWidget( double current, double max, double min )
+: maxvalue( max ), minvalue( min ), voltage( current )
 {
+	if (max < min)
+		throw std::runtime_error( "maximum value cannot be  lesser than "
+				"minimum value in BatteryWidget" );
 	update();
 }
 
-
-float BatteryWidget::get_maxvalue()
+float BatteryWidget::get_maxvalue() const
 {
 	return maxvalue;
 }
 
-void BatteryWidget::set_maxvalue( double maximum )
-{
-	if(maximum > minvalue)
-	{
-		maxvalue = maximum;
-	}
-	else
-	{
-		maxvalue = get_minvalue();
-		set_minvalue(maximum);
-	}
-}
-
-float BatteryWidget::get_minvalue()
+float BatteryWidget::get_minvalue() const
 {
 	return minvalue;
 }
 
-void BatteryWidget::set_minvalue( double minimum )
-{
-	if(minvalue < maxvalue)
-	{
-		minvalue = minimum;
-	}
-	else
-	{
-		minvalue = get_maxvalue();
-		set_maxvalue(minimum);
-	}
-
-}
-
-float BatteryWidget::get_value()
+float BatteryWidget::get_value() const
 {
 	return voltage;
 }
 
 void BatteryWidget::set_voltage( double voltage_ )
 {
-	if(voltage > maxvalue && maxvalue > 0)
-	{
-		voltage = get_maxvalue();
-	}
-	else if(voltage < minvalue && minvalue > 0)
-	{
-		voltage = get_minvalue();
-	}
-	else if(voltage > minvalue && minvalue < 0)
-	{
-		voltage = get_minvalue();
-	}
-	else if(voltage < maxvalue && maxvalue < 0)
-	{
-		voltage = get_maxvalue();
-	}
-	else
-	{
-		voltage = voltage_;
-	}
+	voltage = voltage > maxvalue ?
+			get_maxvalue() : (voltage < minvalue ?
+					get_minvalue() : voltage_);
 
 	update();
 	gui.show();
 }
 
-int BatteryWidget::return_percent()
+int BatteryWidget::return_percent() const
 {
 	if( minvalue != maxvalue && minvalue < maxvalue )
 	{
