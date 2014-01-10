@@ -48,6 +48,8 @@ void FakeComm::generate_data()
 			rand_vals.push_back( rand_byte( e1 ) );
 
 		vals_mutex.unlock();
+
+		notify<std::string>(&HighFlyers::CommunicationObserver::on_receive, std::string("fixme")); // fixme
 	}
 }
 
@@ -58,6 +60,8 @@ bool FakeComm::open()
 
 	open_var = true;
 	rand_generator_thread = new std::thread(&FakeComm::generate_data, this);
+
+	notify<bool>(&HighFlyers::CommunicationObserver::on_state_changed, true);
 
 	return true;
 }
@@ -72,6 +76,8 @@ void FakeComm::close()
 	rand_vals.clear();
 	delete rand_generator_thread;
 	rand_generator_thread = nullptr;
+
+	notify<bool>(&HighFlyers::CommunicationObserver::on_state_changed, false);
 }
 
 void FakeComm::send_char( char c )

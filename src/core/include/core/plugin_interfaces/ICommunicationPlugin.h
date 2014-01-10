@@ -19,6 +19,7 @@ class CommunicationObserver
 public:
 	virtual ~CommunicationObserver() {}
 	virtual void on_receive( IObservable<CommunicationObserver>* sender, std::string data ) = 0;
+	virtual void on_state_changed( IObservable<CommunicationObserver>* sender, bool state ) = 0;
 };
 
 class ICommunicationPlugin : public IPlugin, public IObservable<CommunicationObserver>

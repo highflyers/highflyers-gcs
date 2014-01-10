@@ -130,7 +130,18 @@ void MainWindow::plugin_added( IPlugin* plugin, const QString& plugin_name )
 				QMessageBox::information(0, "No Config", "Configuration is not available for this plugin.");
 		});
 
-		plugin_widget = new CommunicationWidget();
+		CommunicationWidget* com_widget = new CommunicationWidget();
+		ICommunicationPlugin* com_plugin = static_cast<ICommunicationPlugin*>( plugin );
+
+		connect(com_widget, &CommunicationWidget::open_close_clicked, [com_plugin](bool state){
+			if (state)
+				com_plugin->open();
+			else
+				com_plugin->close();
+		});
+
+		com_plugin->register_observer( com_widget );
+		plugin_widget = com_widget;
 		break;
 	}
 	default:
