@@ -12,6 +12,8 @@
 #include "PluginObserver.h"
 #include "gui/MainWindow.h"
 
+#include <vector>
+
 namespace HighFlyers
 {
 class CoreController :  public PluginObserver
@@ -19,6 +21,8 @@ class CoreController :  public PluginObserver
 private:
 	PluginLoader_* loader;
 	MainWindow* gui;
+
+	std::vector<IPlugin*> get_plugins_with_super_power( PluginSuperPower super_power ) const;
 
 protected:
 	virtual void plugin_loaded( IObservable<PluginObserver>* sender, IPlugin* plugin );

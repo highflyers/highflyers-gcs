@@ -45,10 +45,40 @@ void CoreController::unload_plugin( const string& filename )
 
 void CoreController::plugin_loaded( IObservable<PluginObserver>* sender, IPlugin* plugin )
 {
+	switch (plugin->get_type())
+	{
+	case PluginType::COMMUNICATION:
+	{
+		vector<IPlugin*> receivers = get_plugins_with_super_power( DATA_RECEIVER );
+
+		for (auto rec : receivers)
+			static_cast<ICommunicationPlugin*>( plugin )->register_observer( dynamic_cast<CommunicationObserver*>( rec ) );
+
+		break;
+	}
+	default:
+		break;
+	}
+
 	gui->plugin_added( plugin );
 }
 
 void CoreController::plugin_unloaded( IObservable<PluginObserver>* sender, std::string filename )
 {
 	gui->plugin_removed( filename.c_str() );
+}
+
+vector<IPlugin*> CoreController::get_plugins_with_super_power( PluginSuperPower super_power ) const
+{
+	vector<IPlugin*> plugins;
+
+	auto plugin_libs = loader->get_plugins();
+
+	for (auto pl : plugin_libs)
+	{
+		if (pl.second.plugin->get_super_power() & super_power)
+			plugins.push_back(pl.second.plugin);
+	}
+
+	return plugins;
 }

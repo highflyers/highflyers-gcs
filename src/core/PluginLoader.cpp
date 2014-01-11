@@ -134,3 +134,8 @@ IPlugin* PluginLoader_::get_object( const std::string& filename, PluginType type
 
 	return iface;
 }
+
+std::map<std::string, PluginLoader_::PluginLibrary> PluginLoader_::get_plugins() const
+{
+	return plugins;
+}

@@ -45,6 +45,8 @@ public:
 	{
 		return static_cast<T*>( get_object( filename, T::get_type() ) );
 	}
+
+	std::map<std::string, PluginLibrary> get_plugins() const;
 };
 
 typedef Singleton<PluginLoader_> PluginLoader;
