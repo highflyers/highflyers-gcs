@@ -8,6 +8,7 @@
 #include "CoreController.h"
 #include "plugin_interfaces.h"
 #include "PluginSetLoader.h"
+#include <stdexcept>
 
 using namespace HighFlyers;
 using namespace std;
@@ -31,7 +32,7 @@ void CoreController::load_plugin( const string& filename )
 	{
 		loader->load_plugin( filename );
 	}
-	catch (const std::exception& ex)
+	catch (const std::runtime_error& ex)
 	{
 		loader->close_plugin( filename );
 		throw ex;
@@ -45,7 +46,7 @@ void CoreController::unload_plugin( const string& filename )
 
 void CoreController::plugin_loaded( IObservable<PluginObserver>* sender, IPlugin* plugin )
 {
-	switch (plugin->get_type())
+	switch (plugin->get_type_t())
 	{
 	case PluginType::COMMUNICATION:
 	{
