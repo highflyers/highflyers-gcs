@@ -71,8 +71,10 @@ void MainWindow::unload_plugin( QString plugin_name )
 	controller->unload_plugin( name.substr( pos+1 ) );
 }
 
-void MainWindow::plugin_added( IPlugin* plugin, const QString& plugin_name )
+void MainWindow::plugin_added( IPlugin* plugin )
 {
+	QString plugin_name = plugin->get_plugin_location().c_str();
+
 	if (plugin == nullptr)
 		return;
 

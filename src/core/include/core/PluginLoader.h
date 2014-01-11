@@ -21,7 +21,13 @@ namespace HighFlyers
 class PluginLoader_  : public IObservable<PluginObserver>
 {
 private:
-	std::map<std::string, void*> libraries;
+	struct PluginLibrary
+	{
+		IPlugin* plugin;
+		void* library;
+	};
+
+	std::map<std::string, PluginLibrary> plugins;
 	bool is_plugin_loaded( const std::string& filename );
 	std::string get_last_error();
 
@@ -29,7 +35,7 @@ public:
 	PluginLoader_();
 	virtual ~PluginLoader_();
 
-	void open_plugin( const std::string& filename );
+	void load_plugin( const std::string& filename );
 	void close_plugin( const std::string& filename );
 
 	IPlugin* get_object( const std::string& filename, PluginType type );

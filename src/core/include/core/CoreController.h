@@ -21,7 +21,7 @@ private:
 	MainWindow* gui;
 
 protected:
-	virtual void plugin_loaded( IObservable<PluginObserver>* sender, std::string filename );
+	virtual void plugin_loaded( IObservable<PluginObserver>* sender, IPlugin* plugin );
 	virtual void plugin_unloaded( IObservable<PluginObserver>* sender, std::string filename );
 
 public:

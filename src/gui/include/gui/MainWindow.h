@@ -31,7 +31,7 @@ public:
 	explicit MainWindow( QWidget *parent = 0 );
 	~MainWindow();
 
-	void plugin_added( IPlugin* plugin, const QString& plugin_name );
+	void plugin_added( IPlugin* plugin );
 	void plugin_removed( QString filename );
 
 	void set_controller( CoreController* controller );

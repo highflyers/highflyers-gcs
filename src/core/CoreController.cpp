@@ -29,7 +29,7 @@ void CoreController::load_plugin( const string& filename )
 {
 	try
 	{
-		loader->open_plugin( filename );
+		loader->load_plugin( filename );
 	}
 	catch (const std::exception& ex)
 	{
@@ -43,9 +43,9 @@ void CoreController::unload_plugin( const string& filename )
 	loader->close_plugin( filename );
 }
 
-void CoreController::plugin_loaded( IObservable<PluginObserver>* sender, std::string filename )
+void CoreController::plugin_loaded( IObservable<PluginObserver>* sender, IPlugin* plugin )
 {
-	gui->plugin_added( loader->get_object( filename, PluginType::UNKNOW ), filename.c_str() );
+	gui->plugin_added( plugin );
 }
 
 void CoreController::plugin_unloaded( IObservable<PluginObserver>* sender, std::string filename )

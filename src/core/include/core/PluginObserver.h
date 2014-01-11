@@ -9,6 +9,7 @@
 #define PLUGINOBSERVER_H_
 
 #include "IObservable.h"
+#include "plugin_interfaces/IPlugin.h"
 
 namespace HighFlyers
 {
@@ -16,7 +17,7 @@ class PluginObserver
 {
 public:
 	virtual ~PluginObserver(){}
-	virtual void plugin_loaded( IObservable<PluginObserver>* sender, std::string filename ) = 0;
+	virtual void plugin_loaded( IObservable<PluginObserver>* sender, IPlugin* plugin ) = 0;
 	virtual void plugin_unloaded( IObservable<PluginObserver>* sender, std::string filename ) = 0;
 };
 }

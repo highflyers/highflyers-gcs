@@ -37,6 +37,6 @@ void PluginSetLoader::load(const std::string& configuration_file)
 	for (auto plugin_filename : filenames)
 	{
 		if (plugin_filename.size() > 0 && plugin_filename[0] != '#')
-		HighFlyers::PluginLoader::get_instance()->open_plugin(plugin_filename);
+		HighFlyers::PluginLoader::get_instance()->load_plugin(plugin_filename);
 	}
 }

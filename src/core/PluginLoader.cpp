@@ -23,7 +23,7 @@ PluginLoader_::PluginLoader_()
 
 PluginLoader_::~PluginLoader_()
 {
-	for (auto& plugin : libraries)
+	for (auto& plugin : plugins)
 	{
 		try
 		{
@@ -38,10 +38,10 @@ PluginLoader_::~PluginLoader_()
 
 bool PluginLoader_::is_plugin_loaded(const std::string& filename)
 {
-	return libraries.count(filename) && libraries[filename] != nullptr;
+	return plugins.count(filename) && plugins[filename].library != nullptr;
 }
 
-void PluginLoader_::open_plugin(const std::string& filename)
+void PluginLoader_::load_plugin(const std::string& filename)
 {
 	if (is_plugin_loaded(filename))
 		return;
@@ -59,8 +59,9 @@ void PluginLoader_::open_plugin(const std::string& filename)
 		throw std::runtime_error("Cannot load plugin " +
 				filename + ". Error: " + get_last_error());
 
-	libraries[filename] = lib;
-	notify<std::string>(&PluginObserver::plugin_loaded, filename);
+	plugins[filename].library = lib;
+	plugins[filename].plugin = get_object(filename, PluginType::UNKNOW);
+	notify<IPlugin*>(&PluginObserver::plugin_loaded, plugins[filename].plugin);
 }
 
 void PluginLoader_::close_plugin(const std::string& filename)
@@ -68,9 +69,11 @@ void PluginLoader_::close_plugin(const std::string& filename)
 	if (!is_plugin_loaded(filename))
 		return;
 
+	delete plugins[filename].plugin;
+
 	int ret =
 #ifdef __linux__
-			dlclose(libraries[filename]);
+			dlclose(plugins[filename].library);
 #elif defined _WIN32
 			FreeLibrary(reinterpret_cast<HMODULE>(libraries[filename]));
 #else
@@ -81,7 +84,7 @@ void PluginLoader_::close_plugin(const std::string& filename)
 		throw std::runtime_error("Cannot close plugin " +
 				filename + ". Error: " + get_last_error());
 
-	libraries.erase(filename);
+	plugins.erase(filename);
 	notify<std::string>(&PluginObserver::plugin_unloaded, filename);
 }
 
@@ -104,7 +107,7 @@ IPlugin* PluginLoader_::get_object( const std::string& filename, PluginType type
 
 	void* function_symbol =
 #ifdef __linux__
-		dlsym( libraries[filename], "factory_method" );
+		dlsym( plugins[filename].library, "factory_method" );
 #elif defined _WIN32
 		(FactoryMethod)(::GetProcAddress( reinterpret_cast<HMODULE>( libraries[filename] ),
 				"factory_method" ) );
@@ -126,6 +129,8 @@ IPlugin* PluginLoader_::get_object( const std::string& filename, PluginType type
 
 	if (type != PluginType::UNKNOW && iface->get_type_t() != type)
 		throw std::runtime_error( "Cannot get specific object. Invalid plugin type." );
+
+	iface->set_plugin_location(filename);
 
 	return iface;
 }
