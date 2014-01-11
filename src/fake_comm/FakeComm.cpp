@@ -7,6 +7,8 @@
 
 #include "FakeComm.h"
 #include <random>
+#include <chrono>
+#include <thread>
 
 FakeComm::FakeComm()
 : open_var(false),
@@ -49,7 +51,8 @@ void FakeComm::generate_data()
 
 		vals_mutex.unlock();
 
-		notify<std::string>(&HighFlyers::CommunicationObserver::on_receive, std::string("fixme")); // fixme
+		notify<std::string>( &HighFlyers::CommunicationObserver::on_receive, std::string( "fixme" ) ); // fixme
+		std::this_thread::sleep_for( std::chrono::seconds( 1 ) );
 	}
 }
 

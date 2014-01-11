@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.8.9)
 project (GCS)
 enable_testing()
-set(CMAKE_CXX_FLAGS "-std=c++0x -Wall -pedantic ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "-std=c++0x -D_GLIBCXX_USE_NANOSLEEP -Wall -pedantic ${CMAKE_CXX_FLAGS}")
 
 
 include_directories(${GCS_SOURCE_DIR}/src/gui/include)
