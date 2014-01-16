@@ -39,8 +39,27 @@ void CoreController::load_plugin( const string& filename )
 	}
 }
 
+void CoreController::reg_unreg_plugin( IPlugin* plugin, PluginType type, PluginSuperPower super_power, bool register_plugin )
+{
+	if (plugin->has_super_power(super_power))
+	{
+		auto f = (register_plugin) ?
+				[](ICommunicationPlugin* emiter, CommunicationObserver* observer) {emiter->register_observer(observer);} :
+				[](ICommunicationPlugin* emiter, CommunicationObserver* observer) {emiter->unregister_observer(observer);};
+
+		vector<IPlugin*> emiters = get_plugins( [type](IPlugin* plugin) {
+			return plugin->get_type_t() == type;
+		});
+
+		for (auto emiter : emiters)
+			f( static_cast<ICommunicationPlugin*>( emiter ), ( dynamic_cast<CommunicationObserver*>( plugin ) ) );
+	}
+}
+
 void CoreController::unload_plugin( const string& filename )
 {
+	reg_unreg_plugin( loader->get_plugins()[filename].plugin,
+			PluginType::COMMUNICATION, PluginSuperPower::DATA_RECEIVER, false );
 	loader->close_plugin( filename );
 }
 
@@ -50,7 +69,9 @@ void CoreController::plugin_loaded( IObservable<PluginObserver>* sender, IPlugin
 	{
 	case PluginType::COMMUNICATION:
 	{
-		vector<IPlugin*> receivers = get_plugins_with_super_power( DATA_RECEIVER );
+		vector<IPlugin*> receivers = get_plugins( [](IPlugin* plugin) {
+			return (plugin->get_super_power() & PluginSuperPower::DATA_RECEIVER) != PluginSuperPower::NO_SUPER_POWER;
+		});
 
 		for (auto rec : receivers)
 			static_cast<ICommunicationPlugin*>( plugin )->register_observer( dynamic_cast<CommunicationObserver*>( rec ) );
@@ -61,6 +82,7 @@ void CoreController::plugin_loaded( IObservable<PluginObserver>* sender, IPlugin
 		break;
 	}
 
+	reg_unreg_plugin( plugin, PluginType::COMMUNICATION, PluginSuperPower::DATA_RECEIVER, true );
 	gui->plugin_added( plugin );
 }
 
@@ -69,7 +91,7 @@ void CoreController::plugin_unloaded( IObservable<PluginObserver>* sender, std::
 	gui->plugin_removed( filename.c_str() );
 }
 
-vector<IPlugin*> CoreController::get_plugins_with_super_power( PluginSuperPower super_power ) const
+vector<IPlugin*> CoreController::get_plugins( function<bool(IPlugin* p1ugin)> cond ) const
 {
 	vector<IPlugin*> plugins;
 
@@ -77,7 +99,7 @@ vector<IPlugin*> CoreController::get_plugins_with_super_power( PluginSuperPower 
 
 	for (auto pl : plugin_libs)
 	{
-		if (pl.second.plugin->get_super_power() & super_power)
+		if (cond(pl.second.plugin))
 			plugins.push_back(pl.second.plugin);
 	}
 

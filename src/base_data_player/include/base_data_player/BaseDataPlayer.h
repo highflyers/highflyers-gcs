@@ -24,8 +24,8 @@ public:
 		return HighFlyers::PluginType::UNKNOW;
 	}
 
-	virtual PluginSuperPower get_super_power()
-	{ return (PluginSuperPower)(DATA_RECEIVER | DATA_SENDER); }
+	virtual PluginSuperPower get_super_power() const
+	{ return (PluginSuperPower)(PluginSuperPower::DATA_RECEIVER | PluginSuperPower::DATA_SENDER); }
 
 	void on_receive( IObservable<CommunicationObserver>* sender, std::string data );
 	virtual void on_state_changed( IObservable<CommunicationObserver>* sender, bool state );

@@ -11,7 +11,7 @@
 #include "PluginLoader.h"
 #include "PluginObserver.h"
 #include "gui/MainWindow.h"
-
+#include <functional>
 #include <vector>
 
 namespace HighFlyers
@@ -22,7 +22,8 @@ private:
 	PluginLoader_* loader;
 	MainWindow* gui;
 
-	std::vector<IPlugin*> get_plugins_with_super_power( PluginSuperPower super_power ) const;
+	std::vector<IPlugin*> get_plugins( std::function<bool(IPlugin* plugin)> cond ) const;
+	void reg_unreg_plugin( IPlugin* plugin, PluginType type, PluginSuperPower super_power, bool register_plugin );
 
 protected:
 	virtual void plugin_loaded( IObservable<PluginObserver>* sender, IPlugin* plugin );
