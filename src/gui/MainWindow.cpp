@@ -174,7 +174,7 @@ void MainWindow::plugin_removed( QString filename )
 	{
 		if (action->text().contains( filename, Qt::CaseSensitive ))
 		{
-			ui->menuPlugins->removeAction( action );
+			ui->menuCommunication->removeAction( action );
 			break;
 		}
 	}
