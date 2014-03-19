@@ -12,6 +12,9 @@
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
 
+#ifdef _WIN32
+#include <Windows.h>
+#endif
 
 
 using namespace std;
@@ -148,12 +151,40 @@ void SerialPort::send_string(std::string data)
 
 static std::vector<std::string> get_ports_names()
 {
+	vector<string> output;
 #ifdef _WIN32
+	for (int i=1; i<25; i++)
+	{
+	   char* TestS = "";
+	   TestS.sprintf("\\\\.\\COM%d",i);
 
+	   bool bSuccess = false;
+	   HANDLE hPort = ::CreateFile(TestS.c_str(), GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, 0, 0);
+	   if (hPort == INVALID_HANDLE_VALUE)
+	      {
+	        DWORD dwError = GetLastError();
+
+	        //Check to see if the error was because some other app had the port open
+	        if (dwError == ERROR_ACCESS_DENIED)
+	          bSuccess = TRUE;
+	      }
+	      else
+	      {
+	        //The port was opened successfully
+	        bSuccess = TRUE;
+
+	        //Don't forget to close the port, since we are going to do nothing with it anyway
+	        CloseHandle(hPort);
+	      }
+
+	      //Add the port number to the array which will be returned
+	   if (bSuccess)
+		   output.push_back("Com" + IntToStr(i));
+	 }
 #elif __gnu_linux__
 	//TODO
 #endif
-	return vector<string>();
+	return output;
 }
 
 
