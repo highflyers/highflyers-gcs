@@ -5,6 +5,7 @@
 #include <vector>
 #include <boost/asio/serial_port.hpp>
 #include <memory>
+#include <list>
 #include <mutex>
 #include <core/IObservable.h>
 #include "SerialPortObserver.h"
@@ -49,11 +50,8 @@ public:
 	
 	bool open_port();
 	void close_port();
-	void flush();
 	void send_char(char c);
 	void send_string(std::string data);
-	bool data_available(int& how_many);
-	int get_char();
 	bool is_open() { return port && port->is_open(); }
 	static std::vector<std::string> get_ports_names();
 	
@@ -83,7 +81,11 @@ private:
 	std::string name;
 	boost::asio::io_service io_service;
 	std::shared_ptr<boost::asio::serial_port> port;
+	std::list<std::vector<char>> out_buffer;
 
+	void do_write( std::vector<char> msg);
+	void write_start();
+	void write_complete(const boost::system::error_code& ec);
 
 	void on_receive_do( const boost::system::error_code& error, size_t bytes_transferred );
 	void async_read();
@@ -108,6 +110,7 @@ private:
 		{
 				return false;
 		}
+		return true;
 	}
 
 	template <typename OPT>

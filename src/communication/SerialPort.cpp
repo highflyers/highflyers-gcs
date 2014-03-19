@@ -10,6 +10,9 @@
 #include <thread>
 #include <boost/asio/placeholders.hpp>
 #include <boost/bind.hpp>
+#include <boost/asio.hpp>
+
+
 
 using namespace std;
 using namespace HighFlyers;
@@ -63,7 +66,7 @@ void SerialPort::close_port()
 	
 void SerialPort::async_read()
 {
-	if (!port || !port->is_open())
+	if ( !port || !port->is_open() )
 		return;
 	port->async_read_some
 		(
@@ -95,47 +98,62 @@ void SerialPort::on_receive_do( const boost::system::error_code& error, size_t b
 		buffer[bytes_transferred] = '\0';
 
 	string data(buffer);
-	//TODO
 	notify<string>(&SerialPortObserver::on_receive, data);
 	lock.unlock();
 }
-
-void SerialPort::flush()
+void SerialPort::do_write( std::vector<char> msg )
 {
-	/*if (opened) tcflush(id, TCIOFLUSH);*/
+	if ( out_buffer.size() == 0 )
+	{
+		out_buffer.push_back( msg );
+		write_start();
+	}
+}
+
+void SerialPort::write_start()
+{
+	boost::asio::async_write(*port,
+			boost::asio::buffer(&(out_buffer.front()), out_buffer.front().size()),
+			boost::bind(&SerialPort::write_complete, this, boost::asio::placeholders::error)
+	);
+}
+
+void SerialPort::write_complete(const boost::system::error_code& ec)
+{
+	 if ( !ec )
+	 {
+	    out_buffer.pop_front(); // remove the completed data
+	    if ( !out_buffer.empty() ) // if there is anthing left to be written
+	            write_start(); // then start sending the next item in the buffer
+	 }
+	 else
+	 {
+		 cerr << ec.message() << std::endl;
+	 }
 }
 
 void SerialPort::send_char(char c)
 {
-	/*if (opened) write(id, &c, 1);*/
+	if ( port->is_open() )
+		io.post( boost::bind( &SerialPort::do_write, this, vector<char>( c, 1 ) ) );
 }
 
 void SerialPort::send_string(std::string data)
 {
-	/*if (opened)
-	{
-		write(id, data.c_str(), data.length());
-	}*/
+	vector<char> buf( data.data(), data.data() + data.size() );
+	if ( port->is_open() )
+		io.post( boost::bind (&SerialPort::do_write, this, buf ) );
 }
 
-bool SerialPort::data_available(int& how_many)
-{
-	/*if (ioctl(id, FIONREAD, &how_many) == -1)
-		return false;
-	return true;*/
-}
-
-int SerialPort::get_char()
-{
-	/*unsigned char c;
-	if (read(id, &c, 1) != 1)
-		return -1;	
-	return ((int)c) & 0xFF;*/
-}
 
 static std::vector<std::string> get_ports_names()
 {
+#ifdef _WIN32
+
+#elif __gnu_linux__
 	//TODO
+#endif
+	return vector<string>();
 }
 
 
