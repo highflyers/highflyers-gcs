@@ -16,7 +16,7 @@ MainWindow::MainWindow( QWidget *parent )
   controller( nullptr )
 {
 	ui->setupUi( this );
-	QObject::connect( ui->actionLoad_Plugin, SIGNAL( triggered() ), this, SLOT( load_plugin() ) );
+	QObject::connect( ui->actionLoad_Plugin, SIGNAL( triggered() ), this, SLOT(add_sample_dock()) );
 	centralWidget()->setLayout( new QHBoxLayout() );
 }
 
@@ -181,4 +181,9 @@ void MainWindow::plugin_removed( QString filename )
 
 	if (plugin_widgets.count( filename ))
 		delete plugin_widgets[filename];
+}
+
+void MainWindow::add_sample_dock() {
+	ColorDockWidget * dock = new ColorDockWidget(this);
+	addDockWidget(Qt::RightDockWidgetArea, dock);
 }

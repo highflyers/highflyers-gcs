@@ -11,5 +11,6 @@
 #include "gui/MainWindow.h"
 #include "gui/VideoPlayer.h"
 #include "gui/CommunicationWidget.h"
+#include "gui/ColorDockWidget.h"
 
 #endif /* GUI_H_ */

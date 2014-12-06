@@ -26,6 +26,7 @@ private:
 
 private Q_SLOTS:
 	void load_plugin();
+	void add_sample_dock(); //nowy slot bo cos smiesznego jest napisane pod load_plugins
 
 public:
 	explicit MainWindow( QWidget *parent = 0 );
