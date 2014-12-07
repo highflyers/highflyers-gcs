@@ -154,8 +154,10 @@ void MainWindow::plugin_added( IPlugin* plugin )
 	if (plugin_widget != nullptr)
 	{
 		// TODO load plugin to a specified place, depends on a plugin's type
-		centralWidget()->layout()->addWidget( plugin_widget );
 		plugin_widgets[plugin_name] = plugin_widget;
+		ColorDockWidget* dock = new ColorDockWidget(this);
+		//dock->layout()->addWidget(plugin_widget); //everything is messing up after this
+		addDockWidget(Qt::LeftDockWidgetArea, dock);
 	}
 }
 

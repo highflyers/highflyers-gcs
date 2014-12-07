@@ -5,9 +5,11 @@
  *      Author: Jerzy Spendel
  */
 #include "gui.h"
+#include <random>
 ColorDockWidget::ColorDockWidget(QWidget* parent, Qt::WindowFlags flags): QDockWidget(parent, flags){
-    srand(time(NULL)); //gdzie by indziej dac sranda coby nie wykonywało się to wielokrotnie?
-    m_color = QColor{rand()%256, rand()%256, rand()%256}; //Jakby byly biale to ledwo daloby sie zobaczyc ktory jest gdzie
+    std::default_random_engine engine;
+    auto rand = std::bind(std::uniform_int_distribution<int>(0, 255), engine);
+    m_color = QColor{rand(), rand(), rand()};
 }
 
 void ColorDockWidget::paintEvent(QPaintEvent *event) {
