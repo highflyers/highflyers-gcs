@@ -9,14 +9,20 @@
 
 #include <QDockWidget>
 #include <QPainter>
-class QPaintEvent;
-class ColorDockWidget : public QDockWidget{
-    Q_OBJECT
-private:
-    QColor m_color;
-public:
-    ColorDockWidget(QWidget* parent = 0, Qt::WindowFlags flags = 0);
-    void paintEvent(QPaintEvent*);
-};
 
+class QPaintEvent;
+namespace HighFlyers
+{
+
+    class ColorDockWidget : public QDockWidget {
+    Q_OBJECT
+    private:
+        QColor m_color;
+    public:
+        ColorDockWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+
+        void paintEvent(QPaintEvent *);
+        void print_color() const;
+    };
+}
 #endif
