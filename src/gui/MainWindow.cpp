@@ -16,7 +16,7 @@ MainWindow::MainWindow( QWidget *parent )
   controller( nullptr )
 {
 	ui->setupUi( this );
-	QObject::connect( ui->actionLoad_Plugin, SIGNAL( triggered() ), this, SLOT(add_sample_dock()) );
+	QObject::connect( ui->actionLoad_Plugin, SIGNAL( triggered() ), this, SLOT( load_plugin() ));
 	centralWidget()->setLayout( new QHBoxLayout() );
 }
 
