@@ -155,8 +155,11 @@ void MainWindow::plugin_added( IPlugin* plugin )
 	{
 		// TODO load plugin to a specified place, depends on a plugin's type
 		plugin_widgets[plugin_name] = plugin_widget;
-		ColorDockWidget* dock = new ColorDockWidget(this);
-		//dock->layout()->addWidget(plugin_widget); //everything is messing up after this
+		QDockWidget* dock = new QDockWidget;
+		QWidget* cw = new ColorWidget;
+		cw->setLayout(new QHBoxLayout);
+		dock->setWidget(cw);
+		cw->layout()->addWidget(plugin_widget);
 		addDockWidget(Qt::LeftDockWidgetArea, dock);
 	}
 }
@@ -186,6 +189,6 @@ void MainWindow::plugin_removed( QString filename )
 }
 
 void MainWindow::add_sample_dock() {
-	ColorDockWidget * dock = new ColorDockWidget(this);
+	QDockWidget* dock = new QDockWidget(this);
 	addDockWidget(Qt::RightDockWidgetArea, dock);
 }

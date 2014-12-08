@@ -7,19 +7,19 @@
 #ifndef QCOLORWIDGET_H
 #define QCOLORWIDGET_H
 
-#include <QDockWidget>
+#include <QWidget>
 #include <QPainter>
 
 class QPaintEvent;
 namespace HighFlyers
 {
 
-    class ColorDockWidget : public QDockWidget {
+    class ColorWidget : public QWidget {
     Q_OBJECT
     private:
         QColor m_color;
     public:
-        ColorDockWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+        ColorWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 
         void paintEvent(QPaintEvent *);
         void print_color() const;

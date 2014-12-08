@@ -8,7 +8,7 @@
 #include <random>
 #include <iostream>
 using namespace HighFlyers;
-ColorDockWidget::ColorDockWidget(QWidget* parent, Qt::WindowFlags flags): QDockWidget(parent, flags)
+ColorWidget::ColorWidget(QWidget* parent, Qt::WindowFlags flags): QWidget(parent, flags)
 {
     std::default_random_engine engine(time(NULL));
     auto rand = std::bind(std::uniform_int_distribution<int>(0, 255), engine);
@@ -16,14 +16,14 @@ ColorDockWidget::ColorDockWidget(QWidget* parent, Qt::WindowFlags flags): QDockW
     print_color();
 }
 
-void ColorDockWidget::paintEvent(QPaintEvent *event)
+void ColorWidget::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
     painter.setBrush(m_color);
     painter.drawRect(QRect{0, 0, width(), height()});
 }
 
-void ColorDockWidget::print_color() const
+void ColorWidget::print_color() const
 {
     std::cout << "RED: " << m_color.red() << std::endl;
     std::cout << "GREEN: " << m_color.green() << std::endl;

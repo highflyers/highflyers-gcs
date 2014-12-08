@@ -5,11 +5,11 @@ add_library(gui
 	MainWindow.cpp
 	VideoPlayer.cpp
 	CommunicationWidget.cpp
-	ColorDockWidget.cpp
+	ColorWidget.cpp
 	include/gui/MainWindow.h
 	include/gui/VideoPlayer.h
 	include/gui/CommunicationWidget.h
-	include/gui/ColorDockWidget.h
+	include/gui/ColorWidget.h
 	${UIS_HDRS})
 	
 qt5_use_modules(gui Widgets)
