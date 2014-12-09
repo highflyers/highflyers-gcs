@@ -309,17 +309,6 @@ foreach $var_name (sort keys %defined_structs)
 print $output_cpp "\n\n\tbuild_widget();";
 print $output_cpp "\n}\n\n";
 
-#destructor generator
-print $output "\tvirtual ~$main_class_name();\n";
-print $output_cpp "$main_class_name\::~$main_class_name()\n{";
-print $output_cpp "\n\tdelete main_widget;\n";
-
-foreach $var_name (sort keys %defined_structs)
-{
-	my $member_name = get_member_name($defined_structs{$var_name}{control});
-	print $output_cpp "\n\tdelete $member_name;";
-}
-print $output_cpp "\n}\n\n";
 
 foreach $var_name (sort keys %defined_structs)
 {
