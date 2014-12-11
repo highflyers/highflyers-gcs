@@ -185,7 +185,11 @@ void MainWindow::plugin_removed( QString filename )
 	}
 
 	if (plugin_widgets.count( filename ))
+	{
+		QDockWidget* parent_dock = static_cast<QDockWidget*>(plugin_widgets[filename]->parent()->parent());
 		delete plugin_widgets[filename];
+		delete parent_dock;
+	}
 }
 
 void MainWindow::add_sample_dock() {
