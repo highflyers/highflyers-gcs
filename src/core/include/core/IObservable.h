@@ -11,6 +11,7 @@
 #include <set>
 #include <functional>
 #include <memory>
+#include <type_traits>
 
 namespace HighFlyers
 {
@@ -21,11 +22,11 @@ class IObservable
 protected:
 	std::set<OBSERVER*> observers;
 
-	template<typename T>
-	void notify( std::function<void( OBSERVER*, IObservable<OBSERVER>*, T value )> fnc, T value )
+	template<typename ...T>
+	void notify( typename std::common_type<std::function<void( OBSERVER*, IObservable<OBSERVER>*, T... value )>>::type fnc, T... values )
 	{
 		for (auto o : observers)
-			fnc( o, this, value );
+			fnc( o, this, values... );
 	}
 
 public:
