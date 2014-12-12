@@ -15,22 +15,22 @@
 namespace HighFlyers
 {
 
-class BaseItem
-{
-public:
-	virtual ~BaseItem() {}
-};
-
-template<typename T>
-class Item : public BaseItem
-{
-public:
-	T value;
-};
-
 class DataMaster : public std::enable_shared_from_this<DataMaster>
 {
 private:
+	class BaseItem
+	{
+	public:
+		virtual ~BaseItem() {}
+	};
+
+	template<typename T>
+	class Item : public BaseItem
+	{
+	public:
+		T value;
+	};
+
 	// listeners; todo
 
 	DataMaster() {}
@@ -71,7 +71,7 @@ public:
 };
 
 template<typename T>
-std::shared_ptr<Item<T>> DataMaster::safe_get_item( const std::string& name )
+std::shared_ptr<DataMaster::Item<T>> DataMaster::safe_get_item( const std::string& name )
 {
 	if (vars.find( name ) == vars.end())
 		throw std::runtime_error( "value " + name + " doesn't exist in specific node" );
