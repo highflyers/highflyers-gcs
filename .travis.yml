@@ -37,15 +37,17 @@ branches:
 
 notifications:
   email:
-    - maciej.smolarczyk@yahoo.com
     - marcin.kolny@gmail.com
+    - jspendel@gmail.com
     - mateusz.ucher@gmail.com
-    - mf.vire@gmail.com
-    - pauwilk@gmail.com
+    - monika_ceglarek@interia.pl
+    - kamimaj382@student.polsl.pl
     - pawel.matyszok@gmail.com
-    - tomguz@o2.pl
-    - widenka.tomasz@hotmail.com
+    - michal.platek.hf@gmail.com
+    - paweljaneta@o2.pl
     - wojtek.adam.dudzik@gmail.com
+    - phearion@gmail.com
+    - sztangierski@gmail.com
     - highflyers-gcs@googlegroups.com
   on_success: change
   on_failure: always
