@@ -7,6 +7,7 @@
 #include "core/plugin_interfaces.h"
 
 #include <QHBoxLayout>
+#include <iostream>
 
 using namespace HighFlyers;
 
@@ -31,6 +32,7 @@ void MainWindow::set_controller( CoreController* controller )
 
 	try
 	{
+		load_last_state();
 		controller->load_set_of_plugins("default_plugins");
 	}
 	catch (...)
@@ -156,6 +158,7 @@ void MainWindow::plugin_added( IPlugin* plugin )
 		// TODO load plugin to a specified place, depends on a plugin's type
 		plugin_widgets[plugin_name] = plugin_widget;
 		QDockWidget* dock = new QDockWidget;
+		dock->setObjectName(plugin_name);
 		QWidget* cw = new ColorWidget;
 		cw->setLayout(new QHBoxLayout);
 		dock->setWidget(cw);
@@ -192,7 +195,31 @@ void MainWindow::plugin_removed( QString filename )
 	}
 }
 
-void MainWindow::add_sample_dock() {
-	QDockWidget* dock = new QDockWidget(this);
-	addDockWidget(Qt::RightDockWidgetArea, dock);
+void MainWindow::save_state() const
+{
+	QSettings s("hf", "gcs");
+	QList<QVariant> to_save;
+	for(QString plugin_name : plugin_widgets.keys())
+	{
+		to_save.append(QVariant(plugin_name));
+	}
+	s.setValue("docks", to_save);
+	s.setValue("positions", saveState());
+}
+
+void MainWindow::load_last_state()
+{
+	QSettings s("hf", "gcs");
+	for(QVariant plugin_name : s.value("docks").toList())
+	{
+		std::cout << plugin_name.toString().toStdString() << std::endl;
+		controller->load_plugin(plugin_name.toString().toUtf8().constData());
+	}
+	QByteArray state = s.value("positions").toByteArray();
+	restoreState(state, 0);
+}
+
+void MainWindow::closeEvent(QCloseEvent* e)
+{
+	save_state();
 }

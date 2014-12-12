@@ -3,7 +3,7 @@
 
 #include "core/plugin_interfaces/IPlugin.h"
 #include <QMainWindow>
-#include <map>
+#include <QMap>
 
 namespace Ui {
 class MainWindow;
@@ -20,13 +20,12 @@ class MainWindow : public QMainWindow
 private:
 	Ui::MainWindow *ui;
 	CoreController* controller;
-	std::map<QString, QWidget*> plugin_widgets;
+	QMap<QString, QWidget*> plugin_widgets;
 
 	void unload_plugin( QString plugin_name );
 
 private Q_SLOTS:
 	void load_plugin();
-	void add_sample_dock(); //nowy slot bo cos smiesznego jest napisane pod load_plugins
 
 public:
 	explicit MainWindow( QWidget *parent = 0 );
@@ -36,6 +35,11 @@ public:
 	void plugin_removed( QString filename );
 
 	void set_controller( CoreController* controller );
+
+	void save_state() const;
+	void load_last_state();
+
+	void closeEvent(QCloseEvent*);
 };
 
 }
