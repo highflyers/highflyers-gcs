@@ -2,7 +2,8 @@ add_library(core
 	PluginLoader.cpp
 	CoreController.cpp
 	PluginSetLoader.cpp
-	Image.cpp)
+	Image.cpp
+	DataMaster.cpp)
 
 include_directories(include/core)
 
