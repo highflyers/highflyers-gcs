@@ -8,6 +8,8 @@
 #ifndef DATAMASTER_H_
 #define DATAMASTER_H_
 
+#include "IObservable.h"
+
 #include <string>
 #include <map>
 #include <memory>
@@ -15,13 +17,33 @@
 namespace HighFlyers
 {
 
-class DataMaster : public std::enable_shared_from_this<DataMaster>
+class DataMaster;
+
+class DataMasterObserver
 {
+public:
+	virtual ~DataMasterObserver() {}
+	virtual void node_changed( IObservable<DataMasterObserver>*, std::shared_ptr<DataMaster> node ) = 0;
+};
+
+
+class DataMaster : public std::enable_shared_from_this<DataMaster>, public IObservable<DataMasterObserver>
+{
+public:
+	class VarObserver
+	{
+	public:
+		virtual ~VarObserver() {}
+		virtual void value_changed( IObservable<VarObserver>*, const std::string& var_name ) = 0;
+	};
+
 private:
-	class BaseItem
+	class BaseItem : public IObservable<VarObserver>
 	{
 	public:
 		virtual ~BaseItem() {}
+
+		friend class DataMaster;
 	};
 
 	template<typename T>
@@ -33,7 +55,7 @@ private:
 
 	// listeners; todo
 
-	DataMaster() {}
+	DataMaster( std::shared_ptr<DataMaster> parent = nullptr ) : parent( parent ){}
 	DataMaster( const DataMaster& ) = delete;
 	DataMaster& operator=( const DataMaster& ) = delete;
 
@@ -42,17 +64,18 @@ private:
 
 	static std::shared_ptr<DataMaster> root;
 
+	std::shared_ptr<DataMaster> parent;
+
 	template<typename T>
 	std::shared_ptr<Item<T>> safe_get_item( const std::string& name );
 
 	std::shared_ptr<DataMaster> get_item_by_path( const std::string& path, bool fail_if_not_exists );
 
-public:
-	void subscribe_var( const std::string& name );
-	void unsubscribe_var( const std::string& name );
+	void notify_change();
 
-	void subscribe_item();
-	void unsubscribe_item();
+public:
+	void subscribe_var( VarObserver* observer, const std::string& name );
+	void unsubscribe_var( DataMaster::VarObserver* observer, const std::string& name );
 
 	template<typename T>
 	void set_value( const std::string& name, const T& value );
@@ -93,14 +116,20 @@ T DataMaster::get_value( const std::string& name )
 template<typename T>
 void DataMaster::set_value( const std::string& name, const T& value )
 {
-	safe_get_item<T>( name )->value = value;
+	auto item = safe_get_item<T>( name );
+	item->value = value;
+	item->notify(&VarObserver::value_changed, name);
+	notify_change();
 }
 
 template<typename T>
 void DataMaster::register_var( const std::string& name )
 {
 	if (vars.find( name ) == vars.end())
+	{
+		notify_change();
 		vars[name] = std::make_shared<Item<T>>();
+	}
 }
 
 }

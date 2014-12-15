@@ -22,6 +22,32 @@ protected:
 
 };
 
+class DataMasterVarObserver : public DataMaster::VarObserver
+{
+public:
+	bool changed = false;
+	std::string name;
+
+	void value_changed( IObservable<VarObserver>*, const std::string& var_name ) override
+	{
+		changed = true;
+		name = var_name;
+	}
+};
+
+class DataMasterItemObserver : public DataMasterObserver
+{
+public:
+	bool changed = false;
+	std::shared_ptr<DataMaster> node;
+
+	void node_changed( IObservable<DataMasterObserver>*, std::shared_ptr<DataMaster> node ) override
+	{
+		changed = true;
+		this->node = node;
+	}
+};
+
 std::shared_ptr<DataMaster> DataMasterTest::root = std::shared_ptr<DataMaster>();
 
 TEST_F(DataMasterTest, SimpleRegisterAndSettingValue)
@@ -61,3 +87,48 @@ TEST_F(DataMasterTest, OneMoreSettingValueTest)
 	ASSERT_STREQ( "test", root->get_item( "/very/complex/tree" )->get_value<std::string>("variable").c_str() );
 }
 
+TEST_F(DataMasterTest, ShouldProperlySubscribeAndUnsubscribeVariable)
+{
+	DataMasterVarObserver obs;
+	const char* name = "test_var_name";
+
+	auto path = root->register_item( "/some/path" );
+	path->register_var<int>( name );
+	path->subscribe_var(&obs, name );
+	root->get_item( "/some/path" )->set_value( name, 12 );
+
+	ASSERT_TRUE( obs.changed );
+	ASSERT_STREQ( name, obs.name.c_str() );
+
+	obs.changed = false;
+
+	path->unsubscribe_var( &obs, name );
+	path->set_value( name, 12 );
+
+	ASSERT_FALSE( obs.changed );
+}
+
+TEST_F(DataMasterTest, ShouldProperlySubscribeAndUnsubscribeDataMaster)
+{
+	DataMasterItemObserver obs;
+
+	auto path = root->register_item( "/quite/long/path" );
+	root->get_item( "/quite/long" )->register_observer( &obs );
+
+	path->register_var<int>( "dummy_name" );
+
+	ASSERT_TRUE(obs.changed);
+	ASSERT_EQ(root->get_item( "/quite/long"), obs.node);
+
+	obs.changed = false;
+	path->set_value( "dummy_name", 23 );
+
+	ASSERT_TRUE(obs.changed);
+
+	root->get_item( "/quite/long" )->unregister_observer( &obs );
+
+	obs.changed = false;
+	path->set_value( "dummy_name", 23 );
+
+	ASSERT_FALSE(obs.changed);
+}

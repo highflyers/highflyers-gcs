@@ -36,7 +36,7 @@ std::shared_ptr<DataMaster> DataMaster::get_item_by_path( const std::string& pat
 		if (fail_if_not_exists)
 			throw std::runtime_error( "path " + path + " doesn't exist" );
 		else
-			children[item_name] = std::shared_ptr<DataMaster>(new DataMaster());
+			children[item_name] = std::shared_ptr<DataMaster>( new DataMaster( shared_from_this() ) );
 	}
 
 	if (p == std::string::npos || p == path.length()-1)
@@ -47,7 +47,9 @@ std::shared_ptr<DataMaster> DataMaster::get_item_by_path( const std::string& pat
 
 std::shared_ptr<DataMaster> DataMaster::register_item( const std::string& path )
 {
-	return get_item_by_path( path, false );
+	auto item = get_item_by_path( path, false );
+	notify_change();
+	return item;
 }
 
 std::shared_ptr<DataMaster> DataMaster::get_item( const std::string& path )
@@ -55,22 +57,26 @@ std::shared_ptr<DataMaster> DataMaster::get_item( const std::string& path )
 	return get_item_by_path( path, true );
 }
 
-void DataMaster::subscribe_var( const std::string& name )
+void DataMaster::subscribe_var( DataMaster::VarObserver* observer, const std::string& name )
 {
-	// todo
+	if (vars.find( name ) == vars.end()) // todo cpy&paste
+		throw std::runtime_error( "value " + name + " doesn't exist in specific node" );
+
+	vars[name]->register_observer( observer );
 }
 
-void DataMaster::unsubscribe_var( const std::string& name )
+void DataMaster::unsubscribe_var( DataMaster::VarObserver* observer, const std::string& name )
 {
-	// todo
+	if (vars.find( name ) == vars.end())
+		throw std::runtime_error( "value " + name + " doesn't exist in specific node" );
+
+	vars[name]->unregister_observer( observer );
 }
 
-void DataMaster::subscribe_item()
+void DataMaster::notify_change()
 {
-	// todo
-}
+	notify( &DataMasterObserver::node_changed, shared_from_this() );
 
-void DataMaster::unsubscribe_item()
-{
-	// todo
+	if (parent)
+		parent->notify_change();
 }
