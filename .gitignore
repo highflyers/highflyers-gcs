@@ -19,3 +19,12 @@ build/
 
 # Directory Settings
 .directory
+
+# docs/
+/docs/html
+/docs/latex
+/docs/*.aux
+/docs/*.log
+/docs/*.out
+/docs/*.pdf
+/docs/*.toc
