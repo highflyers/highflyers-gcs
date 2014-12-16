@@ -3,7 +3,8 @@ add_library(core
 	CoreController.cpp
 	PluginSetLoader.cpp
 	Image.cpp
-	DataMaster.cpp)
+	DataMaster.cpp
+	logger/MultiOutPolicy.cpp)
 
 include_directories(include/core)
 

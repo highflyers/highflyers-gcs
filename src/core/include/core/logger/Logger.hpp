@@ -12,30 +12,34 @@
 #include <chrono>
 #include <ctime>
 
-template<typename OUT_POLICY, LogLevel LOG_LEVEL, typename THREAD_POLICY>
-std::map<LogLevel, std::string> Logger<OUT_POLICY, LOG_LEVEL, THREAD_POLICY>::log_level_str = {
+namespace HighFlyers {
+
+template<typename OUT_POLICY, typename THREAD_POLICY>
+std::map<LogLevel, std::string> Logger<OUT_POLICY, THREAD_POLICY>::log_level_str = {
 		{ALL, "ALL"},
 		{ERROR, "ERROR"},
 		{WARNING, "WARNING"},
-		{INFO, "WARNING"},
-		{DEBUG, "WARNING"},
-		{ALL, "WARNING"}
+		{INFO, "INFO"},
+		{DEBUG, "DEBUG"},
+		{ALL, "ALL"}
 };
 
-template<typename OUT_POLICY, LogLevel LOG_LEVEL, typename THREAD_POLICY>
+template<typename OUT_POLICY, typename THREAD_POLICY>
 template<LogLevel CURRENT_LEVEL>
-OUT_POLICY& Logger<OUT_POLICY, LOG_LEVEL, THREAD_POLICY>::get()
+OUT_POLICY& Logger<OUT_POLICY, THREAD_POLICY>::get()
 {
 	THREAD_POLICY locker;
 
-	return Printer<CURRENT_LEVEL, OUT_POLICY,
-			LOG_LEVEL>=CURRENT_LEVEL || ( LOG_LEVEL & CURRENT_LEVEL )>
-	::print( *out_stream );
+	bool printer = level>=CURRENT_LEVEL || ( level & CURRENT_LEVEL );
+	if (printer)
+		return Printer<CURRENT_LEVEL, OUT_POLICY, true>::print( out_stream );
+
+	return Printer<CURRENT_LEVEL, OUT_POLICY, false>::print( out_stream );
 }
 
-template<typename OUT_POLICY, LogLevel LOG_LEVEL, typename THREAD_POLICY>
+template<typename OUT_POLICY, typename THREAD_POLICY>
 template<LogLevel CURRENT_LEVEL>
-std::string Logger<OUT_POLICY, LOG_LEVEL, THREAD_POLICY>::generate_head_of_line()
+std::string Logger<OUT_POLICY, THREAD_POLICY>::generate_head_of_line()
 {
 	auto now = std::chrono::system_clock::now();
 	time_t now_c = std::chrono::system_clock::to_time_t( now );
@@ -48,10 +52,11 @@ std::string Logger<OUT_POLICY, LOG_LEVEL, THREAD_POLICY>::generate_head_of_line(
 	return str.str();
 }
 
-template<typename OUT_POLICY, LogLevel LOG_LEVEL, typename THREAD_POLICY>
-LogLevel Logger<OUT_POLICY, LOG_LEVEL, THREAD_POLICY>::get_level() const
+template<typename OUT_POLICY, typename THREAD_POLICY>
+LogLevel Logger<OUT_POLICY, THREAD_POLICY>::get_level() const
 {
-	return LOG_LEVEL;
+	return level;
+}
 }
 
 #endif /* LOG_HPP_ */

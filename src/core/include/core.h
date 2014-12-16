@@ -15,6 +15,7 @@
 #include "core/CoreController.h"
 #include "core/DataMaster.h"
 #include "core/Logger.h"
+#include "core/MultiOutPolicy.h"
 #include "core/plugin_interfaces.h"
 
 
