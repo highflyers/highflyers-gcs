@@ -55,25 +55,6 @@ private:
 		DummyOutput& operator<<( T ) { return *this; }
 	};
 
-	template<LogLevel CL, typename OP>
-	struct Printer<CL, OP, false>
-	{
-		static OP& print( OP& out )
-		{
-			static DummyOutput dummy;
-			return dummy;
-		}
-	};
-
-	template<LogLevel CL, typename OP>
-	struct Printer<CL, OP, true>
-	{
-		static OP& print( OP& out )
-		{
-			out << generate_head_of_line<CL>();
-			return out;
-		}
-	};
 
 	template<LogLevel CURRENT_LEVEL>
 	static std::string generate_head_of_line();
