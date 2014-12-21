@@ -1,0 +1,3 @@
+[submodule "src/highflyers-protocol"]
+	path = src/highflyers-protocol
+	url = https://github.com/loganek/highflyers-protocol.git
