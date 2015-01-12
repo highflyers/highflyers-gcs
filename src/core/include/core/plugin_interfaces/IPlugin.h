@@ -19,6 +19,7 @@ enum class PluginType
 	TELEMETRY,
 	VIDEO,
 	COMMUNICATION,
+	PROTOCOL,
 };
 
 enum class PluginSuperPower

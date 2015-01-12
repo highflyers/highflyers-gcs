@@ -13,5 +13,6 @@
 #include "plugin_interfaces/IVideoSourcePlugin.h"
 #include "plugin_interfaces/ITelemetryControlsPlugin.h"
 #include "plugin_interfaces/ICommunicationPlugin.h"
+#include "plugin_interfaces/IProtocol.h"
 
 #endif /* INTERFACES_H_ */
