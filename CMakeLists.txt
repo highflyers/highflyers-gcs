@@ -3,6 +3,7 @@ project (GCS)
 enable_testing()
 set(CMAKE_CXX_FLAGS "-std=c++0x -D_GLIBCXX_USE_NANOSLEEP -Wall -pedantic ${CMAKE_CXX_FLAGS}")
 SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${GCS_SOURCE_DIR}/build/libs) 
+SET(highflyers-protocol_SOURCE_DIR ${GCS_SOURCE_DIR}/src/highflyers-protocol)
 
 include_directories(${GCS_SOURCE_DIR}/src/gui/include)
 include_directories(${GCS_SOURCE_DIR}/src/core/include)

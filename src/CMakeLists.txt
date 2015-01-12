@@ -8,6 +8,7 @@ add_subdirectory(video_test_src)
 add_subdirectory(mcms_telemetry)
 add_subdirectory(fake_comm)
 add_subdirectory(base_data_player)
+add_subdirectory(highflyers-protocol/src)
 
 add_executable(GCS main.cpp gui core video_streamer)
 
